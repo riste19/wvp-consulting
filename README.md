@@ -1,138 +1,139 @@
-# ВФП Плус Консалтинг — веб-страница (MK)
+# VFP Plus Consulting — Website (MK)
 
-Македонска презентациска страница за бизнис и финансиски консалтинг на
-**ВФП Плус Консалтинг ДОО Скопје**, дел од австриската **WVP GROUP** (основана
-1985, присутна во 10 земји од Југоисточна Европа).
+Marketing website for **ВФП Плус Консалтинг ДОО Скопје** (VFP Plus Consulting,
+Skopje), part of the Austrian **WVP GROUP** — founded in 1985 and active in 10
+countries across South-East Europe.
 
-Изградена е со Next.js App Router, TypeScript и Tailwind CSS v4, целосно
-статички генерирана (SSG) и на кирилица.
-
----
-
-## Содржина
-
-1. [Технологии](#технологии)
-2. [Стартување локално](#стартување-локално)
-3. [Рути](#рути)
-4. [Структура на кодот](#структура-на-кодот)
-5. [Конвенции за увоз](#конвенции-за-увоз)
-6. [Слој на содржина](#слој-на-содржина)
-7. [Дизајн систем](#дизајн-систем)
-8. [Компоненти](#компоненти)
-9. [Функционални модули](#функционални-модули)
-10. [Анимации и движење](#анимации-и-движење)
-11. [Слики](#слики)
-12. [Контакт форма](#контакт-форма)
-13. [SEO и метаподатоци](#seo-и-метаподатоци)
-14. [Пристапност](#пристапност)
-15. [Билд и објавување](#билд-и-објавување)
-16. [Познати ограничувања](#познати-ограничувања)
-17. [Сопственост](#сопственост)
+Built with the Next.js App Router, TypeScript and Tailwind CSS v4. Fully static
+(SSG), Macedonian-language, Cyrillic script.
 
 ---
 
-## Технологии
+## Contents
 
-| Пакет | Верзија | Улога |
+1. [Tech stack](#tech-stack)
+2. [Running locally](#running-locally)
+3. [Routes](#routes)
+4. [Code structure](#code-structure)
+5. [Import conventions](#import-conventions)
+6. [Content layer](#content-layer)
+7. [Design system](#design-system)
+8. [Components](#components)
+9. [Feature modules](#feature-modules)
+10. [Animation and motion](#animation-and-motion)
+11. [Images](#images)
+12. [Contact form](#contact-form)
+13. [SEO and metadata](#seo-and-metadata)
+14. [Accessibility](#accessibility)
+15. [Build and deployment](#build-and-deployment)
+16. [Known limitations](#known-limitations)
+17. [Ownership](#ownership)
+
+---
+
+## Tech stack
+
+| Package | Version | Role |
 | --- | --- | --- |
-| `next` | 16.3.4 | App Router, статичка генерација, Turbopack |
-| `react` / `react-dom` | 19.2.8 | UI слој |
-| `typescript` | ^5 | Строги типови низ целиот код |
-| `tailwindcss` | ^4 | Стилови преку `@tailwindcss/postcss` |
-| `framer-motion` | ^13.2.0 | Откривања при скролање, слајдер |
-| `lucide-react` | ^1.44.0 | Икони |
-| `eslint` + `eslint-config-next` | ^9 / 16.3.4 | Линтирање |
+| `next` | 16.3.4 | App Router, static generation, Turbopack |
+| `react` / `react-dom` | 19.2.8 | UI layer |
+| `typescript` | ^5 | Strict types throughout |
+| `tailwindcss` | ^4 | Styling via `@tailwindcss/postcss` |
+| `framer-motion` | ^13.2.0 | Scroll reveals, hero slider |
+| `lucide-react` | ^1.44.0 | Icons |
+| `eslint` + `eslint-config-next` | ^9 / 16.3.4 | Linting |
 
-> **Tailwind v4 без конфигурациски фајл.** Нема `tailwind.config.js` — токените
-> се дефинираат директно во `src/app/globals.css` преку `@theme inline`.
-> Внимавајте: v4 ги преименува градиентите, `bg-gradient-to-*` → `bg-linear-to-*`.
+> **Tailwind v4 has no config file.** There is no `tailwind.config.js` — tokens
+> are declared directly in `src/app/globals.css` via `@theme inline`.
+> Watch out: v4 renamed the gradient utilities, `bg-gradient-to-*` → `bg-linear-to-*`.
 
-> **Next.js 16 има кршечки промени** во однос на постарите верзии. Фајлот
-> `AGENTS.md` (и `CLAUDE.md` што покажува кон него) се автоматски запишани од
-> `next dev` и упатуваат кон документацијата во `node_modules/next/dist/docs/`.
+> **Next.js 16 contains breaking changes** relative to older versions. The
+> `AGENTS.md` file (and `CLAUDE.md`, which points at it) are written
+> automatically by `next dev` and direct you to the docs bundled in
+> `node_modules/next/dist/docs/`.
 
 ---
 
-## Стартување локално
+## Running locally
 
-Потребно: **Node.js 20+** и npm.
+Requires **Node.js 20+** and npm.
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000  →  пренасочува на /mk
+npm run dev          # http://localhost:3000  →  redirects to /mk
 ```
 
-Сите скрипти:
+All scripts:
 
 ```bash
-npm run dev          # развојен сервер (Turbopack)
-npm run build        # продукциска верзија, 25 статички рути
-npm run start        # сервира ја веќе изградената верзија
+npm run dev          # development server (Turbopack)
+npm run build        # production build, 25 static routes
+npm run start        # serve an existing production build
 npm run lint         # ESLint
-npm run placeholders # регенерира ги привремените слики во public/images
-npx tsc --noEmit     # проверка на типови без билд
+npm run placeholders # regenerate the placeholder images in public/images
+npx tsc --noEmit     # type-check without building
 ```
 
-Нема потребни променливи на околина. `.gitignore` веќе ги исклучува `.env*`,
-`node_modules/`, `.next/` и `.vercel`.
+No environment variables are required. `.gitignore` already excludes `.env*`,
+`node_modules/`, `.next/` and `.vercel`.
 
 ---
 
-## Рути
+## Routes
 
-Сите страници се статички генерирани при билд (25 рути вкупно).
+Every page is statically generated at build time — 25 routes in total.
 
-| Патека | Опис |
+| Path | Description |
 | --- | --- |
-| `/` | Пренасочува на `/mk` |
-| `/mk` | Почетна — банер слајдер, услуги, статистики, тим, објави |
-| `/mk/uslugi` | Седум услуги со детален опис и испораки |
-| `/mk/programi` | Шест актуелни програми и повици, со статус и процес |
-| `/mk/za-nas` | Историјат, што нудиме, мисија, тим, вредности, кариера |
-| `/mk/kontakt` | Контакт форма, начини на контакт, мапа |
-| `/mk/blog` | Преглед на 11 објави со филтер по категорија |
-| `/mk/blog/[slug]` | Поединечна објава (11 статички генерирани) |
-| `/mk/politika-za-privatnost` | Политика за приватност |
-| `/mk/uslovi-za-koristenje` | Услови за користење |
-| `/robots.txt`, `/sitemap.xml` | Генерирани од `app/robots.ts` и `app/sitemap.ts` |
+| `/` | Redirects to `/mk` |
+| `/mk` | Home — hero slider, services, stats, team, latest posts |
+| `/mk/uslugi` | Seven services with detailed copy and deliverables |
+| `/mk/programi` | Six active programmes and calls, with status and process |
+| `/mk/za-nas` | History, what we offer, mission, team, values, careers |
+| `/mk/kontakt` | Contact form, contact methods, map |
+| `/mk/blog` | Index of 11 posts with category filtering |
+| `/mk/blog/[slug]` | Individual post (11 statically generated) |
+| `/mk/politika-za-privatnost` | Privacy policy |
+| `/mk/uslovi-za-koristenje` | Terms of use |
+| `/robots.txt`, `/sitemap.xml` | Generated by `app/robots.ts` and `app/sitemap.ts` |
 | `/icon.svg` | Favicon |
 
-Двете `not-found.tsx` (корен и `/mk`) покриваат непостоечки патеки; онаа под
-`/mk` е во рамките на заглавието и подножјето.
+Two `not-found.tsx` boundaries (root and `/mk`) cover unknown paths; the one
+under `/mk` renders inside the header and footer.
 
-Патеките се на македонски по дизајн — `/mk/uslugi` наместо `/mk/services` —
-за да одговараат на живата страница и заради SEO на локалниот пазар.
+Paths are Macedonian by design — `/mk/uslugi` rather than `/mk/services` — to
+match the live site and the local search market.
 
 ---
 
-## Структура на кодот
+## Code structure
 
-Кодот е поделен во **четири слоја**: рути, споделени компоненти, функционални
-модули и содржина. Правилото е едноставно — компонента што ја користат две или
-повеќе страници живее во `components/`, а компонента врзана за една страница или
-тема живее во `features/`.
+The code is split into **four layers**: routes, shared components, feature
+modules and content. The rule is simple — a component used by two or more pages
+lives in `components/`, a component tied to a single page or theme lives in
+`features/`.
 
 ```
 src/
-  app/                             # САМО рутирање, ништо друго
-    layout.tsx                     # <html lang="mk">, Roboto, основна метадата
-    globals.css                    # дизајн токени, reveal и border-beam анимации
-    page.tsx                       # / → redirect на /mk
+  app/                             # routing ONLY, nothing else
+    layout.tsx                     # <html lang="mk">, Roboto, base metadata
+    globals.css                    # design tokens, reveal + border-beam keyframes
+    page.tsx                       # / → redirect to /mk
     icon.svg  robots.ts  sitemap.ts  not-found.tsx
     mk/
       layout.tsx                   # Header + <main> + Footer + skip link
-      page.tsx                     # почетна
+      page.tsx                     # home
       not-found.tsx
       uslugi/page.tsx
       programi/page.tsx
       za-nas/page.tsx
       kontakt/page.tsx
       blog/page.tsx
-      blog/[slug]/page.tsx         # generateStaticParams за сите објави
+      blog/[slug]/page.tsx         # generateStaticParams over the articles
       politika-za-privatnost/page.tsx
       uslovi-za-koristenje/page.tsx
 
-  components/                      # без врска со конкретна страница
+  components/                      # not tied to any one page
     ui/          Button, ButtonLink, Container, SectionHeading,
                  ArrowLink, LinkedInIcon
     motion/      Reveal, BorderBeam, AnimatedCounter
@@ -140,14 +141,14 @@ src/
                  BookMeetingTab, LogoPlaceholder
     sections/    PageHero, LegalPage, NotFoundContent
 
-  features/                        # секој модул ја држи својата логика
+  features/                        # each module owns its own logic
     home/        HeroSlider, StatsSection
     services/    ServiceCard, ServicesSection
     blog/        BlogCard, CategoryChip, ArticleGrid, BlogSection
     about/       Timeline, OfferGroups, ValuesGrid, TeamSection
     contact/     ContactForm, MapPanel, submitContactForm
 
-  data/                            # ЦЕЛАТА видлива содржина
+  data/                            # ALL visible copy
     site/        company, navigation, footer, images
     content/     hero, services, articles, programmes, about,
                  stats, contact, legal
@@ -155,17 +156,17 @@ src/
   lib/           cn, jsonLd
 
 scripts/         generate-placeholders.mjs
-public/images/   30 привремени слики (hero, team, page, services, blog, footer, og)
+public/images/   30 placeholder images (hero, team, page, services, blog, footer, og)
 ```
 
-Секоја папка има `index.ts` (barrel) што го дефинира нејзиниот јавен интерфејс.
+Every folder has an `index.ts` barrel defining its public surface.
 
 ---
 
-## Конвенции за увоз
+## Import conventions
 
 ```ts
-// Меѓу папки → преку barrel
+// Across folders → through the barrel
 import { Reveal } from "@/components/motion";
 import { ButtonLink, Container, SectionHeading } from "@/components/ui";
 import { services } from "@/data/content";
@@ -173,68 +174,69 @@ import { images } from "@/data/site";
 import { ServiceCard } from "@/features/services";
 import { cn } from "@/lib";
 
-// Во иста папка → релативно
+// Within the same folder → relative
 import { BlogCard } from "./BlogCard";
 ```
 
-**Единствен исклучок:** модулите **внатре во `src/data`** се повикуваат по полна
-патека, не преку barrel:
+**One exception:** modules **inside `src/data`** import each other by full path,
+never through a barrel:
 
 ```ts
-// во src/data/site/navigation.ts
+// in src/data/site/navigation.ts
 import { serviceHref, services } from "@/data/content/services";   // ✅
-import { services } from "@/data/content";                          // ❌ кружно
+import { services } from "@/data/content";                          // ❌ circular
 ```
 
-Причината е реална кружна зависност: `data/site/navigation` увезува од
-`data/content/services`, а `data/content/services` увезува од `data/site/images`.
-Преку barrel ова паѓа во temporal dead zone при иницијализација на модулите.
+This is a genuine circular dependency, not a style preference:
+`data/site/navigation` imports from `data/content/services`, which imports from
+`data/site/images`. Routed through the barrels, that cycle lands in the temporal
+dead zone during module initialisation and throws at startup.
 
-Алијасот `@/*` покажува на `src/*` (види `tsconfig.json`).
+The `@/*` alias maps to `src/*` (see `tsconfig.json`).
 
 ---
 
-## Слој на содржина
+## Content layer
 
-**Ниту еден видлив текст не е тврдо запишан во компонента.** За измена на копија,
-не се допира ниту еден `.tsx` фајл.
+**No visible string is hardcoded in a component.** Editing copy never means
+touching a `.tsx` file.
 
-### `data/site` — работи што се повторуваат низ целата страница
+### `data/site` — things that repeat across the whole site
 
-| Фајл | Што содржи |
+| File | Contents |
 | --- | --- |
-| `company.ts` | Име, правно име, слоган, телефони, е-пошта, адреса, работно време, LinkedIn, `siteUrl`, година на основање |
-| `navigation.ts` | `primaryNav` (десктоп, со паѓачки менија), `mobileNav`, `footerNav` |
-| `footer.ts` | Колони и текст во подножјето |
-| `images.ts` | Единствен извор на вистина за секоја патека до слика + `imageSizes` |
+| `company.ts` | Name, legal name, tagline, phone numbers, email, address, opening hours, LinkedIn, `siteUrl`, founding year |
+| `navigation.ts` | `primaryNav` (desktop, with dropdowns), `mobileNav`, `footerNav` |
+| `footer.ts` | Footer columns and copy |
+| `images.ts` | Single source of truth for every image path, plus `imageSizes` |
 
-### `data/content` — текстот на поединечните страници
+### `data/content` — per-page copy
 
-| Фајл | Извози |
+| File | Exports |
 | --- | --- |
 | `hero.ts` | `heroSlides`, `heroActions`, `HERO_INTERVAL` (6000 ms) |
-| `services.ts` | 7 услуги, `homeServices` (подмножество за почетна), `serviceHref()` |
-| `programmes.ts` | 6 програми со статус, `programmeStatusLabel`, `programmeProcess` |
-| `articles.ts` | 11 објави како структурирани блокови, `sortedArticles`, `latestArticles`, `articleCategories`, `getArticle()`, `formatArticleDate()` |
+| `services.ts` | 7 services, `homeServices` (the home-page subset), `serviceHref()` |
+| `programmes.ts` | 6 programmes with status, `programmeStatusLabel`, `programmeProcess` |
+| `articles.ts` | 11 posts as structured blocks, `sortedArticles`, `latestArticles`, `articleCategories`, `getArticle()`, `formatArticleDate()` |
 | `about.ts` | `aboutIntro`, `timeline`, `offerGroups`, `missionStatement`, `values`, `teamSection`, `careers` |
-| `stats.ts` | 3 статистики (4650 проекти, €40M грантови, €93M кредити) + наслов и фуснота |
+| `stats.ts` | 3 stats (4,650 projects, €40M grants, €93M loans) plus heading and footnote |
 | `contact.ts` | `contactMethods`, `contactIntro` |
-| `legal.ts` | `privacyPolicy`, `termsOfUse` како структурирани секции |
+| `legal.ts` | `privacyPolicy`, `termsOfUse` as structured sections |
 
-Објавите во `articles.ts` не се HTML стрингови туку типизирани блокови
-(`ArticleBlock`) — параграф, наслов, листа, цитат — што ги рендерира
-`app/mk/blog/[slug]/page.tsx`. Тоа значи дека не постои `dangerouslySetInnerHTML`
-никаде на страницата.
+Posts in `articles.ts` are typed blocks (`ArticleBlock`) rather than HTML
+strings — paragraph, heading, list, quote — rendered by
+`app/mk/blog/[slug]/page.tsx`. As a result there is no `dangerouslySetInnerHTML`
+anywhere in the codebase.
 
-### Додавање нова објава
+### Adding a blog post
 
 ```ts
 // src/data/content/articles.ts
 {
-  slug: "nova-objava",           // станува /mk/blog/nova-objava
+  slug: "nova-objava",           // becomes /mk/blog/nova-objava
   title: "Наслов",
   category: "Финансии",
-  date: "2026-03-14",            // ISO, се сортира опаѓачки
+  date: "2026-03-14",            // ISO, sorted descending
   excerpt: "Краток вовед…",
   blocks: [
     { type: "paragraph", text: "…" },
@@ -244,212 +246,213 @@ import { services } from "@/data/content";                          // ❌ кр�
 }
 ```
 
-`generateStaticParams` автоматски ја подига новата рута при следниот билд.
+`generateStaticParams` picks up the new route on the next build.
 
 ---
 
-## Дизајн систем
+## Design system
 
-Токените се дефинирани во `src/app/globals.css` и мапирани во Tailwind преку
+Tokens are declared in `src/app/globals.css` and exposed to Tailwind through
 `@theme inline`:
 
-| Токен | Вредност | Употреба |
+| Token | Value | Used for |
 | --- | --- | --- |
-| `--background` | `#f0f0f0` | Позадина на страницата |
-| `--foreground` | `#1a1a1a` | Основен текст |
-| `--primary` | `#b91c2e` | Црвената боја на брендот |
-| `--primary-foreground` | бело | Текст врз црвено |
-| `--muted` / `--muted-foreground` | `#e3e3e3` / `#212121` | Придружен текст |
-| `--card` | `#fcfcfc` | Позадина на картички |
-| `--border` | `#e8e8e8` | Рабови и линии |
-| `--radius` | `0.8rem` | Основен радиус |
-| `--container` | `80rem` | Ширина на `<Container>` (`max-w-7xl`) |
-| `--header-height` | `4rem` | Отстапка за фиксното заглавие |
+| `--background` | `#f0f0f0` | Page background |
+| `--foreground` | `#1a1a1a` | Body text |
+| `--primary` | `#b91c2e` | Brand red |
+| `--primary-foreground` | white | Text on red |
+| `--muted` / `--muted-foreground` | `#e3e3e3` / `#212121` | Secondary text |
+| `--card` | `#fcfcfc` | Card background |
+| `--border` | `#e8e8e8` | Rules and outlines |
+| `--radius` | `0.8rem` | Base corner radius |
+| `--container` | `80rem` | `<Container>` width (`max-w-7xl`) |
+| `--header-height` | `4rem` | Offset for the fixed header |
 
-Типографија: **Roboto** преку `next/font/google`, со **кириличен подсет** —
-без него дијакритиката се рендерира со системски фалбек.
+Typography: **Roboto** via `next/font/google`, with the **Cyrillic subset** —
+without it the diacritics fall back to a system font.
 
-Црвената секогаш се повикува преку `bg-primary` / `text-primary`, не преку
-тврдо запишан хекс, за да остане една точка на измена.
+The brand red is always referenced as `bg-primary` / `text-primary`, never as a
+hardcoded hex, so it stays a single point of change.
 
 ---
 
-## Компоненти
+## Components
 
 ### `components/ui`
 
-| Компонента | Опис |
+| Component | Description |
 | --- | --- |
-| `Button` / `ButtonLink` | Четири варијанти: `primary`, `onImage`, `pill`, `onPrimary` |
-| `Container` | Централна ширина + хоризонтални отстапки |
-| `SectionHeading` | Наслов + поднаслов, со опционален eyebrow |
-| `ArrowLink` | Текстуален линк со стрелка што се придвижува при hover |
+| `Button` / `ButtonLink` | Four variants: `primary`, `onImage`, `pill`, `onPrimary` |
+| `Container` | Centred max width plus horizontal padding |
+| `SectionHeading` | Title and subtitle, with an optional eyebrow |
+| `ArrowLink` | Text link with an arrow that slides on hover |
 | `LinkedInIcon` | Inline SVG |
 
-> **Важно за `Button`:** `src/lib/cn.ts` е обичен спојувач на класи, **не**
-> `tailwind-merge`. Варијанта не може да прегази класа од `BASE` — двете
-> завршуваат во атрибутот и победува редоследот во CSS, не редоследот во кодот.
-> Затоа `focus-visible:ring-*` е преместен од `BASE` во секоја варијанта поединечно;
-> варијантата `onPrimary` (светло копче врз црвена лента) користи бел прстен.
+> **Important for `Button`:** `src/lib/cn.ts` is a plain class joiner, **not**
+> `tailwind-merge`. A variant cannot override a class coming from `BASE` — both
+> end up in the attribute and CSS source order decides the winner, not the order
+> they were written. That is why `focus-visible:ring-*` lives in each variant
+> rather than in `BASE`; the `onPrimary` variant (a light button on a red band)
+> uses a white ring so it stays visible.
 
 ### `components/layout`
 
-`Header` со фиксна позиција и паѓачки менија, `MobileMenu` (панел со целосна
-навигација од тастатура), `LanguageSelector`, `Footer` со позадинска слика,
-`BookMeetingTab` (лебдечко јазиче за состанок), и `LogoPlaceholder` —
-типографска замена за логото, **не** оригиналниот заштитен знак. Зафаќа точно
-128 × 27 во заглавието и 450 × 96 во подножјето.
+`Header` with a fixed position and hover/focus dropdowns, `MobileMenu` (a panel
+with full keyboard navigation), `LanguageSelector`, `Footer` with a background
+image, `BookMeetingTab` (a floating "book a meeting" tab), and
+`LogoPlaceholder` — a typographic stand-in, **not** the real trademark. It
+occupies exactly 128 × 27 in the header and 450 × 96 in the footer.
 
 ### `components/sections`
 
-`PageHero` (банер на внатрешните страници), `LegalPage` (рендерира
-`LegalDocument` од `data/content/legal`), `NotFoundContent`.
+`PageHero` (the banner on inner pages), `LegalPage` (renders a `LegalDocument`
+from `data/content/legal`), `NotFoundContent`.
 
 ---
 
-## Функционални модули
+## Feature modules
 
-| Модул | Компоненти | Забелешки |
+| Module | Components | Notes |
 | --- | --- | --- |
-| `home` | `HeroSlider`, `StatsSection` | Слајдерот ротира на 6 s, со рачна навигација |
-| `services` | `ServiceCard`, `ServicesSection` | Картички со `BorderBeam` при hover |
-| `blog` | `BlogCard`, `CategoryChip`, `ArticleGrid`, `BlogSection` | Филтер по категорија на клиентска страна |
-| `about` | `Timeline`, `OfferGroups`, `ValuesGrid`, `TeamSection` | `TeamSection` се дели со почетната |
-| `contact` | `ContactForm`, `MapPanel`, `submitContactForm` | Формата е валидирана, но бекендот е привремен |
+| `home` | `HeroSlider`, `StatsSection` | Slider rotates every 6 s, with manual controls |
+| `services` | `ServiceCard`, `ServicesSection` | Cards use `BorderBeam` on hover |
+| `blog` | `BlogCard`, `CategoryChip`, `ArticleGrid`, `BlogSection` | Client-side category filtering |
+| `about` | `Timeline`, `OfferGroups`, `ValuesGrid`, `TeamSection` | `TeamSection` is shared with the home page |
+| `contact` | `ContactForm`, `MapPanel`, `submitContactForm` | Form is validated, but the backend is a stub |
 
-**`Timeline`** — историјатот на групацијата како зиг-заг: централна шина со
-маркер по запис, картички наизменично лево и десно. Под `lg` нема доволно
-ширина за две колони, па шината се преместува на левиот раб и сите картички
-одат во една колона десно од неа. Растојанието меѓу редовите е `margin`, не
-`padding`, за да може маркерот точно да се центрира спрема картичката.
+**`Timeline`** lays the group's expansion history out as a zig-zag: a centre
+rail with one marker per entry, cards alternating left and right. Below `lg`
+there is not enough width for two columns, so the rail moves to the left edge
+and every card sits in a single column to its right. Row spacing is `margin`
+rather than `padding`, which keeps the row box exactly the size of the card and
+lets the marker centre itself against it.
 
-**`OfferGroups`** и **`ValuesGrid`** — при hover насловот се обојува црвено со
-преод; кај `OfferGroups` иконата дополнително добива црвена плочка со градиент
-и станува бела.
+**`OfferGroups`** and **`ValuesGrid`** turn their heading red on hover with a
+transition; in `OfferGroups` the icon additionally gains a red gradient tile and
+turns white.
 
 ---
 
-## Анимации и движење
+## Animation and motion
 
-| Механизам | Каде | Однесување при `reduce` |
+| Mechanism | Where | Behaviour under `reduce` |
 | --- | --- | --- |
-| `Reveal` | Речиси секоја секција | Исклучено |
-| `BorderBeam` | Картички за услуги | Исклучено |
-| Ротација на банерот | Почетна | Исклучено |
-| `AnimatedCounter` | Статистики | **Работи и понатаму** |
+| `Reveal` | Nearly every section | Disabled |
+| `BorderBeam` | Service cards | Disabled |
+| Hero rotation | Home page | Disabled |
+| `AnimatedCounter` | Stats | **Still runs** |
 
-`AnimatedCounter` е свесен исклучок од правилото за `prefers-reduced-motion`,
-исто како и на живата страница. Тоа е текст што се менува на место — без
-движење, без параллакс — па не носи вестибуларен ризик што правилото го спречува.
+`AnimatedCounter` is a deliberate exception to the `prefers-reduced-motion`
+rule, matching the live site. It is text changing in place — no movement, no
+parallax — so it does not carry the vestibular risk that rule exists to guard
+against.
 
-Дополнително, компонентата решава реален SSR проблем: **серверот ја испишува
-крајната бројка**, а клиентот ја премотува на нула во `useLayoutEffect`, пред
-исцртување. Така без JavaScript и за пребарувачите се гледа вистинскиот број, а
-не нула — и ако анимацијата падне, бројката не останува заглавена на нула.
-Броењето се активира преку `IntersectionObserver` (праг 0.2) и трае 2 s со
-`easeOutExpo`.
+It also solves a real SSR problem: **the server renders the final figure**, and
+the client rewinds it to zero in `useLayoutEffect`, before paint. Crawlers and
+visitors without JavaScript therefore see the true number rather than zero, and
+a failed animation cannot strand the figure at zero. The count is triggered by
+an `IntersectionObserver` (threshold 0.2) and runs for 2 s with `easeOutExpo`.
 
-> **Тестирање:** headless Chrome по дифолт пријавува
-> `prefers-reduced-motion: reduce`. Ако анимациите изгледаат мртви во автоматски
-> тест, тоа е емулацијата, не баг — поставете `no-preference` преку
-> `Emulation.setEmulatedMedia`.
+> **Testing note:** headless Chrome reports `prefers-reduced-motion: reduce` by
+> default. If animations look dead in an automated test, that is the emulation
+> and not a bug — set `no-preference` via `Emulation.setEmulatedMedia`.
 
 ---
 
-## Слики
+## Images
 
-**Сите 30 слики се привремени (placeholder).** Генерирани се со
-`npm run placeholders` и носат видлива ознака со точните димензии.
+**All 30 images are placeholders.** They are generated by `npm run placeholders`
+and carry a visible label with their exact dimensions.
 
-Патеките се централизирани во `src/data/site/images.ts`, а димензиите во
-`imageSizes` — така `next/image` резервира простор и нема поместување на
-распоредот. За замена со вистински фотографии, зачувајте ги во `public/images/`
-под истите имиња (или сменете ја патеката во `images.ts`) и **задржете ги истите
-димензии**:
+Paths are centralised in `src/data/site/images.ts` and intrinsic sizes in
+`imageSizes`, so `next/image` reserves space and nothing shifts during layout.
+To swap in real photography, save it into `public/images/` under the same
+filenames (or change the path in `images.ts`) and **keep the dimensions
+identical**:
 
-| Намена | Димензии | Број |
+| Purpose | Dimensions | Count |
 | --- | --- | --- |
-| Слајдови на почетната | 1920 × 1080 | 3 |
-| Колаж од тимот | 1136 × 1270 (`object-contain`) | 1 |
-| Банер на внатрешни страници | 1920 × 720 | 5 |
-| Илустрации за услуги | 800 × 600 | 7 |
-| Слики за објави | 1040 × 416 | 11 |
-| Позадина на подножје | 1920 × 970 | 1 |
-| Мапа на контакт страница | 1040 × 800 | 1 |
+| Home hero slides | 1920 × 1080 | 3 |
+| Team collage | 1136 × 1270 (`object-contain`) | 1 |
+| Inner-page banner | 1920 × 720 | 5 |
+| Service illustrations | 800 × 600 | 7 |
+| Blog post images | 1040 × 416 | 11 |
+| Footer background | 1920 × 970 | 1 |
+| Contact page map | 1040 × 800 | 1 |
 | Open Graph | 1200 × 630 | 1 |
 
 ---
 
-## Контакт форма
+## Contact form
 
-`src/features/contact/submitContactForm.ts` е **единствената** точка за
-поврзување со бекенд. Моментално враќа успех по кратко доцнење.
+`src/features/contact/submitContactForm.ts` is the **only** seam for a backend.
+It currently resolves successfully after a short delay.
 
-За вистинска имплементација, заменете го телото на функцијата со повик кон API
-рута или провајдер за е-пошта (Resend, SendGrid, SMTP). Компонентата
-`ContactForm` останува непроменета — валидацијата, состојбите на грешка и
-пораката за успех веќе се на место.
+For a real implementation, replace the function body with a call to an API route
+or an email provider (Resend, SendGrid, SMTP). The `ContactForm` component needs
+no changes — validation, error states and the success message are already in
+place.
 
-Клучевите одат во `.env.local`, што `.gitignore` веќе го исклучува.
-
----
-
-## SEO и метаподатоци
-
-- **Метадата по страница** преку `export const metadata` — наслов, опис,
-  каноничен URL.
-- **Структурирани податоци** (`src/lib/jsonLd.ts`) — `Organization` на почетната,
-  `Article` на секоја објава, според schema.org.
-- **`app/sitemap.ts`** ги набројува сите рути, вклучувајќи ги објавите.
-- **`app/robots.ts`** дозволува индексирање и покажува кон мапата.
-- **Open Graph** слика 1200 × 630 и `lang="mk"` на `<html>`.
-- Основниот URL се чита од `company.siteUrl` — сменете го таму пред објавување.
+Any credentials belong in `.env.local`, which `.gitignore` already excludes.
 
 ---
 
-## Пристапност
+## SEO and metadata
 
-- Skip link, семантички landmark-и, **еден `h1` по страница**, `alt` на сите слики.
-- Целосна навигација со тастатура, вклучувајќи ги паѓачките менија и мобилниот панел.
-- Видлив focus прстен на секое интерактивно место, со боја прилагодена на позадината.
-- `prefers-reduced-motion: reduce` ги исклучува откривањата при скролање, светлото
-  по рабовите и автоматската ротација на банерот (за исклучокот со броевите,
-  види [Анимации](#анимации-и-движење)).
-- Контрастот на белиот текст врз `--primary` (`#b91c2e`) поминува WCAG AA.
+- **Per-page metadata** via `export const metadata` — title, description,
+  canonical URL.
+- **Structured data** (`src/lib/jsonLd.ts`) — `Organization` on the home page,
+  `Article` on every post, per schema.org.
+- **`app/sitemap.ts`** enumerates all routes, blog posts included.
+- **`app/robots.ts`** allows indexing and points at the sitemap.
+- **Open Graph** image at 1200 × 630, and `lang="mk"` on `<html>`.
+- The base URL is read from `company.siteUrl` — change it there before launch.
 
 ---
 
-## Билд и објавување
+## Accessibility
+
+- Skip link, semantic landmarks, **one `h1` per page**, `alt` on every image.
+- Full keyboard navigation, including the dropdowns and the mobile panel.
+- A visible focus ring on every interactive element, coloured to suit its
+  background.
+- `prefers-reduced-motion: reduce` disables scroll reveals, the border beam and
+  the automatic hero rotation (for the counter exception, see
+  [Animation](#animation-and-motion)).
+- White text on `--primary` (`#b91c2e`) meets WCAG AA contrast.
+
+---
+
+## Build and deployment
 
 ```bash
 npm run build
 ```
 
-Излезот е 25 статички рути. Бидејќи нема серверски рути со состојба, страницата
-се качува на кој било статички хостинг или на Vercel без дополнителна
-конфигурација.
+The output is 25 static routes. Since there are no stateful server routes, the
+site deploys to any static host, or to Vercel with no additional configuration.
 
-Пред првото објавување:
+Before the first deployment:
 
-1. Сменете го `company.siteUrl` во `src/data/site/company.ts`.
-2. Заменете ги привремените слики.
-3. Поврзете ја контакт формата со вистински бекенд.
-4. Заменете го `LogoPlaceholder` со оригиналното лого.
-
----
-
-## Познати ограничувања
-
-- **Контакт формата нема бекенд** — успехот е симулиран.
-- **Сите слики се привремени**, вклучувајќи го и логото.
-- **Само македонска верзија** — `LanguageSelector` постои, но нема втор јазик зад
-  него. Структурата под `app/mk/` е подготвена за додавање на `app/en/`.
-- Годината во подножјето (`currentYear` во `company.ts`) е рачно поставена, за да
-  не се менува излезот од статичкиот билд без нов деплој.
+1. Change `company.siteUrl` in `src/data/site/company.ts`.
+2. Replace the placeholder images.
+3. Wire the contact form to a real backend.
+4. Replace `LogoPlaceholder` with the real logo.
 
 ---
 
-## Сопственост
+## Known limitations
 
-Приватно репо. Содржината, името и брендот се сопственост на
-**ВФП Плус Консалтинг ДОО Скопје**.
+- **The contact form has no backend** — success is simulated.
+- **Every image is a placeholder**, the logo included.
+- **Macedonian only** — `LanguageSelector` exists, but there is no second locale
+  behind it. The structure under `app/mk/` is ready for an `app/en/` sibling.
+- The footer year (`currentYear` in `company.ts`) is set manually, so that a
+  static build's output does not go stale without a redeploy.
+
+---
+
+## Ownership
+
+Private repository. The content, name and brand belong to
+**ВФП Плус Консалтинг ДОО Скопје** (VFP Plus Consulting, Skopje).
