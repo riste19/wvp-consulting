@@ -1,26 +1,236 @@
 @import "tailwindcss";
 
+/* --------------------------------------------------------------------------
+   Design tokens
+   Values measured from the rendered reference site (wvpconsulting.com/mk).
+   -------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f0f0f0;
+  --foreground: #1a1a1a;
+
+  --primary: #b91c2e;
+  --primary-foreground: #ffffff;
+
+  --secondary: #c4c4c4;
+  --secondary-foreground: #1a1a1a;
+
+  --muted: #e3e3e3;
+  --muted-foreground: #212121;
+
+  --card: #fcfcfc;
+  --card-foreground: #000000;
+
+  --border: #e8e8e8;
+  --input: #b5b5b5;
+  --ring: #6b6b6b;
+
+  --radius: 0.8rem;
+
+  /* Category accents used by article chips */
+  --chart-1: hsl(203.8863 88.2845% 53.1373%);
+  --chart-2: hsl(159.7826 100% 36.0784%);
+  --chart-3: hsl(42.029 92.8251% 56.2745%);
+  --chart-4: hsl(147.1429 78.5047% 41.9608%);
+  --chart-5: hsl(341.4894 75.2% 50.9804%);
+
+  /* Layout rhythm */
+  --container: 80rem; /* max-w-7xl */
+  --header-height: 4rem; /* h-16 */
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
+  --beam-color: #bf0d0d;
+  --beam-duration: 30s;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --font-sans: var(--font-roboto), "Roboto", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Anchor targets must clear the fixed header. */
+    scroll-padding-top: calc(var(--header-height) + 1.5rem);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The reference never scrolls sideways; guard against it at every width. */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
+/* --------------------------------------------------------------------------
+   Scroll reveal — see components/ui/Reveal.tsx
+   -------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal--visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   Travelling border light on the service cards.
+   A soft red ellipse rides the card's own rounded border box; a two-layer mask
+   keeps only the 1px border ring visible.
+   -------------------------------------------------------------------------- */
+.border-beam {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  pointer-events: none;
+  mask:
+    linear-gradient(transparent, transparent),
+    linear-gradient(#fff, #fff);
+  mask-clip: padding-box, border-box;
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+
+.border-beam__light {
+  display: none;
+}
+
+@supports (offset-path: border-box) {
+  .border-beam__light {
+    display: block;
+    position: absolute;
+    width: 280px;
+    aspect-ratio: 1;
+    offset-path: border-box;
+    offset-anchor: center;
+    offset-rotate: 0deg;
+    background: radial-gradient(
+      ellipse at center,
+      var(--beam-color),
+      transparent 60%
+    );
+    animation: border-beam-travel var(--beam-duration) linear infinite;
+  }
+}
+
+@keyframes border-beam-travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Long-form article body
+   -------------------------------------------------------------------------- */
+.article-body > * + * {
+  margin-top: 1.5rem;
+}
+
+.article-body h2 {
+  font-size: 1.75rem;
+  line-height: 1.25;
+  font-weight: 700;
+  margin-top: 2.5rem;
+}
+
+.article-body h3 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+
+.article-body p,
+.article-body li {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--muted-foreground);
+}
+
+.article-body ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+.article-body ul > li + li {
+  margin-top: 0.5rem;
+}
+
+.article-body strong {
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .border-beam__light {
+    display: none;
+  }
+
+  /* Content still arrives, it just arrives without movement. */
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
