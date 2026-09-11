@@ -6,7 +6,9 @@ import { company, images } from "@/data/site";
 import "./globals.css";
 
 const roboto = Roboto({
-  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+  // Macedonian needs only U+0400-045F; the site has no latin-ext or
+  // cyrillic-ext characters, and every listed subset is preloaded.
+  subsets: ["latin", "cyrillic"],
   variable: "--font-roboto",
   display: "swap",
 });
