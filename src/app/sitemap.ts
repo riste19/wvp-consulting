@@ -14,7 +14,12 @@ const STATIC_ROUTES = [
   "/mk/uslovi-za-koristenje",
 ];
 
+/** Baked at build time into `out/sitemap.xml`; see the note in `robots.ts`. */
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
+  // Frozen at build time, so `lastModified` on the static routes moves only
+  // when the site is redeployed.
   const now = new Date();
 
   return [
