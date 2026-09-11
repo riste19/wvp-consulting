@@ -1,0 +1,15 @@
+# Cloudflare parses `_headers` and `_redirects` line by line, and this repo is
+# developed on Windows with core.autocrlf=true. A stray CR at the end of a
+# redirect status code fails quietly, so normalise line endings to LF for every
+# text file rather than relying on each machine's git config.
+* text=auto eol=lf
+
+# Never let the above touch binary assets.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
