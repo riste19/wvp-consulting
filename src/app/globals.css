@@ -118,6 +118,57 @@
 }
 
 /* --------------------------------------------------------------------------
+   Hero entrance — see features/home/HeroSlider.tsx
+
+   Plays on first paint and again on every slide change: the slider gives the
+   text block a `key`, so React remounts it and the animation restarts. Each
+   line rises a little less than the one above it, which reads as the block
+   settling into place rather than three separate things moving.
+
+   `both` holds the opening frame through the delay, so nothing flashes at full
+   opacity before its turn. There is no JavaScript behind this, so the copy
+   still animates with scripting switched off.
+   -------------------------------------------------------------------------- */
+.hero-rise {
+  --hero-rise-from: 60px;
+  --hero-rise-scale: 0.96;
+  /* Near-expo easing: most of the distance is covered in the first third, then
+     it settles for a long time. That tail is what makes a large movement read
+     as smooth and deliberate instead of as something thrown onto the screen.
+     Only `transform` and `opacity` animate, so the whole thing runs on the
+     compositor and holds 60fps. */
+  animation: hero-rise 1300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-rise--title {
+  --hero-rise-from: 140px;
+  --hero-rise-scale: 0.9;
+}
+
+.hero-rise--subtitle {
+  --hero-rise-from: 90px;
+  --hero-rise-scale: 0.95;
+  animation-delay: 200ms;
+}
+
+.hero-rise--actions {
+  --hero-rise-from: 60px;
+  --hero-rise-scale: 0.97;
+  animation-delay: 400ms;
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--hero-rise-from)) scale(var(--hero-rise-scale));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Travelling border light on the service cards.
    A soft red ellipse rides the card's own rounded border box; a two-layer mask
    keeps only the 1px border ring visible.
@@ -232,5 +283,34 @@
   .reveal {
     opacity: 1;
     transform: none;
+  }
+
+  /*
+   * The hero keeps its entrance, minus the travel. Movement is what this
+   * preference exists to suppress; a change in opacity carries none of the
+   * vestibular risk, so the copy still arrives rather than appearing fully
+   * formed. Same reasoning as the count-up in `AnimatedCounter`.
+   *
+   * The duration override above applies to every animation, so it has to be
+   * restated here or the fade would collapse to nothing.
+   */
+  .hero-rise {
+    animation-name: hero-fade !important;
+    animation-duration: 1100ms !important;
+  }
+}
+
+/*
+ * The reduced-motion entrance: a clean staggered fade — no travel, no blur.
+ * Once movement is off the table there is very little drama left to give, and
+ * dressing it up with a filter reads as soft rather than deliberate. This is
+ * the honest limit of what the preference allows.
+ */
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
