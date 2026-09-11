@@ -1,11 +1,4 @@
-import {
-  CalendarDays,
-  Mail,
-  Phone,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
-
+import type { IconName } from "@/components/icons";
 import { company } from "@/data/site/company";
 
 export type ContactMethod = {
@@ -14,7 +7,7 @@ export type ContactMethod = {
   /** Highlighted lines: phone numbers, an address, a platform name. */
   highlights: string[];
   note: string;
-  icon: LucideIcon;
+  icon: IconName;
   /** Optional link target for the first highlight. */
   href?: string;
 };
@@ -25,7 +18,7 @@ export const contactMethods: ContactMethod[] = [
     description: "Разговарајте директно со нашите консултанти",
     highlights: [...company.phones],
     note: company.workingHours,
-    icon: Phone,
+    icon: "phone",
     href: `tel:${company.phones[0].replace(/\s/g, "")}`,
   },
   {
@@ -33,7 +26,7 @@ export const contactMethods: ContactMethod[] = [
     description: "Добијте детални одговори на вашите прашања",
     highlights: [company.email],
     note: "Одговараме во рок од 24 часа",
-    icon: Mail,
+    icon: "mail",
     href: `mailto:${company.email}`,
   },
   {
@@ -41,14 +34,14 @@ export const contactMethods: ContactMethod[] = [
     description: "Закажете состанок во нашите канцеларии",
     highlights: ["Достапно во нашите канцеларии"],
     note: "Само со претходно закажување",
-    icon: Users,
+    icon: "users",
   },
   {
     title: "Онлајн консултации",
     description: "Видео повици за клиенти од далечина",
     highlights: ["Zoom, Teams или преферирана платформа"],
     note: "Флексибилно закажување",
-    icon: CalendarDays,
+    icon: "calendarDays",
   },
 ];
 

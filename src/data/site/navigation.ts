@@ -42,5 +42,3 @@ export const mobileNav: NavItem[] = [
   { label: "За нас", href: "/mk/za-nas" },
   { label: "Контакт", href: "/mk/kontakt" },
 ];
-
-export const languages = [{ code: "MK", label: "Македонски", href: "/mk" }];

@@ -1,3 +1,4 @@
+import { icons } from "@/components/icons";
 import { BorderBeam } from "@/components/motion";
 import { ArrowLink } from "@/components/ui";
 import { serviceHref, type Service } from "@/data/content";
@@ -9,7 +10,7 @@ type ServiceCardProps = {
 };
 
 export function ServiceCard({ service, beamDelay = "0s" }: ServiceCardProps) {
-  const Icon = service.icon;
+  const Icon = icons[service.icon];
 
   return (
     <article className="group relative h-full min-h-[300px] w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all duration-500 hover:shadow-xl hover:shadow-red-200/50">

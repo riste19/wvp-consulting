@@ -3,7 +3,9 @@
 import { Check, Globe } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { languages } from "@/data/site";
+// Direct path, not the barrel: the barrel re-exports `navigation`, which
+// reaches the services catalogue. See the note in `Header`.
+import { languages } from "@/data/site/languages";
 import { cn } from "@/lib";
 
 type LanguageSelectorProps = {

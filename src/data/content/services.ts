@@ -1,14 +1,4 @@
-import {
-  ChartLine,
-  ChartNetwork,
-  Euro,
-  Globe,
-  HandCoins,
-  Leaf,
-  ReceiptEuro,
-  type LucideIcon,
-} from "lucide-react";
-
+import type { IconName } from "@/components/icons";
 import { images } from "@/data/site/images";
 
 export type Service = {
@@ -22,7 +12,7 @@ export type Service = {
   tagline: string;
   description: string;
   deliverables: string[];
-  icon: LucideIcon;
+  icon: IconName;
   image: string;
   /** The homepage grid shows six of the seven service areas. */
   featuredOnHome: boolean;
@@ -43,7 +33,7 @@ export const services: Service[] = [
       "Инвестициска програма",
       "Извештај за исплатливост и оправданост на инвестицијата (cost-benefit analysis)",
     ],
-    icon: HandCoins,
+    icon: "handCoins",
     image: images.service(0),
     featuredOnHome: true,
   },
@@ -61,7 +51,7 @@ export const services: Service[] = [
       "Осигурување на побарувања",
       "Алтернативно финансирање",
     ],
-    icon: Euro,
+    icon: "euro",
     image: images.service(1),
     featuredOnHome: true,
   },
@@ -79,7 +69,7 @@ export const services: Service[] = [
       "ЕУ структурни инструменти",
       "Потенцијал за поврат до 90%",
     ],
-    icon: ReceiptEuro,
+    icon: "receiptEuro",
     image: images.service(2),
     featuredOnHome: true,
   },
@@ -96,7 +86,7 @@ export const services: Service[] = [
       "Планови за развој на вработените",
       "Долгорочен организациски мониторинг",
     ],
-    icon: ChartLine,
+    icon: "chartLine",
     image: images.service(3),
     featuredOnHome: true,
   },
@@ -113,7 +103,7 @@ export const services: Service[] = [
       "Брендирање и идентитет",
       "Дигитални кампањи и аналитика",
     ],
-    icon: ChartNetwork,
+    icon: "chartNetwork",
     image: images.service(4),
     featuredOnHome: true,
   },
@@ -130,7 +120,7 @@ export const services: Service[] = [
       "Ревизија на енергетска ефикасност (PiNE)",
       "Извозен план и наоѓање купувачи",
     ],
-    icon: Globe,
+    icon: "globe",
     image: images.service(5),
     featuredOnHome: true,
   },
@@ -147,7 +137,7 @@ export const services: Service[] = [
       "Мапирање на управувањето",
       "Патоказ за усогласеност",
     ],
-    icon: Leaf,
+    icon: "leaf",
     image: images.service(6),
     featuredOnHome: true,
   },

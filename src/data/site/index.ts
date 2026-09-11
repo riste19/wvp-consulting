@@ -9,8 +9,8 @@
 export { company, currentYear } from "./company";
 export { footerColumns, legalLinks, type FooterColumn } from "./footer";
 export { images, imageSizes } from "./images";
+export { languages } from "./languages";
 export {
-  languages,
   mobileNav,
   primaryNav,
   type NavItem,

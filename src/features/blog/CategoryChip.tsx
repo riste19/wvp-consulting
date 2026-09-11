@@ -1,4 +1,6 @@
-import { categoryTone } from "@/data/content";
+// Direct path, not the barrel: this component is reachable from the client-side
+// `ArticleGrid`, and the barrel would pull the whole article corpus with it.
+import { categoryTone } from "@/data/content/categories";
 import { cn } from "@/lib";
 
 type CategoryChipProps = {

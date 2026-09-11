@@ -1,13 +1,4 @@
-import {
-  Award,
-  FileText,
-  Globe,
-  Handshake,
-  Lightbulb,
-  Target,
-  WalletCards,
-  type LucideIcon,
-} from "lucide-react";
+import type { IconName } from "@/components/icons";
 
 export const aboutIntro = {
   heading: "Кои сме ние",
@@ -61,14 +52,14 @@ export const timeline: TimelineEntry[] = [
 export type OfferGroup = {
   title: string;
   /** Shown above the heading; turns white on a red tile when the card is hovered. */
-  icon: LucideIcon;
+  icon: IconName;
   items: string[];
 };
 
 export const offerGroups: OfferGroup[] = [
   {
     title: "Пристап до финансии",
-    icon: WalletCards,
+    icon: "walletCards",
     items: [
       "Грантови и кофинансирање",
       "Банкарски кредитни производи",
@@ -84,7 +75,7 @@ export const offerGroups: OfferGroup[] = [
   },
   {
     title: "Пристап до пазарот",
-    icon: Globe,
+    icon: "globe",
     items: [
       "Дигитализација на компанијата",
       "Ревизија за енергетска ефикасност (PiNE модел)",
@@ -98,7 +89,7 @@ export const offerGroups: OfferGroup[] = [
   },
   {
     title: "Специјализирани извештаи",
-    icon: FileText,
+    icon: "fileText",
     items: [
       "Бизнис планови",
       "Инвестициски програми",
@@ -114,7 +105,7 @@ export const missionStatement =
 export type Value = {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: IconName;
 };
 
 export const values: Value[] = [
@@ -122,25 +113,25 @@ export const values: Value[] = [
     title: "Ориентираност кон резултати",
     description:
       "Се фокусираме на испорака на мерливи резултати и опиплива вредност за нашите клиенти.",
-    icon: Target,
+    icon: "target",
   },
   {
     title: "Фокус на клиентот",
     description:
       "Вашиот успех е наш приоритет. Градиме долгорочни партнерства засновани на доверба.",
-    icon: Handshake,
+    icon: "handshake",
   },
   {
     title: "Извонредност",
     description:
       "Одржуваме највисоки стандарди на професионалност и експертиза.",
-    icon: Award,
+    icon: "award",
   },
   {
     title: "Иновација",
     description:
       "Користиме современи технологии и методологии за да постигнеме резултат.",
-    icon: Lightbulb,
+    icon: "lightbulb",
   },
 ];
 

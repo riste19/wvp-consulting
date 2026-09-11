@@ -1,5 +1,8 @@
 import type { Article } from "@/data/content";
-import { company } from "@/data/site";
+// Direct path, not the barrel. `@/lib` is re-exported to client components for
+// `cn`, and a barrel import here made the whole site data layer — navigation,
+// and through it the services catalogue — part of every page's JavaScript.
+import { company } from "@/data/site/company";
 
 /** Organisation structured data for the homepage. */
 export function organizationJsonLd(siteUrl: string) {

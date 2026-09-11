@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { Container } from "@/components/ui";
-import { primaryNav } from "@/data/site";
+import type { NavItem } from "@/data/site";
 import { cn } from "@/lib";
 
 import { LanguageSelector } from "./LanguageSelector";
@@ -31,7 +31,21 @@ const PHOTO_HERO_ROUTES = [
   "/mk/kontakt",
 ];
 
-export function Header() {
+type HeaderProps = {
+  /** Desktop navigation. */
+  nav: NavItem[];
+  /** Sentence-case variant for the mobile panel. */
+  mobileNav: NavItem[];
+};
+
+/**
+ * The navigation is handed down from the server rather than imported here.
+ * `primaryNav` derives its services dropdown from `@/data/content/services`,
+ * so importing it inside this client component dragged the entire services
+ * catalogue — descriptions, deliverables and seven icon components — into the
+ * JavaScript of every page on the site. As props it costs a dozen strings.
+ */
+export function Header({ nav, mobileNav }: HeaderProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -84,9 +98,9 @@ export function Header() {
             aria-label="Главна навигација"
             className="hidden items-center space-x-8 lg:flex"
           >
-            {primaryNav.map((item, index) => {
+            {nav.map((item, index) => {
               const active = isActive(item.href);
-              const nextHasSeparator = primaryNav[index + 1]?.separatorBefore;
+              const nextHasSeparator = nav[index + 1]?.separatorBefore;
               const edgeClasses = nextHasSeparator
                 ? cn(
                     "border-r pr-8",
@@ -174,7 +188,11 @@ export function Header() {
       </Container>
 
       {menuOpen ? (
-        <MobileMenu isActive={isActive} onNavigate={() => setMenuOpen(false)} />
+        <MobileMenu
+          nav={mobileNav}
+          isActive={isActive}
+          onNavigate={() => setMenuOpen(false)}
+        />
       ) : null}
     </header>
   );

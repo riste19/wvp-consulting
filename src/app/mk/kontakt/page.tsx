@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { icons } from "@/components/icons";
 import { Reveal } from "@/components/motion";
 import { PageHero } from "@/components/sections";
 import { Container, SectionHeading } from "@/components/ui";
@@ -53,7 +54,7 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {contactMethods.map((method, index) => {
-              const Icon = method.icon;
+              const Icon = icons[method.icon];
               return (
                 <Reveal
                   key={method.title}

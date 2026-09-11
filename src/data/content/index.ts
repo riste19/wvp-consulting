@@ -18,10 +18,10 @@ export {
   type TimelineEntry,
   type Value,
 } from "./about";
+export { categoryTone } from "./categories";
 export {
   articleCategories,
   articles,
-  categoryTone,
   formatArticleDate,
   getArticle,
   latestArticles,

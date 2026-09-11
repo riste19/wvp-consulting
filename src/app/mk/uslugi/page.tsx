@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+import { icons } from "@/components/icons";
 import { BookMeetingTab } from "@/components/layout";
 import { Reveal } from "@/components/motion";
 import { PageHero } from "@/components/sections";
@@ -32,7 +33,7 @@ export default function ServicesPage() {
       <div className="bg-white">
         <Container>
           {services.map((service, index) => {
-            const Icon = service.icon;
+            const Icon = icons[service.icon];
             const imageFirst = index % 2 === 0;
 
             return (

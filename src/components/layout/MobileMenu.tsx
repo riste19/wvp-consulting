@@ -4,18 +4,20 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-import { mobileNav } from "@/data/site";
+import type { NavItem } from "@/data/site";
 import { cn } from "@/lib";
 
 import { LanguageSelector } from "./LanguageSelector";
 
 type MobileMenuProps = {
+  /** Passed down from `Header`; see the note there on why it is not imported. */
+  nav: NavItem[];
   onNavigate: () => void;
   isActive: (href: string) => boolean;
 };
 
 /** Dark panel that drops below the header on small screens. */
-export function MobileMenu({ onNavigate, isActive }: MobileMenuProps) {
+export function MobileMenu({ nav, onNavigate, isActive }: MobileMenuProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
@@ -24,7 +26,7 @@ export function MobileMenu({ onNavigate, isActive }: MobileMenuProps) {
       className="border-t border-border bg-foreground lg:hidden"
     >
       <div className="space-y-1 px-2 pb-3 pt-2">
-        {mobileNav.map((item) =>
+        {nav.map((item) =>
           item.children ? (
             <div key={item.label}>
               <button

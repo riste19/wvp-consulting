@@ -16,14 +16,6 @@ export type Article = {
   body: ArticleBlock[];
 };
 
-/**
- * Category chips. Only "Туризам" carries an accent colour, matching the
- * reference; every other category uses the muted chip.
- */
-export const categoryTone: Record<string, "muted" | "accent"> = {
-  Туризам: "accent",
-};
-
 export const articles: Article[] = [
   {
     slug: "razvivate-filmski-proekti-na-evropsko-nivo",

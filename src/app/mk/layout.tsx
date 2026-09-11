@@ -1,4 +1,5 @@
 import { Footer, Header } from "@/components/layout";
+import { mobileNav, primaryNav } from "@/data/site";
 
 export default function MkLayout({ children }: LayoutProps<"/mk">) {
   return (
@@ -9,7 +10,7 @@ export default function MkLayout({ children }: LayoutProps<"/mk">) {
       >
         Прескокни до содржината
       </a>
-      <Header />
+      <Header nav={primaryNav} mobileNav={mobileNav} />
       <main id="glavna-sodrzina" className="flex-1">
         {children}
       </main>

@@ -1,3 +1,4 @@
+import { icons } from "@/components/icons";
 import { Reveal } from "@/components/motion";
 import { values } from "@/data/content";
 
@@ -11,7 +12,7 @@ export function ValuesGrid() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {values.map((value, index) => {
-        const Icon = value.icon;
+        const Icon = icons[value.icon];
 
         return (
           <Reveal key={value.title} delay={index * 0.06} className="h-full">

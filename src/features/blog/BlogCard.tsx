@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { ArrowLink } from "@/components/ui";
 import type { Article } from "@/data/content";
-import { imageSizes } from "@/data/site";
+// Direct path for the same reason as `CategoryChip` — this card is rendered by
+// the client-side `ArticleGrid`.
+import { imageSizes } from "@/data/site/images";
 
 import { CategoryChip } from "./CategoryChip";
 

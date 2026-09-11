@@ -1,5 +1,6 @@
 import { CircleCheck } from "lucide-react";
 
+import { icons } from "@/components/icons";
 import { Reveal } from "@/components/motion";
 import { offerGroups } from "@/data/content";
 
@@ -14,7 +15,7 @@ export function OfferGroups() {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       {offerGroups.map((group, index) => {
-        const Icon = group.icon;
+        const Icon = icons[group.icon];
 
         return (
           <Reveal key={group.title} delay={index * 0.06} className="h-full">
