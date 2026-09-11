@@ -4,10 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "next build && node scripts/verify-export.mjs",
+    "preview": "npm run build && wrangler pages dev out",
+    "typecheck": "next typegen && tsc --noEmit",
     "placeholders": "node scripts/generate-placeholders.mjs",
     "lint": "eslint"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   },
   "dependencies": {
     "lucide-react": "^1.44.0",
@@ -23,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.131.1"
   }
 }

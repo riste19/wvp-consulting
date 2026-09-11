@@ -1,0 +1,49 @@
+name: CI
+
+# Cloudflare Pages does the deploying; this is the quality gate that runs
+# before anything reaches the production branch.
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Required, not optional. `.next/` is gitignored but tsconfig includes
+      # `.next/types/**`, and the layouts use the generated `LayoutProps<"/mk">`
+      # global. Without this, `tsc` fails on a clean checkout.
+      - name: Generate route types
+        run: npx next typegen
+
+      # Cheapest first, so a type error fails in under a minute.
+      - name: Typecheck the app
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      # Also runs scripts/verify-export.mjs, which catches the two failure
+      # modes that `next build` reports as success: a blank 200 at `/`, and
+      # images silently pointing at an optimizer endpoint that does not exist
+      # in a static export.
+      - name: Build and verify the static export
+        run: npm run build

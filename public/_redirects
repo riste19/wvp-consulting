@@ -1,0 +1,21 @@
+# Cloudflare Pages redirects. Copied into out/_redirects by `next build`.
+# Format: <from> <to> [status]. Evaluated top to bottom, first match wins.
+#
+# Do NOT add a catch-all splat here. Client-side navigation fetches the RSC
+# payloads at /mk/uslugi.txt and friends; a rule that swallowed those would
+# turn every in-app link into a full page reload.
+
+# The site is Macedonian-only and there is no page at the root. This replaces
+# the redirect("/mk") that a static export cannot honour — without it, `/`
+# would serve a blank 200.
+#
+# Deliberately 302 for now: the cutover from the old site is reversible while
+# this is temporary. Once a week of live traffic looks right, change it to 301
+# so the ranking signals consolidate onto /mk permanently.
+/                       /mk                     302
+
+# --- Legacy URLs from the agency-built site ---------------------------------
+# Fill in from the Search Console Pages report and a crawl of the live site
+# before the DNS cutover, one line per old URL, e.g.:
+# /usluge                /mk/uslugi              301
+# /kontakt               /mk/kontakt             301
