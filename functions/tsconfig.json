@@ -1,0 +1,16 @@
+{
+  "//": "Isolated from the app on purpose. @cloudflare/workers-types redeclares Request, Response and WebSocket; pulling it into the root config breaks the React components. The root tsconfig excludes this directory.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["@cloudflare/workers-types"],
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "include": ["**/*.ts"]
+}

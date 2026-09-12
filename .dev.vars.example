@@ -1,0 +1,26 @@
+# Template for `.dev.vars`, which wrangler reads when you run `npm run preview`.
+# Copy this file to `.dev.vars` and fill it in. `.dev.vars` is gitignored;
+# THIS file is committed, so never put a real key in it.
+#
+# The same four names go into the Cloudflare dashboard for the deployed site:
+#   Workers & Pages -> the project -> Settings -> Variables and Secrets
+#   Add them to BOTH the Production and Preview environments.
+#   RESEND_API_KEY must be of type "Secret", not plaintext.
+
+# Resend -> API Keys -> Create. Sending permission is enough.
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
+
+# Where leads are delivered.
+# While you are on Resend's shared `onboarding@resend.dev` sender, this MUST be
+# the address the Resend account was created with — the sandbox refuses every
+# other recipient. Change it to the firm's inbox once a domain is verified.
+CONTACT_TO=you@example.com
+
+# Who the mail is from. `onboarding@resend.dev` works with no DNS setup at all.
+# Becomes e.g. "WVP Plus Consulting <info@wvpconsulting.com>" after verification.
+CONTACT_FROM=onboarding@resend.dev
+
+# Set to 1 to log the message to the wrangler console instead of sending it.
+# Lets you test the whole form before you have a Resend account. Never set in
+# production — it makes the form silently discard leads again.
+CONTACT_DRY_RUN=1

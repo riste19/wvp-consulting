@@ -63,6 +63,13 @@ export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">(
     "idle",
   );
+  /** Server-supplied reason for a failure, shown instead of the generic line. */
+  const [formError, setFormError] = useState<string | null>(null);
+  /**
+   * Honeypot. Hidden from humans and from assistive tech, so anything in it
+   * came from a bot filling every field it could find.
+   */
+  const [honeypot, setHoneypot] = useState("");
 
   const fieldId = (name: keyof ContactPayload) => `${formId}-${name}`;
   const errorId = (name: keyof ContactPayload) => `${formId}-${name}-error`;
@@ -86,13 +93,15 @@ export function ContactForm() {
     }
 
     setStatus("sending");
-    const result = await submitContactForm(values);
+    setFormError(null);
+    const result = await submitContactForm(values, honeypot);
 
     if (result.ok) {
       setStatus("sent");
       setValues(EMPTY);
     } else {
       setStatus("failed");
+      setFormError(result.error);
     }
   };
 
@@ -288,6 +297,24 @@ export function ContactForm() {
         ) : null}
       </div>
 
+      {/*
+        Honeypot. Off-screen rather than `display:none` or `type="hidden"`,
+        both of which the simpler bots know to skip. `aria-hidden` plus
+        `tabIndex={-1}` keeps it away from screen readers and the tab order.
+      */}
+      <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor={`${formId}-website`}>Веб-страница</label>
+        <input
+          id={`${formId}-website`}
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={honeypot}
+          onChange={(event) => setHoneypot(event.target.value)}
+        />
+      </div>
+
       <Button
         type="submit"
         disabled={status === "sending"}
@@ -304,8 +331,8 @@ export function ContactForm() {
         ) : null}
         {status === "failed" ? (
           <span className="text-primary">
-            Пораката не беше испратена. Обидете се повторно или пишете ни на
-            е-пошта.
+            {formError ??
+              "Пораката не беше испратена. Обидете се повторно или пишете ни на е-пошта."}
           </span>
         ) : null}
       </p>
