@@ -2,10 +2,14 @@
 # Copy this file to `.dev.vars` and fill it in. `.dev.vars` is gitignored;
 # THIS file is committed, so never put a real key in it.
 #
-# The same four names go into the Cloudflare dashboard for the deployed site:
+# The same names go into the Cloudflare dashboard for the deployed site:
 #   Workers & Pages -> the project -> Settings -> Variables and Secrets
 #   Add them to BOTH the Production and Preview environments.
-#   RESEND_API_KEY must be of type "Secret", not plaintext.
+#   RESEND_API_KEY and TURNSTILE_SECRET_KEY must be of type "Secret".
+#
+# ONE NAME DOES NOT BELONG HERE: NEXT_PUBLIC_TURNSTILE_SITE_KEY. See the
+# Turnstile section at the bottom — it is a build variable, not a runtime one,
+# and putting it in this file has no effect whatsoever.
 
 # Resend -> API Keys -> Create. Sending permission is enough.
 RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
@@ -24,3 +28,41 @@ CONTACT_FROM=onboarding@resend.dev
 # Lets you test the whole form before you have a Resend account. Never set in
 # production — it makes the form silently discard leads again.
 CONTACT_DRY_RUN=1
+
+
+# --- Turnstile (optional) ----------------------------------------------------
+#
+# The form works without any of this. Leaving TURNSTILE_SECRET_KEY unset skips
+# the check completely; only the honeypot runs. Turning it on takes TWO keys
+# from one dashboard widget (Cloudflare -> Turnstile -> Add widget), and they
+# are read at two different times, which is the whole trap:
+#
+#   NEXT_PUBLIC_TURNSTILE_SITE_KEY   public, read when the site is BUILT
+#   TURNSTILE_SECRET_KEY             secret, read when a form is SUBMITTED
+#
+# Because the site key is compiled into the JavaScript, adding it in the
+# dashboard changes nothing until the next deploy.
+#
+# ORDER MATTERS. Add the site key and redeploy FIRST, confirm the widget
+# appears on /mk/kontakt, and only then add the secret. The other way round
+# gives you a deployed site whose pages cannot produce a token and a server
+# that demands one — every genuine enquiry refused.
+#
+# To turn it OFF again, delete the secret. The check stops immediately, with no
+# redeploy needed.
+#
+# Add the widget's hostnames in the dashboard: the custom domain AND
+# <project>.pages.dev, or the previews will fail the challenge.
+#
+# LOCALLY, the two keys go in two different files:
+#   NEXT_PUBLIC_TURNSTILE_SITE_KEY -> .env.local   (read by `next build`)
+#   TURNSTILE_SECRET_KEY           -> .dev.vars    (read by wrangler)
+# Both are gitignored. Cloudflare's public test keys below always pass, so you
+# can exercise the whole path without creating a widget at all:
+#
+#   .env.local:  NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+#   .dev.vars:   TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+#
+# Swap in 2x00000000000000000000AB / 2x0000000000000000000000000000000AA to
+# test the refusal path instead.
+TURNSTILE_SECRET_KEY=

@@ -21,6 +21,15 @@ type Env = {
   CONTACT_FROM: string;
   /** Set to "1" to log the message instead of sending it. Local use only. */
   CONTACT_DRY_RUN?: string;
+  /**
+   * Turnstile secret. Optional: leave it unset and the check is skipped
+   * entirely, which is how this endpoint behaved before Turnstile existed.
+   *
+   * Set it only AFTER a build has shipped with NEXT_PUBLIC_TURNSTILE_SITE_KEY.
+   * Secret without site key means no page can produce a token and every
+   * genuine submission is refused.
+   */
+  TURNSTILE_SECRET_KEY?: string;
 };
 
 type Payload = {
@@ -33,6 +42,8 @@ type Payload = {
   message: string;
   /** Honeypot. Hidden from humans; bots fill it in. */
   website: string;
+  /** Turnstile token. "" when the widget is disabled or did not load. */
+  turnstileToken: string;
 };
 
 /** Visitor-facing copy. The site is Macedonian; so are these. */
@@ -40,6 +51,7 @@ const ERRORS = {
   badRequest: "Неисправно барање.",
   validation: "Проверете ги внесените податоци.",
   server: "Пораката не беше испратена. Обидете се повторно подоцна.",
+  challenge: "Потврдата дека не сте робот не успеа. Обидете се повторно.",
 } as const;
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -104,6 +116,67 @@ function validate(payload: Payload): string | null {
   }
 
   return null;
+}
+
+const TURNSTILE_VERIFY_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+/**
+ * Ask Cloudflare whether this token came from a real visitor.
+ *
+ * `unavailable` is kept distinct from `rejected` on purpose, because the two
+ * deserve opposite treatment. A rejected token is a robot and gets a 403. An
+ * unreachable verification service is almost always our own misconfiguration
+ * or a transient outage, and the caller FAILS OPEN — the whole point of this
+ * site is capturing leads, so silently dropping genuine enquiries during a
+ * Cloudflare wobble costs the firm far more than the spam it would prevent.
+ * The honeypot is still in force either way.
+ */
+async function verifyTurnstile(
+  secret: string,
+  token: string,
+  remoteIp: string | null,
+): Promise<"ok" | "rejected" | "unavailable"> {
+  const form = new FormData();
+  form.append("secret", secret);
+  form.append("response", token);
+  // Optional, and it sharpens Cloudflare's scoring.
+  if (remoteIp) form.append("remoteip", remoteIp);
+
+  let response: Response;
+  try {
+    response = await fetch(TURNSTILE_VERIFY_URL, { method: "POST", body: form });
+  } catch (error) {
+    console.error("contact: turnstile unreachable", error);
+    return "unavailable";
+  }
+
+  // Parse before checking the status: a bad secret comes back as HTTP 400
+  // whose body still names the reason, and that reason is the whole value of
+  // this log line to whoever is staring at a form that stopped working.
+  const result = (await response.json().catch(() => null)) as {
+    success?: boolean;
+    "error-codes"?: string[];
+  } | null;
+
+  if (result?.success === true) return "ok";
+
+  const codes = result?.["error-codes"] ?? [];
+  const detail = codes.join(", ") || `http ${response.status}`;
+
+  // `invalid-input-secret` and `missing-input-secret` are OUR bug, not the
+  // visitor's, and would otherwise read as a site full of robots. So is any
+  // non-200 from siteverify itself.
+  if (!response.ok || codes.some((code) => code.includes("-secret"))) {
+    console.error(
+      `contact: turnstile misconfigured, check TURNSTILE_SECRET_KEY (${detail}). ` +
+        "Failing open — this submission was let through unverified.",
+    );
+    return "unavailable";
+  }
+
+  console.warn(`contact: turnstile rejected (${detail})`);
+  return "rejected";
 }
 
 function buildEmail(payload: Payload, receivedAt: string) {
@@ -205,6 +278,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     subject: str(source.subject),
     message: str(source.message),
     website: str(source.website),
+    turnstileToken: str(source.turnstileToken),
   };
 
   // Honeypot. Report success so the bot marks the address as working and
@@ -213,8 +287,32 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     return json({ ok: true }, 200);
   }
 
+  // Runs before Turnstile so a malformed post costs no outbound request.
   const invalid = validate(payload);
   if (invalid) return fail(invalid, 422);
+
+  // Skipped entirely when no secret is configured — see the Env comment.
+  if (env.TURNSTILE_SECRET_KEY) {
+    if (!payload.turnstileToken) {
+      console.error(
+        "contact: TURNSTILE_SECRET_KEY is set but the submission carried no " +
+          "token. The build serving this page had no " +
+          "NEXT_PUBLIC_TURNSTILE_SITE_KEY, so the widget never rendered. " +
+          "Add the site key as a build variable and redeploy, or remove the " +
+          "secret. Until then every genuine enquiry is being refused.",
+      );
+      return fail(ERRORS.challenge, 403);
+    }
+
+    const verdict = await verifyTurnstile(
+      env.TURNSTILE_SECRET_KEY,
+      payload.turnstileToken,
+      request.headers.get("cf-connecting-ip"),
+    );
+
+    if (verdict === "rejected") return fail(ERRORS.challenge, 403);
+    // "unavailable" deliberately falls through. See verifyTurnstile.
+  }
 
   if (!env.RESEND_API_KEY || !env.CONTACT_TO || !env.CONTACT_FROM) {
     console.error(

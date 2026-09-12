@@ -10,6 +10,19 @@ export type ContactPayload = {
 
 export type ContactResult = { ok: true } | { ok: false; error: string };
 
+/**
+ * Anti-spam evidence that travels with the payload but is not part of it.
+ *
+ * Kept separate from `ContactPayload` so the form's own state, validation and
+ * reset logic stay about the fields a visitor actually fills in.
+ */
+export type ContactChallenge = {
+  /** Contents of the hidden field. Always "" for a human. */
+  honeypot: string;
+  /** Turnstile token, or "" when the widget is disabled or still loading. */
+  turnstileToken: string;
+};
+
 /** Fallback when the endpoint is unreachable or answers with something odd. */
 const GENERIC_ERROR =
   "Пораката не беше испратена. Обидете се повторно или пишете ни на е-пошта.";
@@ -22,12 +35,12 @@ const GENERIC_ERROR =
  * it to Resend. The site is a static export, so this endpoint does not exist
  * under `next dev` — use `npm run preview` to exercise the real thing.
  *
- * @param honeypot Contents of the hidden field. Always "" for a human; the
- *   server decides what to do with it, so it is passed through untouched.
+ * @param challenge Anti-spam evidence. Passed through untouched — the server
+ *   is the only place that gets to decide what either value means.
  */
 export async function submitContactForm(
   payload: ContactPayload,
-  honeypot = "",
+  challenge: ContactChallenge = { honeypot: "", turnstileToken: "" },
 ): Promise<ContactResult> {
   let response: Response;
 
@@ -35,7 +48,11 @@ export async function submitContactForm(
     response = await fetch("/api/contact", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ...payload, website: honeypot }),
+      body: JSON.stringify({
+        ...payload,
+        website: challenge.honeypot,
+        turnstileToken: challenge.turnstileToken,
+      }),
     });
   } catch {
     // Offline, DNS failure, request blocked by an extension.

@@ -1,10 +1,15 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui";
 import { cn } from "@/lib";
 
+import {
+  TurnstileWidget,
+  turnstileEnabled,
+  type TurnstileHandle,
+} from "./TurnstileWidget";
 import { submitContactForm, type ContactPayload } from "./submitContactForm";
 
 const EMPTY: ContactPayload = {
@@ -70,6 +75,9 @@ export function ContactForm() {
    * came from a bot filling every field it could find.
    */
   const [honeypot, setHoneypot] = useState("");
+  /** Turnstile token. Stays "" when the widget is disabled or still loading. */
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef<TurnstileHandle>(null);
 
   const fieldId = (name: keyof ContactPayload) => `${formId}-${name}`;
   const errorId = (name: keyof ContactPayload) => `${formId}-${name}-error`;
@@ -92,9 +100,26 @@ export function ContactForm() {
       return;
     }
 
+    // Nothing left the browser yet, so the token is still unspent and the
+    // widget must NOT be reset here — only after a real round trip below.
+    if (turnstileEnabled && !turnstileToken) {
+      setStatus("failed");
+      setFormError(
+        "Потврдата дека не сте робот сè уште се вчитува. Обидете се повторно за момент.",
+      );
+      return;
+    }
+
     setStatus("sending");
     setFormError(null);
-    const result = await submitContactForm(values, honeypot);
+    const result = await submitContactForm(values, {
+      honeypot,
+      turnstileToken,
+    });
+
+    // The token has now been spent, whatever the outcome. Issue a fresh
+    // challenge so a retry after a failure is not rejected as a robot.
+    turnstileRef.current?.reset();
 
     if (result.ok) {
       setStatus("sent");
@@ -314,6 +339,17 @@ export function ContactForm() {
           onChange={(event) => setHoneypot(event.target.value)}
         />
       </div>
+
+      {/*
+        Renders nothing at all unless NEXT_PUBLIC_TURNSTILE_SITE_KEY was set
+        when the site was built. The submit button is deliberately NOT gated
+        on a token — a visitor whose challenge is slow gets an explanation on
+        submit rather than a button that silently refuses to work.
+      */}
+      <TurnstileWidget
+        ref={turnstileRef}
+        onToken={(token) => setTurnstileToken(token ?? "")}
+      />
 
       <Button
         type="submit"
