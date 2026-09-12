@@ -25,4 +25,13 @@ export const company = {
   siteUrl: "https://wvpconsulting.mk",
 } as const;
 
-export const currentYear = 2025;
+/**
+ * Footer copyright year.
+ *
+ * Evaluated when the site is BUILT, not when it is viewed — this is a static
+ * export, so there is no request-time render to recompute it. Cloudflare
+ * rebuilds on every push, which keeps it right in practice. The one gap is a
+ * site that goes a whole calendar year without a deploy; a January redeploy
+ * fixes it. Do not hardcode it again: it was stuck at 2025 well into 2026.
+ */
+export const currentYear = new Date().getFullYear();
