@@ -52,6 +52,13 @@ export default function AboutPage() {
               ))}
             </div>
           </Reveal>
+
+          <div className="mt-16 sm:mt-20">
+            <h3 className="mb-8 text-center text-2xl font-bold text-gray-900 sm:mb-12 sm:text-3xl">
+              {regionalMap.heading}
+            </h3>
+            <RegionMap />
+          </div>
         </Container>
       </section>
 
@@ -64,13 +71,6 @@ export default function AboutPage() {
           />
 
           <Timeline />
-
-          <div className="mt-16 sm:mt-24">
-            <h3 className="mb-8 text-center text-2xl font-bold text-gray-900 sm:mb-12 sm:text-3xl">
-              {regionalMap.heading}
-            </h3>
-            <RegionMap />
-          </div>
         </Container>
       </section>
 
