@@ -36,7 +36,7 @@ type Env = {
  * The site's languages. Kept in step with `src/i18n/locales.ts` by hand: this
  * function is built separately from the app and cannot import it.
  */
-type Language = "mk" | "sq";
+type Language = "mk" | "sq" | "en";
 
 type Payload = {
   firstName: string;
@@ -98,12 +98,25 @@ const ERRORS: Record<
     subject: "Zgjidhni temën e mesazhit.",
     message: "Mesazhi duhet të ketë të paktën 10 karaktere.",
   },
+  en: {
+    badRequest: "Invalid request.",
+    validation: "Check the details you entered.",
+    server: "The message was not sent. Try again later.",
+    challenge: "The check that you are not a robot failed. Try again.",
+    firstName: "Enter your first name.",
+    lastName: "Enter your last name.",
+    emailMissing: "Enter your email.",
+    emailInvalid: "Enter a valid email address.",
+    subject: "Select a subject for your message.",
+    message: "The message must be at least 10 characters long.",
+  },
 };
 
 /** How the language is named in the email to the firm, which is Macedonian. */
 const LANGUAGE_NAMES: Record<Language, string> = {
   mk: "македонски",
   sq: "албански (Shqip)",
+  en: "англиски (English)",
 };
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -272,9 +285,10 @@ function buildEmail(payload: Payload, receivedAt: string) {
   </body>
 </html>`;
 
-  // An Albanian enquiry is flagged in the subject, so it stands out in the
-  // inbox before anyone opens it.
-  const languageTag = payload.locale === "sq" ? "[SQ] " : "";
+  // A non-Macedonian enquiry is flagged in the subject, so it stands out in
+  // the inbox before anyone opens it.
+  const languageTag =
+    payload.locale === "mk" ? "" : `[${payload.locale.toUpperCase()}] `;
 
   return {
     subject: `${languageTag}Контакт: ${oneLine(payload.subject)} — ${fullName}`,
@@ -339,7 +353,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     message: str(source.message),
     // Anything unrecognised, including a missing field from an older cached
     // page, is treated as Macedonian.
-    locale: source.locale === "sq" ? "sq" : "mk",
+    locale: source.locale === "sq" || source.locale === "en" ? source.locale : "mk",
     website: str(source.website),
     turnstileToken: str(source.turnstileToken),
   };

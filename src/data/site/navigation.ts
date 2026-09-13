@@ -1,4 +1,5 @@
 import { serviceHref, services as servicesMk } from "@/data/content/services";
+import { services as servicesEn } from "@/data/content/services.en";
 import { services as servicesSq } from "@/data/content/services.sq";
 import type { Locale } from "@/i18n/locales";
 
@@ -14,7 +15,7 @@ export type NavItem = NavLink & {
   separatorBefore?: boolean;
 };
 
-const SERVICES = { mk: servicesMk, sq: servicesSq };
+const SERVICES = { mk: servicesMk, sq: servicesSq, en: servicesEn };
 
 const LABELS: Record<
   Locale,
@@ -42,6 +43,14 @@ const LABELS: Record<
     about: "Rreth nesh",
     contact: "Kontakti",
     blog: "Këshilla financiare",
+  },
+  en: {
+    home: "Home",
+    services: "Services",
+    programmes: "Current programmes and calls",
+    about: "About us",
+    contact: "Contact",
+    blog: "Financial advice",
   },
 };
 

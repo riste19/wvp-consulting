@@ -59,6 +59,18 @@ export const companyText: Record<Locale, CompanyText> = {
     },
     workingHours: "Hën–Pre 08:00–17:00",
   },
+  en: {
+    legalName: "WVP Plus Consulting LLC Skopje",
+    tagline: "For our clients we always choose the best!",
+    description:
+      "Business and financial consulting, access to finance, grants and co-financing for companies in North Macedonia and the region.",
+    address: {
+      street: "Partizanski Odredi Blvd.",
+      city: "Skopje",
+      country: "Republic of North Macedonia",
+    },
+    workingHours: "Mon–Fri 08:00–17:00",
+  },
 };
 
 /**

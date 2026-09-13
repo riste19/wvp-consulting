@@ -18,4 +18,5 @@ export type Language = {
 export const languages: Language[] = [
   { locale: "mk", code: "MK", label: "Македонски", languageWord: "Јазик" },
   { locale: "sq", code: "SQ", label: "Shqip", languageWord: "Gjuha" },
+  { locale: "en", code: "EN", label: "English", languageWord: "Language" },
 ];

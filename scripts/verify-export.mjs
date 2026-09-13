@@ -88,7 +88,7 @@ for (const f of ["_redirects", "_headers"]) {
 // 6. Every language's home page, so a broken export or a dropped locale is
 //    obvious. Each must declare its own language on the content wrapper —
 //    the root <html> says "mk" for both.
-for (const locale of ["mk", "sq"]) {
+for (const locale of ["mk", "sq", "en"]) {
   const home = path.join(OUT, `${locale}.html`);
   check(`out/${locale}.html exists`, fs.existsSync(home));
   if (fs.existsSync(home)) {

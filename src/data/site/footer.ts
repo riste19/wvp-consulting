@@ -69,6 +69,25 @@ const COPY: Record<
     privacy: "Politika e privatësisë",
     terms: "Kushtet e përdorimit",
   },
+  en: {
+    servicesTitle: "Services",
+    services: [
+      "Financial consulting",
+      "Access to finance through credit products",
+      "Business consulting",
+      "Marketing and business development",
+      "Market access",
+      "Grants and co-financing",
+    ],
+    companyTitle: "Company",
+    about: "About us",
+    team: "Our team",
+    programmes: "Current programmes",
+    careers: "Careers",
+    contact: "Contact",
+    privacy: "Privacy policy",
+    terms: "Terms of use",
+  },
 };
 
 export function getFooterColumns(locale: Locale): FooterColumn[] {

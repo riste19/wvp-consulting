@@ -9,11 +9,12 @@ const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 /**
- * Macedonian groups thousands with a full stop (4.650). `Intl` disagrees on
- * some engines, so the separator is applied directly.
+ * Macedonian and Albanian group thousands with a full stop (4.650), English
+ * with a comma (4,650). `Intl` disagrees on some engines, so the separator is
+ * passed in and applied directly.
  */
-const formatNumber = (value: number) =>
-  String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const formatNumber = (value: number, separator: string) =>
+  String(value).replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 
 /** Fast start, long settle — reads as precise rather than playful. */
 const easeOutExpo = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
@@ -24,6 +25,8 @@ type AnimatedCounterProps = {
   suffix?: string;
   className?: string;
   prefixClassName?: string;
+  /** Thousands separator. Defaults to the Macedonian full stop. */
+  separator?: string;
 };
 
 /**
@@ -46,6 +49,7 @@ export function AnimatedCounter({
   suffix,
   className,
   prefixClassName,
+  separator = ".",
 }: AnimatedCounterProps) {
   const [displayed, setDisplayed] = useState(value);
   const wrapperRef = useRef<HTMLSpanElement>(null);
@@ -105,7 +109,7 @@ export function AnimatedCounter({
         </span>
       ) : null}
       <span className={className} style={{ fontVariantNumeric: "tabular-nums" }}>
-        {formatNumber(displayed)}
+        {formatNumber(displayed, separator)}
         {suffix}
       </span>
     </span>

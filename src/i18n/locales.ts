@@ -9,7 +9,7 @@
  * /sq/uslugi. Macedonian is the default, and the only language the blog and
  * the legal pages are written in.
  */
-export const locales = ["mk", "sq"] as const;
+export const locales = ["mk", "sq", "en"] as const;
 
 export type Locale = (typeof locales)[number];
 
@@ -39,7 +39,11 @@ export function stripLocale(path: string): string {
   return path.replace(PREFIX, "") || "/";
 }
 
-export const ogLocale: Record<Locale, string> = { mk: "mk_MK", sq: "sq_MK" };
+export const ogLocale: Record<Locale, string> = {
+  mk: "mk_MK",
+  sq: "sq_MK",
+  en: "en_US",
+};
 
 /**
  * Canonical and hreflang links for a page that exists in every language.

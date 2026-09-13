@@ -21,4 +21,10 @@ export const notFoundCopy: Record<
     home: "Faqja kryesore",
     contact: "Na kontaktoni",
   },
+  en: {
+    title: "Page not found",
+    body: "The link you opened does not exist or has been moved. Go back to the home page or contact us directly.",
+    home: "Home page",
+    contact: "Contact us",
+  },
 };
