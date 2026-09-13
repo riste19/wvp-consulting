@@ -32,6 +32,12 @@ type Env = {
   TURNSTILE_SECRET_KEY?: string;
 };
 
+/**
+ * The site's languages. Kept in step with `src/i18n/locales.ts` by hand: this
+ * function is built separately from the app and cannot import it.
+ */
+type Language = "mk" | "sq";
+
 type Payload = {
   firstName: string;
   lastName: string;
@@ -40,19 +46,65 @@ type Payload = {
   phone: string;
   subject: string;
   message: string;
+  /** The page's language. Visitor-facing errors are answered in it. */
+  locale: Language;
   /** Honeypot. Hidden from humans; bots fill it in. */
   website: string;
   /** Turnstile token. "" when the widget is disabled or did not load. */
   turnstileToken: string;
 };
 
-/** Visitor-facing copy. The site is Macedonian; so are these. */
-const ERRORS = {
-  badRequest: "Неисправно барање.",
-  validation: "Проверете ги внесените податоци.",
-  server: "Пораката не беше испратена. Обидете се повторно подоцна.",
-  challenge: "Потврдата дека не сте робот не успеа. Обидете се повторно.",
-} as const;
+/**
+ * Visitor-facing copy. The field messages match the form's own in
+ * `src/data/content/ui.ts` and `ui.sq.ts`, so a message is worded the same
+ * whether the browser or the server caught the problem.
+ */
+const ERRORS: Record<
+  Language,
+  {
+    badRequest: string;
+    validation: string;
+    server: string;
+    challenge: string;
+    firstName: string;
+    lastName: string;
+    emailMissing: string;
+    emailInvalid: string;
+    subject: string;
+    message: string;
+  }
+> = {
+  mk: {
+    badRequest: "Неисправно барање.",
+    validation: "Проверете ги внесените податоци.",
+    server: "Пораката не беше испратена. Обидете се повторно подоцна.",
+    challenge: "Потврдата дека не сте робот не успеа. Обидете се повторно.",
+    firstName: "Внесете го вашето име.",
+    lastName: "Внесете го вашето презиме.",
+    emailMissing: "Внесете ја вашата е-пошта.",
+    emailInvalid: "Внесете валидна адреса на е-пошта.",
+    subject: "Изберете тема на пораката.",
+    message: "Пораката треба да содржи барем 10 знаци.",
+  },
+  sq: {
+    badRequest: "Kërkesë e pavlefshme.",
+    validation: "Kontrolloni të dhënat e futura.",
+    server: "Mesazhi nuk u dërgua. Provoni përsëri më vonë.",
+    challenge: "Verifikimi se nuk jeni robot dështoi. Provoni përsëri.",
+    firstName: "Shkruani emrin tuaj.",
+    lastName: "Shkruani mbiemrin tuaj.",
+    emailMissing: "Shkruani e-postën tuaj.",
+    emailInvalid: "Shkruani një adresë të vlefshme e-poste.",
+    subject: "Zgjidhni temën e mesazhit.",
+    message: "Mesazhi duhet të ketë të paktën 10 karaktere.",
+  },
+};
+
+/** How the language is named in the email to the firm, which is Macedonian. */
+const LANGUAGE_NAMES: Record<Language, string> = {
+  mk: "македонски",
+  sq: "албански (Shqip)",
+};
 
 const MAX_BODY_BYTES = 16 * 1024;
 
@@ -97,23 +149,21 @@ const oneLine = (value: string) => value.replace(/[\r\n]+/g, " ").trim();
 const str = (value: unknown) => (typeof value === "string" ? value : "");
 
 function validate(payload: Payload): string | null {
+  const messages = ERRORS[payload.locale];
+
   for (const [key, max] of Object.entries(LIMITS) as [
     keyof typeof LIMITS,
     number,
   ][]) {
-    if (str(payload[key]).length > max) return ERRORS.validation;
+    if (str(payload[key]).length > max) return messages.validation;
   }
 
-  if (!payload.firstName.trim()) return "Внесете го вашето име.";
-  if (!payload.lastName.trim()) return "Внесете го вашето презиме.";
-  if (!payload.email.trim()) return "Внесете ја вашата е-пошта.";
-  if (!EMAIL_PATTERN.test(payload.email.trim())) {
-    return "Внесете валидна адреса на е-пошта.";
-  }
-  if (!payload.subject.trim()) return "Изберете тема на пораката.";
-  if (payload.message.trim().length < 10) {
-    return "Пораката треба да содржи барем 10 знаци.";
-  }
+  if (!payload.firstName.trim()) return messages.firstName;
+  if (!payload.lastName.trim()) return messages.lastName;
+  if (!payload.email.trim()) return messages.emailMissing;
+  if (!EMAIL_PATTERN.test(payload.email.trim())) return messages.emailInvalid;
+  if (!payload.subject.trim()) return messages.subject;
+  if (payload.message.trim().length < 10) return messages.message;
 
   return null;
 }
@@ -187,6 +237,8 @@ function buildEmail(payload: Payload, receivedAt: string) {
     ["Е-пошта", payload.email.trim()],
     ["Телефон", payload.phone.trim() || "—"],
     ["Тема", payload.subject.trim()],
+    // Tells whoever answers which language the visitor wrote in.
+    ["Јазик", LANGUAGE_NAMES[payload.locale]],
     ["Примено", receivedAt],
   ];
 
@@ -220,8 +272,12 @@ function buildEmail(payload: Payload, receivedAt: string) {
   </body>
 </html>`;
 
+  // An Albanian enquiry is flagged in the subject, so it stands out in the
+  // inbox before anyone opens it.
+  const languageTag = payload.locale === "sq" ? "[SQ] " : "";
+
   return {
-    subject: `Контакт: ${oneLine(payload.subject)} — ${fullName}`,
+    subject: `${languageTag}Контакт: ${oneLine(payload.subject)} — ${fullName}`,
     text,
     html,
   };
@@ -239,14 +295,18 @@ export const onRequest: PagesFunction<Env> = async () =>
   new Response(null, { status: 405, headers: { allow: "POST" } });
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+  // The language is not known until the body is parsed, so the few rejections
+  // before that point answer in the default language.
+  const early = ERRORS.mk;
+
   // Reject cross-site posts. A same-origin form always sends `Origin`.
   const origin = request.headers.get("origin");
   if (origin && new URL(origin).host !== new URL(request.url).host) {
-    return fail(ERRORS.badRequest, 403);
+    return fail(early.badRequest, 403);
   }
 
   if (!request.headers.get("content-type")?.includes("application/json")) {
-    return fail(ERRORS.badRequest, 415);
+    return fail(early.badRequest, 415);
   }
 
   // Cheap early reject for oversized posts. A chunked body can omit this
@@ -254,18 +314,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   // Workers platform body limit and the WAF rate-limit rule on this path.
   const declared = Number(request.headers.get("content-length") ?? "0");
   if (declared > MAX_BODY_BYTES) {
-    return fail(ERRORS.badRequest, 413);
+    return fail(early.badRequest, 413);
   }
 
   let raw: unknown;
   try {
     raw = await request.json();
   } catch {
-    return fail(ERRORS.badRequest, 400);
+    return fail(early.badRequest, 400);
   }
 
   if (typeof raw !== "object" || raw === null) {
-    return fail(ERRORS.badRequest, 400);
+    return fail(early.badRequest, 400);
   }
 
   const source = raw as Record<string, unknown>;
@@ -277,9 +337,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     phone: str(source.phone),
     subject: str(source.subject),
     message: str(source.message),
+    // Anything unrecognised, including a missing field from an older cached
+    // page, is treated as Macedonian.
+    locale: source.locale === "sq" ? "sq" : "mk",
     website: str(source.website),
     turnstileToken: str(source.turnstileToken),
   };
+
+  const messages = ERRORS[payload.locale];
 
   // Honeypot. Report success so the bot marks the address as working and
   // stops retrying, but send nothing.
@@ -301,7 +366,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
           "Add the site key as a build variable and redeploy, or remove the " +
           "secret. Until then every genuine enquiry is being refused.",
       );
-      return fail(ERRORS.challenge, 403);
+      return fail(messages.challenge, 403);
     }
 
     const verdict = await verifyTurnstile(
@@ -310,7 +375,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       request.headers.get("cf-connecting-ip"),
     );
 
-    if (verdict === "rejected") return fail(ERRORS.challenge, 403);
+    if (verdict === "rejected") return fail(messages.challenge, 403);
     // "unavailable" deliberately falls through. See verifyTurnstile.
   }
 
@@ -318,14 +383,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     console.error(
       "contact: missing env. Need RESEND_API_KEY, CONTACT_TO, CONTACT_FROM.",
     );
-    return fail(ERRORS.server, 500);
+    return fail(messages.server, 500);
   }
 
   const receivedAt = new Date().toISOString().replace("T", " ").slice(0, 16);
   const mail = buildEmail(payload, receivedAt);
 
   if (env.CONTACT_DRY_RUN === "1") {
-    console.log("contact: DRY RUN, nothing sent\n" + mail.text);
+    console.log(
+      `contact: DRY RUN, nothing sent\nSubject: ${mail.subject}\n` + mail.text,
+    );
     return json({ ok: true }, 200);
   }
 
@@ -350,14 +417,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     });
   } catch (error) {
     console.error("contact: resend unreachable", error);
-    return fail(ERRORS.server, 502);
+    return fail(messages.server, 502);
   }
 
   if (!response.ok) {
     // Resend's message explains the real cause (unverified domain, bad key,
     // sandbox recipient restriction). It must not reach the visitor.
     console.error(`contact: resend ${response.status}`, await response.text());
-    return fail(ERRORS.server, 502);
+    return fail(messages.server, 502);
   }
 
   // The message id is the only handle on a lead after the fact — it is what

@@ -5,10 +5,27 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 import { ButtonLink, Container } from "@/components/ui";
-// Direct path, not the barrel: the barrel reaches the article corpus and the
-// services catalogue, and this is a client component.
-import { HERO_INTERVAL, heroActions, heroSlides } from "@/data/content/hero";
+// Direct path, not the barrel: the barrel reaches every page's copy and the
+// article corpus, and this is a client component. The slides themselves
+// arrive as props, in the page's language.
+import {
+  HERO_INTERVAL,
+  type HeroSlide,
+  type heroActions,
+} from "@/data/content/hero";
 import { cn } from "@/lib";
+
+type HeroSliderProps = {
+  slides: HeroSlide[];
+  actions: typeof heroActions;
+  labels: {
+    region: string;
+    roleDescription: string;
+    previous: string;
+    next: string;
+    slide: string;
+  };
+};
 
 /**
  * The headline, subtitle and buttons animate in via the `.hero-rise` classes in
@@ -17,7 +34,7 @@ import { cn } from "@/lib";
  * that used to live here was doing, at 41 KB gzipped. Reduced motion is handled
  * by the stylesheet, alongside every other animation on the site.
  */
-export function HeroSlider() {
+export function HeroSlider({ slides, actions, labels }: HeroSliderProps) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [autoplayAllowed, setAutoplayAllowed] = useState(true);
@@ -37,15 +54,18 @@ export function HeroSlider() {
   useEffect(() => {
     if (paused || !autoplayAllowed) return;
     const timer = window.setInterval(
-      () => setIndex((value) => (value + 1) % heroSlides.length),
+      () => setIndex((value) => (value + 1) % slides.length),
       HERO_INTERVAL,
     );
     return () => window.clearInterval(timer);
-  }, [paused, autoplayAllowed]);
+  }, [paused, autoplayAllowed, slides.length]);
 
-  const goTo = useCallback((next: number) => {
-    setIndex((next + heroSlides.length) % heroSlides.length);
-  }, []);
+  const goTo = useCallback(
+    (next: number) => {
+      setIndex((next + slides.length) % slides.length);
+    },
+    [slides.length],
+  );
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key === "ArrowLeft") {
@@ -58,13 +78,13 @@ export function HeroSlider() {
     }
   };
 
-  const active = heroSlides[index];
+  const active = slides[index];
 
   return (
     <section
       role="region"
-      aria-roledescription="ротирачки банер"
-      aria-label="Истакнати пораки"
+      aria-roledescription={labels.roleDescription}
+      aria-label={labels.region}
       onKeyDown={onKeyDown}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -72,7 +92,7 @@ export function HeroSlider() {
       onBlur={() => setPaused(false)}
       className="relative h-svh min-h-[560px] overflow-hidden"
     >
-      {heroSlides.map((slide, slideIndex) => (
+      {slides.map((slide, slideIndex) => (
         <div
           key={slide.image}
           aria-hidden={slideIndex !== index}
@@ -107,15 +127,15 @@ export function HeroSlider() {
             </p>
 
             <div className="hero-rise hero-rise--actions flex flex-col gap-4 sm:flex-row">
-              <ButtonLink href={heroActions.primary.href} className="w-fit">
-                {heroActions.primary.label}
+              <ButtonLink href={actions.primary.href} className="w-fit">
+                {actions.primary.label}
               </ButtonLink>
               <ButtonLink
-                href={heroActions.secondary.href}
+                href={actions.secondary.href}
                 variant="onImage"
                 className="w-fit"
               >
-                {heroActions.secondary.label}
+                {actions.secondary.label}
               </ButtonLink>
             </div>
           </div>
@@ -125,7 +145,7 @@ export function HeroSlider() {
       <button
         type="button"
         onClick={() => goTo(index - 1)}
-        aria-label="Претходен слајд"
+        aria-label={labels.previous}
         className="absolute left-4 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-white transition-colors duration-300 hover:bg-white/20"
       >
         <ChevronLeft aria-hidden className="h-8 w-8" />
@@ -133,19 +153,19 @@ export function HeroSlider() {
       <button
         type="button"
         onClick={() => goTo(index + 1)}
-        aria-label="Следен слајд"
+        aria-label={labels.next}
         className="absolute right-4 top-1/2 z-20 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-white transition-colors duration-300 hover:bg-white/20"
       >
         <ChevronRight aria-hidden className="h-8 w-8" />
       </button>
 
       <div className="absolute bottom-10 left-1/2 z-20 flex -translate-x-1/2 items-center gap-3">
-        {heroSlides.map((slide, slideIndex) => (
+        {slides.map((slide, slideIndex) => (
           <button
             key={slide.image}
             type="button"
             onClick={() => goTo(slideIndex)}
-            aria-label={`Слајд ${slideIndex + 1}: ${slide.title}`}
+            aria-label={`${labels.slide} ${slideIndex + 1}: ${slide.title}`}
             aria-current={slideIndex === index}
             className={cn(
               "h-2 rounded-full transition-all duration-300",

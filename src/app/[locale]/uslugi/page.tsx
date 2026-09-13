@@ -6,29 +6,45 @@ import { BookMeetingTab } from "@/components/layout";
 import { Reveal } from "@/components/motion";
 import { PageHero } from "@/components/sections";
 import { Container } from "@/components/ui";
-import { services } from "@/data/content";
+import { getContent } from "@/data/content";
 import { images, imageSizes } from "@/data/site";
+import { localeAlternates } from "@/i18n/locales";
+import { resolveLocale } from "@/i18n/resolveLocale";
 import { cn } from "@/lib";
 
-export const metadata: Metadata = {
-  title: "Услуги",
-  description:
-    "Од пристап до финансии до пазарен и стратешки развој на бизнисот — финансиски консалтинг, грантови и кофинансирање, бизнис консалтинг, маркетинг, пристап до пазари и ESG стандардизација.",
-  alternates: { canonical: "/mk/uslugi" },
-};
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/uslugi">): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const { services } = getContent(locale).ui;
 
-export default function ServicesPage() {
+  return {
+    title: services.metaTitle,
+    description: services.metaDescription,
+    alternates: localeAlternates(locale, "/uslugi"),
+  };
+}
+
+export default async function ServicesPage({
+  params,
+}: PageProps<"/[locale]/uslugi">) {
+  const locale = await resolveLocale(params);
+  const { services, ui } = getContent(locale);
+
   return (
     <>
       <PageHero
-        title="Услуги"
-        subtitle="Од пристап до финансии до пазарен и стратешки развој на бизнисот, ние нудиме целосна поддршка за вашиот деловен раст и развој"
+        title={ui.services.heroTitle}
+        subtitle={ui.services.heroSubtitle}
         image={images.pageHero.uslugi}
-        imageAlt="Финансиски показатели и монети како илустрација на услугите"
+        imageAlt={ui.services.heroImageAlt}
         overlay="light"
       />
 
-      <BookMeetingTab />
+      <BookMeetingTab
+        href={`/${locale}/kontakt`}
+        lines={ui.chrome.bookMeetingLines}
+      />
 
       <div className="bg-white">
         <Container>
@@ -56,7 +72,7 @@ export default function ServicesPage() {
                     <div className="relative aspect-square w-full overflow-hidden rounded-lg shadow-lg">
                       <Image
                         src={service.image}
-                        alt={`Илустрација за услугата ${service.title}`}
+                        alt={`${ui.services.serviceImageAlt} ${service.title}`}
                         width={imageSizes.service.width}
                         height={imageSizes.service.height}
                         sizes="(min-width: 1024px) 400px, 100vw"

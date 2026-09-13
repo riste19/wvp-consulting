@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Container } from "@/components/ui";
 import type { NavItem } from "@/data/site";
+import { stripLocale } from "@/i18n/locales";
 import { cn } from "@/lib";
 
 import { LanguageSelector } from "./LanguageSelector";
@@ -15,38 +16,46 @@ import { MobileMenu } from "./MobileMenu";
 
 const SCROLL_THRESHOLD = 50;
 
-/** Routes that light up the "УСЛУГИ" item. */
-const SERVICE_ROUTES = ["/mk/uslugi", "/mk/programi"];
+/** Routes, without their locale, that light up the services item. */
+const SERVICE_ROUTES = ["/uslugi", "/programi"];
 
 /**
- * Routes that open with a full-bleed photograph. Only these can carry the
- * transparent header; elsewhere it would be light-grey type on a light-grey
- * page.
+ * Routes, without their locale, that open with a full-bleed photograph. Only
+ * these can carry the transparent header; elsewhere it would be light-grey
+ * type on a light-grey page.
  */
-const PHOTO_HERO_ROUTES = [
-  "/mk",
-  "/mk/uslugi",
-  "/mk/programi",
-  "/mk/za-nas",
-  "/mk/kontakt",
-];
+const PHOTO_HERO_ROUTES = ["/", "/uslugi", "/programi", "/za-nas", "/kontakt"];
+
+export type HeaderLabels = {
+  homeHref: string;
+  homeLinkLabel: string;
+  mainNavLabel: string;
+  openMenu: string;
+  closeMenu: string;
+  allServices: string;
+  logoLines: string[];
+};
 
 type HeaderProps = {
   /** Desktop navigation. */
   nav: NavItem[];
   /** Sentence-case variant for the mobile panel. */
   mobileNav: NavItem[];
+  /** Copy in the page's language. */
+  labels: HeaderLabels;
 };
 
 /**
- * The navigation is handed down from the server rather than imported here.
- * `primaryNav` derives its services dropdown from `@/data/content/services`,
- * so importing it inside this client component dragged the entire services
- * catalogue — descriptions, deliverables and seven icon components — into the
- * JavaScript of every page on the site. As props it costs a dozen strings.
+ * The navigation and copy are handed down from the server rather than imported
+ * here. `primaryNav` derives its services dropdown from
+ * `@/data/content/services`, so importing it inside this client component
+ * dragged the entire services catalogue — descriptions, deliverables and seven
+ * icon components — into the JavaScript of every page on the site. As props
+ * it costs a dozen strings.
  */
-export function Header({ nav, mobileNav }: HeaderProps) {
+export function Header({ nav, mobileNav, labels }: HeaderProps) {
   const pathname = usePathname();
+  const route = stripLocale(pathname);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -66,17 +75,20 @@ export function Header({ nav, mobileNav }: HeaderProps) {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [menuOpen]);
 
-  const solid = scrolled || !PHOTO_HERO_ROUTES.includes(pathname);
+  const solid = scrolled || !PHOTO_HERO_ROUTES.includes(route);
 
   const isActive = useCallback(
     (href: string) => {
-      if (href === "/mk") return pathname === "/mk";
-      if (href === "/mk/uslugi") {
-        return SERVICE_ROUTES.some((route) => pathname.startsWith(route));
+      const target = stripLocale(href);
+      if (target === "/") return route === "/";
+      if (target === "/uslugi") {
+        return SERVICE_ROUTES.some((serviceRoute) =>
+          route.startsWith(serviceRoute),
+        );
       }
-      return pathname.startsWith(href);
+      return route.startsWith(target);
     },
-    [pathname],
+    [route],
   );
 
   return (
@@ -90,12 +102,12 @@ export function Header({ nav, mobileNav }: HeaderProps) {
     >
       <Container>
         <div className="flex h-16 items-center justify-between">
-          <Link href="/mk" aria-label="ВФП Плус Консалтинг — почетна страница">
-            <LogoPlaceholder />
+          <Link href={labels.homeHref} aria-label={labels.homeLinkLabel}>
+            <LogoPlaceholder lines={labels.logoLines} />
           </Link>
 
           <nav
-            aria-label="Главна навигација"
+            aria-label={labels.mainNavLabel}
             className="hidden items-center space-x-8 lg:flex"
           >
             {nav.map((item, index) => {
@@ -171,7 +183,7 @@ export function Header({ nav, mobileNav }: HeaderProps) {
           <div className="lg:hidden">
             <button
               type="button"
-              aria-label={menuOpen ? "Затвори го менито" : "Отвори го менито"}
+              aria-label={menuOpen ? labels.closeMenu : labels.openMenu}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               onClick={() => setMenuOpen((value) => !value)}
@@ -190,6 +202,7 @@ export function Header({ nav, mobileNav }: HeaderProps) {
       {menuOpen ? (
         <MobileMenu
           nav={mobileNav}
+          allServicesLabel={labels.allServices}
           isActive={isActive}
           onNavigate={() => setMenuOpen(false)}
         />

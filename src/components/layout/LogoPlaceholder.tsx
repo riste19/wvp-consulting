@@ -10,11 +10,14 @@ import { cn } from "@/lib";
  */
 type LogoPlaceholderProps = {
   variant?: "header" | "footer";
+  /** The two stacked words beside "WVP", in the page's language. */
+  lines?: string[];
   className?: string;
 };
 
 export function LogoPlaceholder({
   variant = "header",
+  lines = ["Плус", "Консалтинг"],
   className,
 }: LogoPlaceholderProps) {
   const isFooter = variant === "footer";
@@ -44,9 +47,9 @@ export function LogoPlaceholder({
         )}
         style={{ fontSize: isFooter ? 26 : 7, letterSpacing: "0.02em" }}
       >
-        Плус
+        {lines[0]}
         <br />
-        Консалтинг
+        {lines[1]}
       </span>
     </span>
   );

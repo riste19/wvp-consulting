@@ -12,12 +12,19 @@ import { LanguageSelector } from "./LanguageSelector";
 type MobileMenuProps = {
   /** Passed down from `Header`; see the note there on why it is not imported. */
   nav: NavItem[];
+  /** First entry of the services submenu, in the page's language. */
+  allServicesLabel: string;
   onNavigate: () => void;
   isActive: (href: string) => boolean;
 };
 
 /** Dark panel that drops below the header on small screens. */
-export function MobileMenu({ nav, onNavigate, isActive }: MobileMenuProps) {
+export function MobileMenu({
+  nav,
+  allServicesLabel,
+  onNavigate,
+  isActive,
+}: MobileMenuProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
@@ -61,7 +68,7 @@ export function MobileMenu({ nav, onNavigate, isActive }: MobileMenuProps) {
                     onClick={onNavigate}
                     className="block rounded-md px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-primary"
                   >
-                    Преглед на сите услуги
+                    {allServicesLabel}
                   </Link>
                   {item.children.map((child) => (
                     <Link

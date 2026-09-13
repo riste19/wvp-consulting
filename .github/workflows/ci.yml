@@ -29,7 +29,7 @@ jobs:
       - run: npm ci
 
       # Required, not optional. `.next/` is gitignored but tsconfig includes
-      # `.next/types/**`, and the layouts use the generated `LayoutProps<"/mk">`
+      # `.next/types/**`, and the layouts use the generated `LayoutProps<"/[locale]">`
       # global. Without this, `tsc` fails on a clean checkout.
       - name: Generate route types
         run: npx next typegen

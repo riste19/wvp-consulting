@@ -1,3 +1,5 @@
+import type { Locale } from "@/i18n/locales";
+
 /** Company details shown across the header, footer and contact page. */
 export const company = {
   name: "WVP Plus Consulting",
@@ -24,6 +26,40 @@ export const company = {
   /** Used for canonical URLs and Open Graph. */
   siteUrl: "https://wvpconsulting.mk",
 } as const;
+
+export type CompanyText = {
+  legalName: string;
+  tagline: string;
+  description: string;
+  address: { street: string; city: string; country: string };
+  workingHours: string;
+};
+
+/**
+ * The parts of `company` that are written in a language. `company` itself
+ * stays Macedonian: it also feeds the structured data on the home page.
+ */
+export const companyText: Record<Locale, CompanyText> = {
+  mk: {
+    legalName: company.legalName,
+    tagline: company.tagline,
+    description: company.description,
+    address: company.address,
+    workingHours: company.workingHours,
+  },
+  sq: {
+    legalName: "WVP Plus Consulting DOO Shkup",
+    tagline: "Për klientët tanë gjithmonë zgjedhim më të mirën!",
+    description:
+      "Konsulencë biznesi dhe financiare, qasje në financa, grante dhe bashkëfinancim për kompanitë në Maqedoninë e Veriut dhe në rajon.",
+    address: {
+      street: "bul. Partizanski Odredi",
+      city: "Shkup",
+      country: "Republika e Maqedonisë së Veriut",
+    },
+    workingHours: "Hën–Pre 08:00–17:00",
+  },
+};
 
 /**
  * Footer copyright year.

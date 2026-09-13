@@ -2,10 +2,13 @@ import Image from "next/image";
 
 import { Reveal } from "@/components/motion";
 import { ButtonLink, Container } from "@/components/ui";
-import { teamSection } from "@/data/content";
+import { getContent } from "@/data/content";
 import { images, imageSizes } from "@/data/site";
+import type { Locale } from "@/i18n/locales";
 
-export function TeamSection() {
+export function TeamSection({ locale }: { locale: Locale }) {
+  const { teamSection, ui } = getContent(locale);
+
   return (
     <section id="tim" className="overflow-hidden bg-transparent py-16 sm:py-20">
       <Container>
@@ -41,7 +44,7 @@ export function TeamSection() {
             <div className="relative h-full w-full transition duration-500 hover:scale-[1.01] lg:max-h-[30em]">
               <Image
                 src={images.team}
-                alt="Колаж од фотографии на тимот на ВФП Плус Консалтинг"
+                alt={ui.about.teamImageAlt}
                 width={imageSizes.team.width}
                 height={imageSizes.team.height}
                 sizes="(min-width: 1024px) 50vw, 100vw"

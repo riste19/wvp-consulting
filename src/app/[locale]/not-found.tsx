@@ -1,5 +1,5 @@
 import { NotFoundContent } from "@/components/sections";
 
-export default function MkNotFound() {
+export default function LocaleNotFound() {
   return <NotFoundContent />;
 }

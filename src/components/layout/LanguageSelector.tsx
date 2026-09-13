@@ -1,21 +1,32 @@
 "use client";
 
 import { Check, Globe } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 // Direct path, not the barrel: the barrel re-exports `navigation`, which
 // reaches the services catalogue. See the note in `Header`.
 import { languages } from "@/data/site/languages";
+import { localeFromPath, switchLocale } from "@/i18n/locales";
 import { cn } from "@/lib";
 
 type LanguageSelectorProps = {
   className?: string;
 };
 
+/**
+ * Switches the current page to another language. Every page exists under
+ * every locale with the same slug, so /mk/uslugi simply becomes /sq/uslugi.
+ */
 export function LanguageSelector({ className }: LanguageSelectorProps) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const current = languages[0];
+  const currentLocale = localeFromPath(pathname);
+  const current =
+    languages.find((language) => language.locale === currentLocale) ??
+    languages[0];
 
   useEffect(() => {
     if (!open) return;
@@ -41,7 +52,7 @@ export function LanguageSelector({ className }: LanguageSelectorProps) {
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label={`Јазик: ${current.label}`}
+        aria-label={`${current.languageWord}: ${current.label}`}
         onClick={() => setOpen((value) => !value)}
         className={cn(
           "inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors hover:bg-black/10",
@@ -57,17 +68,30 @@ export function LanguageSelector({ className }: LanguageSelectorProps) {
           role="menu"
           className="absolute right-0 top-full z-50 mt-2 min-w-44 overflow-hidden rounded-lg border border-border bg-white shadow-xl"
         >
-          {languages.map((language) => (
-            <span
-              key={language.code}
-              role="menuitemradio"
-              aria-checked
-              className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm text-foreground"
-            >
-              {language.label}
-              <Check aria-hidden className="h-4 w-4 text-primary" />
-            </span>
-          ))}
+          {languages.map((language) => {
+            const selected = language.locale === current.locale;
+
+            return (
+              <Link
+                key={language.locale}
+                role="menuitemradio"
+                aria-checked={selected}
+                href={switchLocale(pathname, language.locale)}
+                hrefLang={language.locale}
+                lang={language.locale}
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "flex items-center justify-between gap-3 px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-neutral-100 focus-visible:bg-neutral-100 focus-visible:outline-none",
+                  selected && "font-semibold",
+                )}
+              >
+                {language.label}
+                {selected ? (
+                  <Check aria-hidden className="h-4 w-4 text-primary" />
+                ) : null}
+              </Link>
+            );
+          })}
         </div>
       ) : null}
     </div>

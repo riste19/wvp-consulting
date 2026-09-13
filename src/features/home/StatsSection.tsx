@@ -1,8 +1,11 @@
 import { AnimatedCounter, Reveal } from "@/components/motion";
 import { Container, SectionHeading } from "@/components/ui";
-import { stats, statsHeading } from "@/data/content";
+import { getContent } from "@/data/content";
+import type { Locale } from "@/i18n/locales";
 
-export function StatsSection() {
+export function StatsSection({ locale }: { locale: Locale }) {
+  const { stats, statsHeading } = getContent(locale);
+
   return (
     <section className="bg-primary py-16 sm:py-20">
       <Container className="px-4">

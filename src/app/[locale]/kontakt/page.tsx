@@ -4,32 +4,45 @@ import { icons } from "@/components/icons";
 import { Reveal } from "@/components/motion";
 import { PageHero } from "@/components/sections";
 import { Container, SectionHeading } from "@/components/ui";
-import { contactIntro, contactMethods } from "@/data/content";
+import { getContent } from "@/data/content";
 import { images } from "@/data/site";
 import { ContactForm, MapPanel } from "@/features/contact";
+import { localeAlternates } from "@/i18n/locales";
+import { resolveLocale } from "@/i18n/resolveLocale";
 
-export const metadata: Metadata = {
-  title: "Контакт",
-  description:
-    "Стапете во контакт со тимот на ВФП Плус Консалтинг — телефон, е-пошта, состанок во канцеларија или онлајн консултација.",
-  alternates: { canonical: "/mk/kontakt" },
-};
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/kontakt">): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const { contact } = getContent(locale).ui;
 
-export default function ContactPage() {
+  return {
+    title: contact.metaTitle,
+    description: contact.metaDescription,
+    alternates: localeAlternates(locale, "/kontakt"),
+  };
+}
+
+export default async function ContactPage({
+  params,
+}: PageProps<"/[locale]/kontakt">) {
+  const locale = await resolveLocale(params);
+  const { contactIntro, contactMethods, ui } = getContent(locale);
+
   return (
     <>
       <PageHero
         title={contactIntro.title}
         subtitle={contactIntro.subtitle}
         image={images.pageHero.kontakt}
-        imageAlt="Консултанти на работа во канцеларијата на компанијата"
+        imageAlt={ui.contact.heroImageAlt}
       />
 
       <section className="bg-white py-16 sm:py-20">
         <Container>
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
             <Reveal>
-              <MapPanel />
+              <MapPanel locale={locale} />
             </Reveal>
 
             <Reveal delay={0.08}>
@@ -37,7 +50,7 @@ export default function ContactPage() {
                 <h2 className="mb-6 text-xl font-bold text-gray-900 sm:text-2xl">
                   {contactIntro.formHeading}
                 </h2>
-                <ContactForm />
+                <ContactForm copy={ui.contactForm} locale={locale} />
               </div>
             </Reveal>
           </div>
@@ -85,11 +98,7 @@ export default function ContactPage() {
                         >
                           {method.href && highlightIndex === 0 ? (
                             <a
-                              href={
-                                highlightIndex === 0 && method.href
-                                  ? method.href
-                                  : undefined
-                              }
+                              href={method.href}
                               className="transition-colors hover:text-primary"
                             >
                               {highlight}

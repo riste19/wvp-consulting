@@ -2,16 +2,19 @@ import { CircleCheck } from "lucide-react";
 
 import { icons } from "@/components/icons";
 import { Reveal } from "@/components/motion";
-import { offerGroups } from "@/data/content";
+import { getContent } from "@/data/content";
+import type { Locale } from "@/i18n/locales";
 
 /**
- * "Што нудиме" — one card per offer group.
+ * "What we offer" — one card per offer group.
  *
  * Hovering a card is what drives the whole treatment: the heading turns red and
  * the outlined icon fills into a red tile with a white glyph. Every piece is a
  * `group-hover:` variant on the card, so the states can never drift apart.
  */
-export function OfferGroups() {
+export function OfferGroups({ locale }: { locale: Locale }) {
+  const { offerGroups } = getContent(locale);
+
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       {offerGroups.map((group, index) => {

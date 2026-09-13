@@ -1,16 +1,23 @@
 import { icons } from "@/components/icons";
 import { BorderBeam } from "@/components/motion";
 import { ArrowLink } from "@/components/ui";
-import { serviceHref, type Service } from "@/data/content";
+import { getContent, serviceHref, type Service } from "@/data/content";
+import type { Locale } from "@/i18n/locales";
 
 type ServiceCardProps = {
   service: Service;
+  locale: Locale;
   /** Staggers the travelling border light between neighbouring cards. */
   beamDelay?: string;
 };
 
-export function ServiceCard({ service, beamDelay = "0s" }: ServiceCardProps) {
+export function ServiceCard({
+  service,
+  locale,
+  beamDelay = "0s",
+}: ServiceCardProps) {
   const Icon = icons[service.icon];
+  const { home } = getContent(locale).ui;
 
   return (
     <article className="group relative h-full min-h-[300px] w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all duration-500 hover:shadow-xl hover:shadow-red-200/50">
@@ -30,11 +37,11 @@ export function ServiceCard({ service, beamDelay = "0s" }: ServiceCardProps) {
         </h3>
 
         <ArrowLink
-          href={serviceHref(service.id)}
-          srSuffix={`за ${service.title}`}
+          href={serviceHref(service.id, locale)}
+          srSuffix={`${home.learnMoreAbout} ${service.title}`}
           className="mt-auto"
         >
-          Дознајте повеќе
+          {home.learnMore}
         </ArrowLink>
       </div>
     </article>

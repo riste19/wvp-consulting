@@ -4,30 +4,44 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/motion";
 import { PageHero } from "@/components/sections";
 import { ButtonLink, Container, SectionHeading } from "@/components/ui";
-import {
-  programmeProcess,
-  programmes,
-  programmesIntro,
-  programmeStatusLabel,
-} from "@/data/content";
+import { getContent } from "@/data/content";
 import { images } from "@/data/site";
+import { localeAlternates } from "@/i18n/locales";
+import { resolveLocale } from "@/i18n/resolveLocale";
 import { cn } from "@/lib";
 
-export const metadata: Metadata = {
-  title: "Програми",
-  description:
-    "Актуелни програми за неповратни средства и кофинансирање: ИПАРД 3, Фондот за иновации, ЕБРД, Креативна Европа и националните мерки за конкурентност.",
-  alternates: { canonical: "/mk/programi" },
-};
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/programi">): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const { programmes } = getContent(locale).ui;
 
-export default function ProgrammesPage() {
+  return {
+    title: programmes.metaTitle,
+    description: programmes.metaDescription,
+    alternates: localeAlternates(locale, "/programi"),
+  };
+}
+
+export default async function ProgrammesPage({
+  params,
+}: PageProps<"/[locale]/programi">) {
+  const locale = await resolveLocale(params);
+  const {
+    programmeProcess,
+    programmes,
+    programmesIntro,
+    programmeStatusLabel,
+    ui,
+  } = getContent(locale);
+
   return (
     <>
       <PageHero
         title={programmesIntro.title}
         subtitle={programmesIntro.subtitle}
         image={images.pageHero.programi}
-        imageAlt="Документи и планови за апликација кон програми за финансиска поддршка"
+        imageAlt={ui.programmes.heroImageAlt}
       />
 
       <section className="bg-white py-16 sm:py-20">
@@ -75,9 +89,11 @@ export default function ProgrammesPage() {
                         strokeWidth={1.6}
                         className="mt-0.5 h-4 w-4 shrink-0 text-primary"
                       />
-                      <dt className="sr-only">Стапка на кофинансирање</dt>
+                      <dt className="sr-only">
+                        {ui.programmes.coFinancingLabel}
+                      </dt>
                       <dd>
-                        Кофинансирање{" "}
+                        {ui.programmes.coFinancing}{" "}
                         <strong className="font-semibold">
                           {programme.coRate}
                         </strong>{" "}
@@ -90,7 +106,7 @@ export default function ProgrammesPage() {
                         strokeWidth={1.6}
                         className="mt-0.5 h-4 w-4 shrink-0 text-primary"
                       />
-                      <dt className="sr-only">Рок</dt>
+                      <dt className="sr-only">{ui.programmes.deadlineLabel}</dt>
                       <dd>{programme.deadline}</dd>
                     </div>
                     <div className="flex items-start gap-2">
@@ -99,7 +115,7 @@ export default function ProgrammesPage() {
                         strokeWidth={1.6}
                         className="mt-0.5 h-4 w-4 shrink-0 text-primary"
                       />
-                      <dt className="sr-only">Сектори</dt>
+                      <dt className="sr-only">{ui.programmes.sectorsLabel}</dt>
                       <dd>{programme.sectors.join(" · ")}</dd>
                     </div>
                   </dl>
@@ -113,8 +129,8 @@ export default function ProgrammesPage() {
       <section className="bg-neutral-100 py-16 sm:py-20">
         <Container>
           <SectionHeading
-            title="Како се движи еден проект"
-            subtitle="Четири чекори од проверка на подобноста до исплата на средствата"
+            title={ui.programmes.processHeading}
+            subtitle={ui.programmes.processSubtitle}
             className="mb-10 sm:mb-16"
           />
 
@@ -142,8 +158,8 @@ export default function ProgrammesPage() {
           </ol>
 
           <div className="mt-12 text-center">
-            <ButtonLink href="/mk/kontakt" variant="pill">
-              Проверете дали сте подобни
+            <ButtonLink href={`/${locale}/kontakt`} variant="pill">
+              {ui.programmes.eligibilityCta}
             </ButtonLink>
           </div>
         </Container>

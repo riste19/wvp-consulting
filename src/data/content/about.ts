@@ -134,7 +134,7 @@ export const offerGroups: OfferGroup[] = [
   },
 ];
 
-export const missionStatement =
+export const missionStatement: string =
   "Нашата мисија е да овозможиме целосен пристап до финансии за компаниите и граѓаните, зголемувајќи ја нивната конкурентност и одржливост.";
 
 export type Value = {

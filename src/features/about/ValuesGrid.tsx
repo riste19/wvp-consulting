@@ -1,14 +1,17 @@
 import { icons } from "@/components/icons";
 import { Reveal } from "@/components/motion";
-import { values } from "@/data/content";
+import { getContent } from "@/data/content";
+import type { Locale } from "@/i18n/locales";
 
 /**
- * "Нашите вредности" — one card per guiding principle.
+ * "Our values" — one card per guiding principle.
  *
  * Hovering reddens the heading and lifts the shadow. Unlike the offer cards
  * there is no icon state to change: these icons are already brand red at rest.
  */
-export function ValuesGrid() {
+export function ValuesGrid({ locale }: { locale: Locale }) {
+  const { values } = getContent(locale);
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {values.map((value, index) => {

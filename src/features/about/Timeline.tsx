@@ -1,7 +1,8 @@
 import { CalendarDays, MapPin } from "lucide-react";
 
 import { Reveal } from "@/components/motion";
-import { timeline } from "@/data/content";
+import { getContent } from "@/data/content";
+import type { Locale } from "@/i18n/locales";
 import { cn } from "@/lib";
 
 /**
@@ -11,7 +12,9 @@ import { cn } from "@/lib";
  * Below `lg` there is not enough width for two columns, so the rail moves to
  * the left edge and every card sits to the right of it in one column.
  */
-export function Timeline() {
+export function Timeline({ locale }: { locale: Locale }) {
+  const { timeline } = getContent(locale);
+
   return (
     <ol className="relative mx-auto max-w-5xl">
       <span

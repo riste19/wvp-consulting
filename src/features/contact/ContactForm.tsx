@@ -3,6 +3,8 @@
 import { useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui";
+import type { ContactFormCopy } from "@/data/content";
+import type { Locale } from "@/i18n/locales";
 import { cn } from "@/lib";
 
 import {
@@ -22,37 +24,30 @@ const EMPTY: ContactPayload = {
   message: "",
 };
 
-const SUBJECTS = [
-  "Пристап до финансии",
-  "Грантови и кофинансирање",
-  "Бизнис план или инвестициска програма",
-  "Маркетинг и бизнис развој",
-  "Пристап до нови пазари",
-  "ESG стандардизација",
-  "Друго",
-];
-
 type Errors = Partial<Record<keyof ContactPayload, string>>;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_PATTERN = /^[+0-9()\s-]{6,20}$/;
 
-function validate(values: ContactPayload): Errors {
+function validate(
+  values: ContactPayload,
+  messages: ContactFormCopy["errors"],
+): Errors {
   const errors: Errors = {};
 
-  if (!values.firstName.trim()) errors.firstName = "Внесете го вашето име.";
-  if (!values.lastName.trim()) errors.lastName = "Внесете го вашето презиме.";
+  if (!values.firstName.trim()) errors.firstName = messages.firstName;
+  if (!values.lastName.trim()) errors.lastName = messages.lastName;
   if (!values.email.trim()) {
-    errors.email = "Внесете ја вашата е-пошта.";
+    errors.email = messages.emailMissing;
   } else if (!EMAIL_PATTERN.test(values.email.trim())) {
-    errors.email = "Внесете валидна адреса на е-пошта.";
+    errors.email = messages.emailInvalid;
   }
   if (values.phone.trim() && !PHONE_PATTERN.test(values.phone.trim())) {
-    errors.phone = "Внесете валиден телефонски број.";
+    errors.phone = messages.phone;
   }
-  if (!values.subject) errors.subject = "Изберете тема на пораката.";
+  if (!values.subject) errors.subject = messages.subject;
   if (values.message.trim().length < 10) {
-    errors.message = "Пораката треба да содржи барем 10 знаци.";
+    errors.message = messages.message;
   }
 
   return errors;
@@ -61,7 +56,14 @@ function validate(values: ContactPayload): Errors {
 const FIELD_CLASS =
   "w-full rounded-md border border-input bg-white px-4 py-2.5 text-base text-foreground placeholder:text-neutral-400 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30";
 
-export function ContactForm() {
+type ContactFormProps = {
+  /** Every label and message, in the page's language. */
+  copy: ContactFormCopy;
+  /** Sent with the submission so the server answers in the same language. */
+  locale: Locale;
+};
+
+export function ContactForm({ copy, locale }: ContactFormProps) {
   const formId = useId();
   const [values, setValues] = useState<ContactPayload>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
@@ -91,7 +93,7 @@ export function ContactForm() {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const nextErrors = validate(values);
+    const nextErrors = validate(values, copy.errors);
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
@@ -104,18 +106,17 @@ export function ContactForm() {
     // widget must NOT be reset here — only after a real round trip below.
     if (turnstileEnabled && !turnstileToken) {
       setStatus("failed");
-      setFormError(
-        "Потврдата дека не сте робот сè уште се вчитува. Обидете се повторно за момент.",
-      );
+      setFormError(copy.challengeLoading);
       return;
     }
 
     setStatus("sending");
     setFormError(null);
-    const result = await submitContactForm(values, {
-      honeypot,
-      turnstileToken,
-    });
+    const result = await submitContactForm(
+      values,
+      { honeypot, turnstileToken },
+      { locale, fallbackError: copy.failed },
+    );
 
     // The token has now been spent, whatever the outcome. Issue a fresh
     // challenge so a retry after a failure is not rejected as a robot.
@@ -141,7 +142,8 @@ export function ContactForm() {
             htmlFor={fieldId("firstName")}
             className="mb-1.5 block text-sm font-medium text-foreground"
           >
-            Име <span aria-hidden className="text-primary">*</span>
+            {copy.labels.firstName}{" "}
+            <span aria-hidden className="text-primary">*</span>
           </label>
           <input
             id={fieldId("firstName")}
@@ -153,7 +155,7 @@ export function ContactForm() {
             onChange={(event) => update("firstName", event.target.value)}
             aria-invalid={Boolean(errors.firstName)}
             aria-describedby={describedBy("firstName")}
-            placeholder="Вашето име"
+            placeholder={copy.placeholders.firstName}
             className={cn(FIELD_CLASS, errors.firstName && "border-primary")}
           />
           {errors.firstName ? (
@@ -168,7 +170,8 @@ export function ContactForm() {
             htmlFor={fieldId("lastName")}
             className="mb-1.5 block text-sm font-medium text-foreground"
           >
-            Презиме <span aria-hidden className="text-primary">*</span>
+            {copy.labels.lastName}{" "}
+            <span aria-hidden className="text-primary">*</span>
           </label>
           <input
             id={fieldId("lastName")}
@@ -180,7 +183,7 @@ export function ContactForm() {
             onChange={(event) => update("lastName", event.target.value)}
             aria-invalid={Boolean(errors.lastName)}
             aria-describedby={describedBy("lastName")}
-            placeholder="Вашето презиме"
+            placeholder={copy.placeholders.lastName}
             className={cn(FIELD_CLASS, errors.lastName && "border-primary")}
           />
           {errors.lastName ? (
@@ -196,7 +199,7 @@ export function ContactForm() {
           htmlFor={fieldId("company")}
           className="mb-1.5 block text-sm font-medium text-foreground"
         >
-          Компанија
+          {copy.labels.company}
         </label>
         <input
           id={fieldId("company")}
@@ -205,7 +208,7 @@ export function ContactForm() {
           autoComplete="organization"
           value={values.company}
           onChange={(event) => update("company", event.target.value)}
-          placeholder="Име на вашата компанија"
+          placeholder={copy.placeholders.company}
           className={FIELD_CLASS}
         />
       </div>
@@ -216,7 +219,8 @@ export function ContactForm() {
             htmlFor={fieldId("email")}
             className="mb-1.5 block text-sm font-medium text-foreground"
           >
-            Е-пошта <span aria-hidden className="text-primary">*</span>
+            {copy.labels.email}{" "}
+            <span aria-hidden className="text-primary">*</span>
           </label>
           <input
             id={fieldId("email")}
@@ -228,7 +232,7 @@ export function ContactForm() {
             onChange={(event) => update("email", event.target.value)}
             aria-invalid={Boolean(errors.email)}
             aria-describedby={describedBy("email")}
-            placeholder="ime@kompanija.mk"
+            placeholder={copy.placeholders.email}
             className={cn(FIELD_CLASS, errors.email && "border-primary")}
           />
           {errors.email ? (
@@ -243,7 +247,7 @@ export function ContactForm() {
             htmlFor={fieldId("phone")}
             className="mb-1.5 block text-sm font-medium text-foreground"
           >
-            Телефон
+            {copy.labels.phone}
           </label>
           <input
             id={fieldId("phone")}
@@ -254,7 +258,7 @@ export function ContactForm() {
             onChange={(event) => update("phone", event.target.value)}
             aria-invalid={Boolean(errors.phone)}
             aria-describedby={describedBy("phone")}
-            placeholder="+389 7X XXX XXX"
+            placeholder={copy.placeholders.phone}
             className={cn(FIELD_CLASS, errors.phone && "border-primary")}
           />
           {errors.phone ? (
@@ -270,7 +274,8 @@ export function ContactForm() {
           htmlFor={fieldId("subject")}
           className="mb-1.5 block text-sm font-medium text-foreground"
         >
-          Тема <span aria-hidden className="text-primary">*</span>
+          {copy.labels.subject}{" "}
+          <span aria-hidden className="text-primary">*</span>
         </label>
         <select
           id={fieldId("subject")}
@@ -282,8 +287,8 @@ export function ContactForm() {
           aria-describedby={describedBy("subject")}
           className={cn(FIELD_CLASS, errors.subject && "border-primary")}
         >
-          <option value="">Изберете тема</option>
-          {SUBJECTS.map((subject) => (
+          <option value="">{copy.placeholders.subject}</option>
+          {copy.subjects.map((subject) => (
             <option key={subject} value={subject}>
               {subject}
             </option>
@@ -301,7 +306,8 @@ export function ContactForm() {
           htmlFor={fieldId("message")}
           className="mb-1.5 block text-sm font-medium text-foreground"
         >
-          Порака / прашање <span aria-hidden className="text-primary">*</span>
+          {copy.labels.message}{" "}
+          <span aria-hidden className="text-primary">*</span>
         </label>
         <textarea
           id={fieldId("message")}
@@ -312,7 +318,7 @@ export function ContactForm() {
           onChange={(event) => update("message", event.target.value)}
           aria-invalid={Boolean(errors.message)}
           aria-describedby={describedBy("message")}
-          placeholder="Кажете ни нешто повеќе за вашиот проект…"
+          placeholder={copy.placeholders.message}
           className={cn(FIELD_CLASS, "resize-y", errors.message && "border-primary")}
         />
         {errors.message ? (
@@ -328,7 +334,7 @@ export function ContactForm() {
         `tabIndex={-1}` keeps it away from screen readers and the tab order.
       */}
       <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
-        <label htmlFor={`${formId}-website`}>Веб-страница</label>
+        <label htmlFor={`${formId}-website`}>{copy.honeypotLabel}</label>
         <input
           id={`${formId}-website`}
           name="website"
@@ -356,26 +362,22 @@ export function ContactForm() {
         disabled={status === "sending"}
         className="w-full rounded-md"
       >
-        {status === "sending" ? "Се испраќа…" : "Испрати порака"}
+        {status === "sending" ? copy.sending : copy.send}
       </Button>
 
       <p aria-live="polite" className="min-h-6 text-sm">
         {status === "sent" ? (
-          <span className="text-chart-2">
-            Пораката е испратена. Ќе ве контактираме во рок од 24 часа.
-          </span>
+          <span className="text-chart-2">{copy.sent}</span>
         ) : null}
         {status === "failed" ? (
-          <span className="text-primary">
-            {formError ??
-              "Пораката не беше испратена. Обидете се повторно или пишете ни на е-пошта."}
-          </span>
+          <span className="text-primary">{formError ?? copy.failed}</span>
         ) : null}
       </p>
 
       <p className="text-sm text-muted-foreground">
-        Полињата означени со <span aria-hidden>*</span>
-        <span className="sr-only">ѕвездичка</span> се задолжителни.
+        {copy.requiredBefore} <span aria-hidden>*</span>
+        <span className="sr-only">{copy.requiredStar}</span>{" "}
+        {copy.requiredAfter}
       </p>
     </form>
   );

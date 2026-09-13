@@ -2,17 +2,20 @@
 
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { regionalMap, regionalOffices, type RegionalOffice } from "@/data/content";
+// Types only. The copy arrives as props: importing the content barrel here
+// would ship every page's text, the article corpus included, to the browser.
+import type { RegionalOffice, regionalMap } from "@/data/content/about";
 
 import { MAP_VIEWBOX, mapLabels, mapShapes } from "./regionMapShapes";
 
 const COUNTDOWN_SECONDS = 3;
 
-const officesById = new Map<string, RegionalOffice>(
-  regionalOffices.map((office) => [office.id, office]),
-);
+type RegionMapProps = {
+  offices: RegionalOffice[];
+  copy: typeof regionalMap;
+};
 
 /**
  * The group's countries on a map. Clicking one opens a short countdown and
@@ -22,11 +25,16 @@ const officesById = new Map<string, RegionalOffice>(
  * Every office country is a focusable button, so the map works from the
  * keyboard too: Tab to a country, Enter or Space to choose, Escape to cancel.
  */
-export function RegionMap() {
+export function RegionMap({ offices, copy }: RegionMapProps) {
   const router = useRouter();
   const [pending, setPending] = useState<RegionalOffice | null>(null);
   const [seconds, setSeconds] = useState(COUNTDOWN_SECONDS);
   const cancelRef = useRef<HTMLButtonElement>(null);
+
+  const officesById = useMemo(
+    () => new Map<string, RegionalOffice>(offices.map((office) => [office.id, office])),
+    [offices],
+  );
 
   const choose = (office: RegionalOffice) => {
     setSeconds(COUNTDOWN_SECONDS);
@@ -67,7 +75,7 @@ export function RegionMap() {
         <svg
           viewBox={MAP_VIEWBOX}
           role="group"
-          aria-label={regionalMap.mapLabel}
+          aria-label={copy.mapLabel}
           className="h-auto w-full"
         >
           {mapShapes.map(({ id, d }) => {
@@ -107,7 +115,7 @@ export function RegionMap() {
         </svg>
 
         <figcaption className="mt-4 text-center text-sm text-muted-foreground">
-          {regionalMap.hint}
+          {copy.hint}
         </figcaption>
       </figure>
 
@@ -132,21 +140,21 @@ export function RegionMap() {
                 id="region-redirect-title"
                 className="text-lg font-semibold text-gray-900"
               >
-                {regionalMap.dialogTitle}
+                {copy.dialogTitle}
               </h3>
             </div>
 
             <p id="region-redirect-body" className="mb-4 text-muted-foreground">
-              {regionalMap.dialogBody}{" "}
+              {copy.dialogBody}{" "}
               <strong className="text-gray-900">{pending.name}</strong>.
             </p>
 
             <div className="flex items-center justify-between gap-4">
               <span className="text-sm text-muted-foreground">
-                {regionalMap.countdown}{" "}
+                {copy.countdown}{" "}
                 <strong className="text-primary">
                   {seconds}
-                  {regionalMap.secondsSuffix}
+                  {copy.secondsSuffix}
                 </strong>
               </span>
               <button
@@ -155,7 +163,7 @@ export function RegionMap() {
                 onClick={cancel}
                 className="h-9 rounded-md border border-border bg-white px-4 text-sm font-medium text-gray-900 transition-colors hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                {regionalMap.cancel}
+                {copy.cancel}
               </button>
             </div>
 

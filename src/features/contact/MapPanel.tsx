@@ -1,7 +1,9 @@
 import { MapPin } from "lucide-react";
 import Image from "next/image";
 
-import { company, images, imageSizes } from "@/data/site";
+import { getContent } from "@/data/content";
+import { companyText, images, imageSizes } from "@/data/site";
+import type { Locale } from "@/i18n/locales";
 
 const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=Skopje%2C%20North%20Macedonia";
@@ -11,7 +13,12 @@ const MAPS_URL =
  * so the page carries no third-party script; swap the image for a live embed
  * (or the licensed office photo) when the exact address is confirmed.
  */
-export function MapPanel() {
+export function MapPanel({ locale }: { locale: Locale }) {
+  const { contact } = getContent(locale).ui;
+  const text = companyText[locale];
+  const withCity = (template: string) =>
+    template.replace("{city}", text.address.city);
+
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
       <a
@@ -19,11 +26,11 @@ export function MapPanel() {
         target="_blank"
         rel="noopener noreferrer"
         className="block"
-        aria-label={`Отвори ја локацијата во ${company.address.city} на Google Карти`}
+        aria-label={withCity(contact.openMapLabel)}
       >
         <Image
           src={images.contactMap}
-          alt={`Мапа со локацијата на канцеларијата во ${company.address.city}`}
+          alt={withCity(contact.mapImageAlt)}
           width={imageSizes.contactMap.width}
           height={imageSizes.contactMap.height}
           sizes="(min-width: 1024px) 50vw, 100vw"
@@ -35,12 +42,12 @@ export function MapPanel() {
         <MapPin aria-hidden className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
         <div>
           <p className="text-base font-semibold text-foreground">
-            {company.legalName}
+            {text.legalName}
           </p>
           <address className="mt-1 not-italic text-base text-muted-foreground">
-            {company.address.street}
+            {text.address.street}
             <br />
-            {company.address.city}, {company.address.country}
+            {text.address.city}, {text.address.country}
           </address>
         </div>
       </div>

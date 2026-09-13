@@ -1,3 +1,5 @@
+import type { Locale } from "@/i18n/locales";
+
 export type ContactPayload = {
   firstName: string;
   lastName: string;
@@ -23,9 +25,12 @@ export type ContactChallenge = {
   turnstileToken: string;
 };
 
-/** Fallback when the endpoint is unreachable or answers with something odd. */
-const GENERIC_ERROR =
-  "Пораката не беше испратена. Обидете се повторно или пишете ни на е-пошта.";
+export type ContactContext = {
+  /** The page's language. The server replies in it. */
+  locale: Locale;
+  /** Shown when the endpoint is unreachable or answers with something odd. */
+  fallbackError: string;
+};
 
 /**
  * Single integration point for the contact form.
@@ -40,7 +45,8 @@ const GENERIC_ERROR =
  */
 export async function submitContactForm(
   payload: ContactPayload,
-  challenge: ContactChallenge = { honeypot: "", turnstileToken: "" },
+  challenge: ContactChallenge,
+  context: ContactContext,
 ): Promise<ContactResult> {
   let response: Response;
 
@@ -50,13 +56,14 @@ export async function submitContactForm(
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         ...payload,
+        locale: context.locale,
         website: challenge.honeypot,
         turnstileToken: challenge.turnstileToken,
       }),
     });
   } catch {
     // Offline, DNS failure, request blocked by an extension.
-    return { ok: false, error: GENERIC_ERROR };
+    return { ok: false, error: context.fallbackError };
   }
 
   let body: unknown = null;
@@ -72,7 +79,7 @@ export async function submitContactForm(
           "Functions — use `npm run preview` and open localhost:8788 instead.",
       );
     }
-    return { ok: false, error: GENERIC_ERROR };
+    return { ok: false, error: context.fallbackError };
   }
 
   const result = body as Partial<ContactResult> | null;
@@ -84,7 +91,7 @@ export async function submitContactForm(
   const error =
     result && "error" in result && typeof result.error === "string"
       ? result.error
-      : GENERIC_ERROR;
+      : context.fallbackError;
 
   return { ok: false, error };
 }

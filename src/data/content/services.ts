@@ -1,5 +1,6 @@
 import type { IconName } from "@/components/icons";
 import { images } from "@/data/site/images";
+import type { Locale } from "@/i18n/locales";
 
 export type Service = {
   /** Anchor id on /mk/uslugi, also used for deep links from the header. */
@@ -157,4 +158,6 @@ export const homeServices: Service[] = HOME_ORDER.map(
   (id) => services.find((service) => service.id === id)!,
 );
 
-export const serviceHref = (id: string) => `/mk/uslugi#${id}`;
+/** Deep link to one service on the services page, in the given language. */
+export const serviceHref = (id: string, locale: Locale = "mk") =>
+  `/${locale}/uslugi#${id}`;

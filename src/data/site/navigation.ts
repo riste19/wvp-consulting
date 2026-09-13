@@ -1,4 +1,6 @@
-import { serviceHref, services } from "@/data/content/services";
+import { serviceHref, services as servicesMk } from "@/data/content/services";
+import { services as servicesSq } from "@/data/content/services.sq";
+import type { Locale } from "@/i18n/locales";
 
 export type NavLink = {
   label: string;
@@ -12,33 +14,82 @@ export type NavItem = NavLink & {
   separatorBefore?: boolean;
 };
 
-export const primaryNav: NavItem[] = [
-  { label: "ПОЧЕТНА", href: "/mk" },
+const SERVICES = { mk: servicesMk, sq: servicesSq };
+
+const LABELS: Record<
+  Locale,
   {
-    label: "УСЛУГИ",
-    href: "/mk/uslugi",
-    children: [
-      ...services.map((service) => ({
-        label: service.title,
-        href: serviceHref(service.id),
-      })),
-      { label: "Актуелни програми и повици", href: "/mk/programi" },
-    ],
+    home: string;
+    services: string;
+    programmes: string;
+    about: string;
+    contact: string;
+    blog: string;
+  }
+> = {
+  mk: {
+    home: "Почетна",
+    services: "Услуги",
+    programmes: "Актуелни програми и повици",
+    about: "За нас",
+    contact: "Контакт",
+    blog: "Финансиски совети",
   },
-  { label: "ЗА НАС", href: "/mk/za-nas" },
-  { label: "КОНТАКТ", href: "/mk/kontakt" },
-  { label: "ФИНАНСИСКИ СОВЕТИ", href: "/mk/blog", separatorBefore: true },
-];
+  sq: {
+    home: "Ballina",
+    services: "Shërbimet",
+    programmes: "Programet dhe thirrjet aktuale",
+    about: "Rreth nesh",
+    contact: "Kontakti",
+    blog: "Këshilla financiare",
+  },
+};
+
+function serviceLinks(locale: Locale): NavLink[] {
+  return [
+    ...SERVICES[locale].map((service) => ({
+      label: service.title,
+      href: serviceHref(service.id, locale),
+    })),
+    { label: LABELS[locale].programmes, href: `/${locale}/programi` },
+  ];
+}
+
+/** Desktop header. Upper case, matching the reference. */
+export function getPrimaryNav(locale: Locale): NavItem[] {
+  const labels = LABELS[locale];
+  const upper = (label: string) => label.toLocaleUpperCase(locale);
+
+  return [
+    { label: upper(labels.home), href: `/${locale}` },
+    {
+      label: upper(labels.services),
+      href: `/${locale}/uslugi`,
+      children: serviceLinks(locale),
+    },
+    { label: upper(labels.about), href: `/${locale}/za-nas` },
+    { label: upper(labels.contact), href: `/${locale}/kontakt` },
+    {
+      label: upper(labels.blog),
+      href: `/${locale}/blog`,
+      separatorBefore: true,
+    },
+  ];
+}
 
 /** The mobile panel uses sentence case, matching the reference. */
-export const mobileNav: NavItem[] = [
-  { label: "Почетна", href: "/mk" },
-  {
-    label: "Услуги",
-    href: "/mk/uslugi",
-    children: primaryNav[1].children,
-  },
-  { label: "Финансиски совети", href: "/mk/blog" },
-  { label: "За нас", href: "/mk/za-nas" },
-  { label: "Контакт", href: "/mk/kontakt" },
-];
+export function getMobileNav(locale: Locale): NavItem[] {
+  const labels = LABELS[locale];
+
+  return [
+    { label: labels.home, href: `/${locale}` },
+    {
+      label: labels.services,
+      href: `/${locale}/uslugi`,
+      children: serviceLinks(locale),
+    },
+    { label: labels.blog, href: `/${locale}/blog` },
+    { label: labels.about, href: `/${locale}/za-nas` },
+    { label: labels.contact, href: `/${locale}/kontakt` },
+  ];
+}
