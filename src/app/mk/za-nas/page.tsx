@@ -3,10 +3,16 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/motion";
 import { PageHero } from "@/components/sections";
 import { ButtonLink, Container, SectionHeading } from "@/components/ui";
-import { aboutIntro, careers, missionStatement } from "@/data/content";
+import {
+  aboutIntro,
+  careers,
+  missionStatement,
+  regionalMap,
+} from "@/data/content";
 import { images } from "@/data/site";
 import {
   OfferGroups,
+  RegionMap,
   TeamSection,
   Timeline,
   ValuesGrid,
@@ -58,6 +64,13 @@ export default function AboutPage() {
           />
 
           <Timeline />
+
+          <div className="mt-16 sm:mt-24">
+            <h3 className="mb-8 text-center text-2xl font-bold text-gray-900 sm:mb-12 sm:text-3xl">
+              {regionalMap.heading}
+            </h3>
+            <RegionMap />
+          </div>
         </Container>
       </section>
 

@@ -11,10 +11,13 @@ export {
   careers,
   missionStatement,
   offerGroups,
+  regionalMap,
+  regionalOffices,
   teamSection,
   timeline,
   values,
   type OfferGroup,
+  type RegionalOffice,
   type TimelineEntry,
   type Value,
 } from "./about";
