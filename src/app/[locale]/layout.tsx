@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { getContent } from "@/data/content";
 import { company, images } from "@/data/site";
-import { locales, ogLocale } from "@/i18n/locales";
+import { languageTag, locales, ogLocale } from "@/i18n/locales";
 import { resolveLocale } from "@/i18n/resolveLocale";
 
 /** Only the languages in `locales` exist. Anything else is a 404, never rendered on demand. */
@@ -54,9 +54,9 @@ export default async function LocaleLayout({
   const locale = await resolveLocale(params);
 
   return (
-    // The root <html> is shared by both languages; this sets the real one for
+    // The root <html> is shared by every language; this sets the real one for
     // everything on the page.
-    <div lang={locale} className="flex flex-1 flex-col">
+    <div lang={languageTag[locale]} className="flex flex-1 flex-col">
       <SiteShell locale={locale}>{children}</SiteShell>
     </div>
   );

@@ -45,13 +45,12 @@ export const timeline: TimelineEntry[] = [
   },
 ];
 
-/** See the note on `regionalOffices` in `about.ts` — the same links are temporary here. */
 export const regionalOffices: RegionalOffice[] = [
   { id: "North_Macedonia", name: "North Macedonia", href: "/en" },
-  { id: "Serbia", name: "Serbia", href: "https://wvpconsulting.com/rs" },
-  { id: "Bosnia_and_Herzegovina", name: "Bosnia and Herzegovina", href: "https://wvpconsulting.com/ba" },
-  { id: "Montenegro", name: "Montenegro", href: "https://wvpconsulting.com/me" },
-  { id: "Croatia", name: "Croatia", href: "https://wvpconsulting.com/hr" },
+  { id: "Serbia", name: "Serbia", href: "/rs" },
+  { id: "Bosnia_and_Herzegovina", name: "Bosnia and Herzegovina", href: "/ba" },
+  { id: "Montenegro", name: "Montenegro", href: "/me" },
+  { id: "Croatia", name: "Croatia", href: "/hr" },
 ];
 
 export const regionalMap: typeof Mk.regionalMap = {

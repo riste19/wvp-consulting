@@ -1,7 +1,11 @@
 import { serviceHref, services as servicesMk } from "@/data/content/services";
+import { services as servicesBa } from "@/data/content/services.ba";
 import { services as servicesEn } from "@/data/content/services.en";
+import { services as servicesHr } from "@/data/content/services.hr";
+import { services as servicesMe } from "@/data/content/services.me";
+import { services as servicesRs } from "@/data/content/services.rs";
 import { services as servicesSq } from "@/data/content/services.sq";
-import type { Locale } from "@/i18n/locales";
+import { languageTag, type Locale } from "@/i18n/locales";
 
 export type NavLink = {
   label: string;
@@ -15,7 +19,15 @@ export type NavItem = NavLink & {
   separatorBefore?: boolean;
 };
 
-const SERVICES = { mk: servicesMk, sq: servicesSq, en: servicesEn };
+const SERVICES = {
+  mk: servicesMk,
+  sq: servicesSq,
+  en: servicesEn,
+  rs: servicesRs,
+  ba: servicesBa,
+  me: servicesMe,
+  hr: servicesHr,
+};
 
 const LABELS: Record<
   Locale,
@@ -52,6 +64,38 @@ const LABELS: Record<
     contact: "Contact",
     blog: "Financial advice",
   },
+  rs: {
+    home: "Početna",
+    services: "Usluge",
+    programmes: "Aktuelni programi i pozivi",
+    about: "O nama",
+    contact: "Kontakt",
+    blog: "Finansijski saveti",
+  },
+  ba: {
+    home: "Početna",
+    services: "Usluge",
+    programmes: "Aktuelni programi i pozivi",
+    about: "O nama",
+    contact: "Kontakt",
+    blog: "Finansijski savjeti",
+  },
+  me: {
+    home: "Početna",
+    services: "Usluge",
+    programmes: "Aktuelni programi i pozivi",
+    about: "O nama",
+    contact: "Kontakt",
+    blog: "Finansijski savjeti",
+  },
+  hr: {
+    home: "Početna",
+    services: "Usluge",
+    programmes: "Aktualni programi i pozivi",
+    about: "O nama",
+    contact: "Kontakt",
+    blog: "Financijski savjeti",
+  },
 };
 
 function serviceLinks(locale: Locale): NavLink[] {
@@ -67,7 +111,7 @@ function serviceLinks(locale: Locale): NavLink[] {
 /** Desktop header. Upper case, matching the reference. */
 export function getPrimaryNav(locale: Locale): NavItem[] {
   const labels = LABELS[locale];
-  const upper = (label: string) => label.toLocaleUpperCase(locale);
+  const upper = (label: string) => label.toLocaleUpperCase(languageTag[locale]);
 
   return [
     { label: upper(labels.home), href: `/${locale}` },

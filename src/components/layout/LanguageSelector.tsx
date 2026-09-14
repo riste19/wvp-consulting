@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 // Direct path, not the barrel: the barrel re-exports `navigation`, which
 // reaches the services catalogue. See the note in `Header`.
 import { languages } from "@/data/site/languages";
-import { localeFromPath, switchLocale } from "@/i18n/locales";
+import { languageTag, localeFromPath, switchLocale } from "@/i18n/locales";
 import { cn } from "@/lib";
 
 type LanguageSelectorProps = {
@@ -77,8 +77,8 @@ export function LanguageSelector({ className }: LanguageSelectorProps) {
                 role="menuitemradio"
                 aria-checked={selected}
                 href={switchLocale(pathname, language.locale)}
-                hrefLang={language.locale}
-                lang={language.locale}
+                hrefLang={languageTag[language.locale]}
+                lang={languageTag[language.locale]}
                 onClick={() => setOpen(false)}
                 className={cn(
                   "flex items-center justify-between gap-3 px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-neutral-100 focus-visible:bg-neutral-100 focus-visible:outline-none",

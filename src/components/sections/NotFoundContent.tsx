@@ -4,7 +4,12 @@ import { useSyncExternalStore } from "react";
 
 import { ButtonLink, Container } from "@/components/ui";
 import { notFoundCopy } from "@/data/content/notFound";
-import { defaultLocale, localeFromPath, type Locale } from "@/i18n/locales";
+import {
+  defaultLocale,
+  languageTag,
+  localeFromPath,
+  type Locale,
+} from "@/i18n/locales";
 
 const noSubscription = () => () => {};
 
@@ -30,7 +35,7 @@ export function NotFoundContent() {
 
   return (
     <section
-      lang={locale}
+      lang={languageTag[locale]}
       className="flex min-h-[60vh] items-center bg-background pb-16 pt-32 sm:pt-40"
     >
       <Container>

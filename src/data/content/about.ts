@@ -58,19 +58,15 @@ export type RegionalOffice = {
 };
 
 /**
- * Where each country on the regional map sends the visitor.
- *
- * TEMPORARY: only North Macedonia has pages on this site. The other four point
- * at the country versions of the previous site, which will stop working when
- * wvpconsulting.com is moved here. Replace each with a local path ("/hr", …)
- * once that country's pages exist on this site.
+ * Where each country on the regional map sends the visitor: that country's
+ * pages on this site, in its own language.
  */
 export const regionalOffices: RegionalOffice[] = [
   { id: "North_Macedonia", name: "Северна Македонија", href: "/mk" },
-  { id: "Serbia", name: "Србија", href: "https://wvpconsulting.com/rs" },
-  { id: "Bosnia_and_Herzegovina", name: "Босна и Херцеговина", href: "https://wvpconsulting.com/ba" },
-  { id: "Montenegro", name: "Црна Гора", href: "https://wvpconsulting.com/me" },
-  { id: "Croatia", name: "Хрватска", href: "https://wvpconsulting.com/hr" },
+  { id: "Serbia", name: "Србија", href: "/rs" },
+  { id: "Bosnia_and_Herzegovina", name: "Босна и Херцеговина", href: "/ba" },
+  { id: "Montenegro", name: "Црна Гора", href: "/me" },
+  { id: "Croatia", name: "Хрватска", href: "/hr" },
 ];
 
 export const regionalMap = {

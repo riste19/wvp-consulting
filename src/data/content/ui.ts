@@ -1,8 +1,8 @@
 /**
  * Interface copy: page metadata, headings that belong to a page rather than to
  * a content module, form labels and errors, and the accessible names of
- * controls. `ui.sq.ts` mirrors this shape exactly; the compiler holds it to
- * that.
+ * controls. Every `ui.<language>.ts` mirrors this shape exactly; the compiler
+ * holds it to that.
  *
  * `{city}` in a string is replaced with the office city where it is used.
  */

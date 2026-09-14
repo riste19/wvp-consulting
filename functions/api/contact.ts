@@ -36,7 +36,12 @@ type Env = {
  * The site's languages. Kept in step with `src/i18n/locales.ts` by hand: this
  * function is built separately from the app and cannot import it.
  */
-type Language = "mk" | "sq" | "en";
+const LANGUAGES = ["mk", "sq", "en", "rs", "ba", "me", "hr"] as const;
+
+type Language = (typeof LANGUAGES)[number];
+
+const isLanguage = (value: unknown): value is Language =>
+  (LANGUAGES as readonly unknown[]).includes(value);
 
 type Payload = {
   firstName: string;
@@ -56,7 +61,7 @@ type Payload = {
 
 /**
  * Visitor-facing copy. The field messages match the form's own in
- * `src/data/content/ui.ts` and `ui.sq.ts`, so a message is worded the same
+ * `src/data/content/ui*.ts`, so a message is worded the same
  * whether the browser or the server caught the problem.
  */
 const ERRORS: Record<
@@ -110,6 +115,54 @@ const ERRORS: Record<
     subject: "Select a subject for your message.",
     message: "The message must be at least 10 characters long.",
   },
+  rs: {
+    badRequest: "Neispravan zahtev.",
+    validation: "Proverite unete podatke.",
+    server: "Poruka nije poslata. Pokušajte ponovo kasnije.",
+    challenge: "Potvrda da niste robot nije uspela. Pokušajte ponovo.",
+    firstName: "Unesite vaše ime.",
+    lastName: "Unesite vaše prezime.",
+    emailMissing: "Unesite vaš email.",
+    emailInvalid: "Unesite ispravnu email adresu.",
+    subject: "Izaberite temu poruke.",
+    message: "Poruka mora imati najmanje 10 znakova.",
+  },
+  ba: {
+    badRequest: "Neispravan zahtjev.",
+    validation: "Provjerite unesene podatke.",
+    server: "Poruka nije poslana. Pokušajte ponovo kasnije.",
+    challenge: "Potvrda da niste robot nije uspjela. Pokušajte ponovo.",
+    firstName: "Unesite vaše ime.",
+    lastName: "Unesite vaše prezime.",
+    emailMissing: "Unesite vaš email.",
+    emailInvalid: "Unesite ispravnu email adresu.",
+    subject: "Izaberite temu poruke.",
+    message: "Poruka mora imati najmanje 10 znakova.",
+  },
+  me: {
+    badRequest: "Neispravan zahtjev.",
+    validation: "Provjerite unijete podatke.",
+    server: "Poruka nije poslata. Pokušajte ponovo kasnije.",
+    challenge: "Potvrda da niste robot nije uspjela. Pokušajte ponovo.",
+    firstName: "Unesite vaše ime.",
+    lastName: "Unesite vaše prezime.",
+    emailMissing: "Unesite vaš email.",
+    emailInvalid: "Unesite ispravnu email adresu.",
+    subject: "Izaberite temu poruke.",
+    message: "Poruka mora imati najmanje 10 znakova.",
+  },
+  hr: {
+    badRequest: "Neispravan zahtjev.",
+    validation: "Provjerite unesene podatke.",
+    server: "Poruka nije poslana. Pokušajte ponovno kasnije.",
+    challenge: "Potvrda da niste robot nije uspjela. Pokušajte ponovno.",
+    firstName: "Unesite svoje ime.",
+    lastName: "Unesite svoje prezime.",
+    emailMissing: "Unesite svoju e-poštu.",
+    emailInvalid: "Unesite ispravnu adresu e-pošte.",
+    subject: "Odaberite temu poruke.",
+    message: "Poruka mora imati najmanje 10 znakova.",
+  },
 };
 
 /** How the language is named in the email to the firm, which is Macedonian. */
@@ -117,6 +170,10 @@ const LANGUAGE_NAMES: Record<Language, string> = {
   mk: "македонски",
   sq: "албански (Shqip)",
   en: "англиски (English)",
+  rs: "српски (Srbija)",
+  ba: "босански (Bosna i Hercegovina)",
+  me: "црногорски (Crna Gora)",
+  hr: "хрватски (Hrvatska)",
 };
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -353,7 +410,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     message: str(source.message),
     // Anything unrecognised, including a missing field from an older cached
     // page, is treated as Macedonian.
-    locale: source.locale === "sq" || source.locale === "en" ? source.locale : "mk",
+    locale: isLanguage(source.locale) ? source.locale : "mk",
     website: str(source.website),
     turnstileToken: str(source.turnstileToken),
   };

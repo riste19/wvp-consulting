@@ -12,6 +12,8 @@ export const company = {
   group: "WVP Group",
   groupFounded: 1985,
   phones: ["+389 76 337 800", "+389 76 337 801"],
+  /** The Belgrade office's line, shown on the Serbian pages. */
+  phoneSerbia: "+381 654 019 999",
   email: "info@wvpconsulting.com",
   address: {
     street: "бул. Партизански одреди",
@@ -70,6 +72,54 @@ export const companyText: Record<Locale, CompanyText> = {
       country: "Republic of North Macedonia",
     },
     workingHours: "Mon–Fri 08:00–17:00",
+  },
+  rs: {
+    legalName: "WVP Plus Konsalting DOO Skoplje",
+    tagline: "Za naše klijente uvek biramo najbolje!",
+    description:
+      "Biznis i finansijski konsalting, pristup finansijama, grantovi i sufinansiranje za kompanije u Severnoj Makedoniji i regionu.",
+    address: {
+      street: "bul. Partizanski odredi",
+      city: "Skoplje",
+      country: "Republika Severna Makedonija",
+    },
+    workingHours: "Pon–Pet 08:00–17:00",
+  },
+  ba: {
+    legalName: "WVP Plus Konsalting DOO Skoplje",
+    tagline: "Za naše klijente uvijek biramo najbolje!",
+    description:
+      "Poslovno i finansijsko savjetovanje, pristup finansijama, grantovi i sufinansiranje za kompanije u Sjevernoj Makedoniji i regionu.",
+    address: {
+      street: "bul. Partizanski odredi",
+      city: "Skoplje",
+      country: "Republika Sjeverna Makedonija",
+    },
+    workingHours: "Pon–Pet 08:00–17:00",
+  },
+  me: {
+    legalName: "WVP Plus Konsalting DOO Skoplje",
+    tagline: "Za naše klijente uvijek biramo najbolje!",
+    description:
+      "Poslovno i finansijsko savjetovanje, pristup finansijama, grantovi i sufinansiranje za kompanije u Sjevernoj Makedoniji i regionu.",
+    address: {
+      street: "bul. Partizanski odredi",
+      city: "Skoplje",
+      country: "Republika Sjeverna Makedonija",
+    },
+    workingHours: "Pon–Pet 08:00–17:00",
+  },
+  hr: {
+    legalName: "WVP Plus Konsalting DOO Skopje",
+    tagline: "Za naše klijente uvijek biramo najbolje!",
+    description:
+      "Poslovno i financijsko savjetovanje, pristup financijama, grantovi i sufinanciranje za tvrtke u Sjevernoj Makedoniji i regiji.",
+    address: {
+      street: "bul. Partizanski odredi",
+      city: "Skopje",
+      country: "Republika Sjeverna Makedonija",
+    },
+    workingHours: "Pon–Pet 08:00–17:00",
   },
 };
 

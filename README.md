@@ -445,8 +445,13 @@ Before the first deployment:
 ## Known limitations
 
 - **The contact form has no backend** — success is simulated.
-- **Macedonian only** — `LanguageSelector` exists, but there is no second locale
-  behind it. The structure under `app/mk/` is ready for an `app/en/` sibling.
+- **Seven languages, one site.** Macedonian, Albanian and English, plus the
+  group's country pages — Serbian (`/rs`), Bosnian (`/ba`), Montenegrin (`/me`)
+  and Croatian (`/hr`), reached from the regional map and the language menu.
+  The country codes in the URL are not language codes, so `lang` and `hreflang`
+  go through `languageTag` in `src/i18n/locales.ts`. Every translation except
+  Macedonian needs a native speaker's read before launch. The blog and legal
+  pages stay Macedonian in every language.
 - The footer year (`currentYear` in `company.ts`) is set manually, so that a
   static build's output does not go stale without a redeploy.
 

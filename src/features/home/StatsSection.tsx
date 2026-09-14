@@ -28,6 +28,7 @@ export function StatsSection({ locale }: { locale: Locale }) {
                   value={stat.value}
                   prefix={stat.prefix}
                   suffix={stat.suffix}
+                  // English groups thousands with a comma; every other language here uses a full stop.
                   separator={locale === "en" ? "," : "."}
                   prefixClassName="text-3xl font-semibold mt-2 mr-1 sm:text-4xl"
                   className="text-6xl font-extrabold tracking-tight sm:text-7xl lg:text-8xl"

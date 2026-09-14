@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { articles } from "@/data/content";
 import { company } from "@/data/site";
-import { locales } from "@/i18n/locales";
+import { languageUrls, locales } from "@/i18n/locales";
 
 /** Pages translated into every language. "" is the home page. */
 const TRANSLATED_ROUTES = [
@@ -39,11 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: now,
         changeFrequency: "monthly" as const,
         priority: route === "" ? 1 : 0.7,
-        alternates: {
-          languages: Object.fromEntries(
-            locales.map((language) => [language, url(`/${language}${route}`)]),
-          ),
-        },
+        alternates: { languages: languageUrls(route, company.siteUrl) },
       })),
     ),
     ...MACEDONIAN_ONLY_ROUTES.map((route) => ({

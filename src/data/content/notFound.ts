@@ -27,4 +27,28 @@ export const notFoundCopy: Record<
     home: "Home page",
     contact: "Contact us",
   },
+  rs: {
+    title: "Stranica nije pronađena",
+    body: "Link koji ste otvorili ne postoji ili je premešten. Vratite se na početnu stranicu ili nas kontaktirajte direktno.",
+    home: "Početna stranica",
+    contact: "Kontaktirajte nas",
+  },
+  ba: {
+    title: "Stranica nije pronađena",
+    body: "Link koji ste otvorili ne postoji ili je premješten. Vratite se na početnu stranicu ili nas kontaktirajte direktno.",
+    home: "Početna stranica",
+    contact: "Kontaktirajte nas",
+  },
+  me: {
+    title: "Stranica nije pronađena",
+    body: "Link koji ste otvorili ne postoji ili je premješten. Vratite se na početnu stranicu ili nas kontaktirajte direktno.",
+    home: "Početna stranica",
+    contact: "Kontaktirajte nas",
+  },
+  hr: {
+    title: "Stranica nije pronađena",
+    body: "Poveznica koju ste otvorili ne postoji ili je premještena. Vratite se na početnu stranicu ili nas kontaktirajte izravno.",
+    home: "Početna stranica",
+    contact: "Kontaktirajte nas",
+  },
 };

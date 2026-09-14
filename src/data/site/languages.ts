@@ -19,4 +19,8 @@ export const languages: Language[] = [
   { locale: "mk", code: "MK", label: "Македонски", languageWord: "Јазик" },
   { locale: "sq", code: "SQ", label: "Shqip", languageWord: "Gjuha" },
   { locale: "en", code: "EN", label: "English", languageWord: "Language" },
+  { locale: "rs", code: "RS", label: "Srpski", languageWord: "Jezik" },
+  { locale: "ba", code: "BA", label: "Bosanski", languageWord: "Jezik" },
+  { locale: "me", code: "ME", label: "Crnogorski", languageWord: "Jezik" },
+  { locale: "hr", code: "HR", label: "Hrvatski", languageWord: "Jezik" },
 ];
