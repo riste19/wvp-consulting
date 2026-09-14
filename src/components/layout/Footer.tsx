@@ -14,7 +14,7 @@ import {
 } from "@/data/site";
 import type { Locale } from "@/i18n/locales";
 
-import { LogoPlaceholder } from "./LogoPlaceholder";
+import { Logo } from "./Logo";
 
 export function Footer({ locale }: { locale: Locale }) {
   const { chrome } = getContent(locale).ui;
@@ -38,7 +38,7 @@ export function Footer({ locale }: { locale: Locale }) {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <div className="mb-4 flex items-center">
-              <LogoPlaceholder variant="footer" lines={chrome.logoLines} />
+              <Logo variant="footer" tone="white" alt={company.name} />
             </div>
             <p className="mb-6 max-w-md text-gray-300">
               {companyText[locale].tagline}

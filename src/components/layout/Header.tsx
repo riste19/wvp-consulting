@@ -11,7 +11,7 @@ import { stripLocale } from "@/i18n/locales";
 import { cn } from "@/lib";
 
 import { LanguageSelector } from "./LanguageSelector";
-import { LogoPlaceholder } from "./LogoPlaceholder";
+import { Logo } from "./Logo";
 import { MobileMenu } from "./MobileMenu";
 
 const SCROLL_THRESHOLD = 50;
@@ -33,7 +33,6 @@ export type HeaderLabels = {
   openMenu: string;
   closeMenu: string;
   allServices: string;
-  logoLines: string[];
 };
 
 type HeaderProps = {
@@ -103,7 +102,7 @@ export function Header({ nav, mobileNav, labels }: HeaderProps) {
       <Container>
         <div className="flex h-16 items-center justify-between">
           <Link href={labels.homeHref} aria-label={labels.homeLinkLabel}>
-            <LogoPlaceholder lines={labels.logoLines} />
+            <Logo tone={solid ? "color" : "white"} />
           </Link>
 
           <nav

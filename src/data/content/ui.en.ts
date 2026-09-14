@@ -29,7 +29,6 @@ export const ui: typeof Mk.ui = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     allServices: "View all services",
-    logoLines: ["Plus", "Consulting"],
     linkedinLabel: "WVP Plus Consulting on LinkedIn",
     rightsReserved: "All rights reserved.",
     bookMeetingLines: ["Book a", "meeting"],
@@ -56,7 +55,7 @@ export const ui: typeof Mk.ui = {
     heroTitle: "Services",
     heroSubtitle:
       "From access to finance to market and strategic business development, we offer complete support for your business growth and development",
-    heroImageAlt: "Financial charts and coins illustrating our services",
+    heroImageAlt: "Consultants reviewing financial charts on a tablet",
     serviceImageAlt: "Illustration for the service",
   },
 
@@ -64,8 +63,7 @@ export const ui: typeof Mk.ui = {
     metaTitle: "Programmes",
     metaDescription:
       "Current grant and co-financing programmes: IPARD 3, the Fund for Innovation, EBRD, Creative Europe and national competitiveness measures.",
-    heroImageAlt:
-      "Documents and plans for applying to financial support programmes",
+    heroImageAlt: "Coins and financial charts",
     coFinancingLabel: "Co-financing rate",
     coFinancing: "Co-financing",
     deadlineLabel: "Deadline",
@@ -101,7 +99,7 @@ export const ui: typeof Mk.ui = {
       "Get in touch with the WVP Plus Consulting team — by phone, by email, at a meeting in our office or in an online consultation.",
     heroImageAlt: "Consultants at work in the company's office",
     openMapLabel: "Open the {city} location in Google Maps",
-    mapImageAlt: "Map showing the office location in {city}",
+    mapImageAlt: "The building that houses the office in {city}",
   },
 
   contactForm: {

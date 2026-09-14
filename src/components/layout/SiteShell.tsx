@@ -37,7 +37,6 @@ export function SiteShell({ locale, children }: SiteShellProps) {
           openMenu: chrome.openMenu,
           closeMenu: chrome.closeMenu,
           allServices: chrome.allServices,
-          logoLines: chrome.logoLines,
         }}
       />
       <main id="glavna-sodrzina" className="flex-1">

@@ -15,10 +15,9 @@ const nextConfig: NextConfig = {
   // `src/data/site/images.ts`, so the build stays green and ships broken
   // images. Never remove this line without also changing that.
   //
-  // The cost is `srcset` — every image is served at its full size. That is
-  // fine while the assets are placeholders. When real photography lands,
-  // switch to a custom loader rather than deleting the `sizes` props, which
-  // are inert today but correct the moment a loader exists.
+  // The cost is `srcset` — every image is served at one size. The photos in
+  // public/images are pre-sized WebP to compensate. If a loader is added
+  // later, keep the `sizes` props: inert today, correct the moment it exists.
   images: { unoptimized: true },
 
   // The project sits inside a home directory that contains an unrelated

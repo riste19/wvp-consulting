@@ -29,7 +29,6 @@ export const ui: typeof Mk.ui = {
     openMenu: "Hap menunë",
     closeMenu: "Mbyll menunë",
     allServices: "Shiko të gjitha shërbimet",
-    logoLines: ["Plus", "Consulting"],
     linkedinLabel: "WVP Plus Consulting në LinkedIn",
     rightsReserved: "Të gjitha të drejtat e rezervuara.",
     bookMeetingLines: ["Caktoni", "takim"],
@@ -56,7 +55,7 @@ export const ui: typeof Mk.ui = {
     heroTitle: "Shërbimet",
     heroSubtitle:
       "Nga qasja në financa deri te zhvillimi i tregut dhe strategjik i biznesit, ne ofrojmë mbështetje të plotë për rritjen dhe zhvillimin e biznesit tuaj",
-    heroImageAlt: "Tregues financiarë dhe monedha si ilustrim i shërbimeve",
+    heroImageAlt: "Konsulentë që analizojnë grafikë financiarë në tablet",
     serviceImageAlt: "Ilustrim për shërbimin",
   },
 
@@ -64,8 +63,7 @@ export const ui: typeof Mk.ui = {
     metaTitle: "Programet",
     metaDescription:
       "Programe aktuale për mjete të pakthyeshme dhe bashkëfinancim: IPARD 3, Fondi për Inovacione, EBRD, Evropa Krijuese dhe masat kombëtare për konkurrueshmëri.",
-    heroImageAlt:
-      "Dokumente dhe plane për aplikim në programe të mbështetjes financiare",
+    heroImageAlt: "Monedha dhe grafikë financiarë",
     coFinancingLabel: "Shkalla e bashkëfinancimit",
     coFinancing: "Bashkëfinancim",
     deadlineLabel: "Afati",
@@ -102,7 +100,7 @@ export const ui: typeof Mk.ui = {
       "Kontaktoni ekipin e WVP Plus Consulting — telefon, e-postë, takim në zyrë ose konsultim online.",
     heroImageAlt: "Konsulentë në punë në zyrën e kompanisë",
     openMapLabel: "Hapni vendndodhjen në {city} në Google Maps",
-    mapImageAlt: "Harta me vendndodhjen e zyrës në {city}",
+    mapImageAlt: "Ndërtesa ku ndodhet zyra në {city}",
   },
 
   contactForm: {
