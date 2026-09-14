@@ -227,25 +227,48 @@ strings — paragraph, heading, list, quote — rendered by
 `app/mk/blog/[slug]/page.tsx`. As a result there is no `dangerouslySetInnerHTML`
 anywhere in the codebase.
 
-### Adding a blog post
+### Blog posts and the admin panel
 
-```ts
-// src/data/content/articles.ts
-{
-  slug: "nova-objava",           // becomes /mk/blog/nova-objava
-  title: "Наслов",
-  category: "Финансии",
-  date: "2026-03-14",            // ISO, sorted descending
-  excerpt: "Краток вовед…",
-  blocks: [
-    { type: "paragraph", text: "…" },
-    { type: "heading", text: "…" },
-    { type: "list", items: ["…", "…"] },
-  ],
-}
-```
+Posts are data, in `src/data/content/posts.json`, and are written through the
+admin panel at **`/admin`** — not by editing code.
 
-`generateStaticParams` picks up the new route on the next build.
+- One editor signs in with a username and password and can create, edit and
+  delete posts. The page is in Macedonian, not linked from the site, and
+  `noindex`.
+- Every save is **one commit** to the repository (the post and its new image
+  together), made through the GitHub API by `functions/api/admin/[[route]].ts`.
+  Cloudflare Pages rebuilds from it, so a change is live in a minute or two, and
+  git keeps the history of every post.
+- Images are cropped to the post format (1040 × 416) in the browser before
+  upload and land in `public/images/blog/uploads/`.
+- Two tabs cannot overwrite each other: a save made against an outdated copy is
+  refused and asks the editor to refresh.
+- `articles.ts` checks `posts.json` at build time. If the file is ever broken by
+  hand, the build fails and the previous version stays live.
+
+**Setting it up** — six settings in Cloudflare Pages → Settings → Variables and
+Secrets (Production), then redeploy. Until all six exist, `/admin` answers that
+it is not set up.
+
+| Name | Value |
+| --- | --- |
+| `ADMIN_USERNAME` | the editor's username |
+| `ADMIN_PASSWORD_HASH`, `ADMIN_SESSION_SECRET` | from `node scripts/admin-credentials.mjs` (prints a strong password too) |
+| `GITHUB_TOKEN` | fine-grained token: this repository only, Contents read and write |
+| `GITHUB_REPO` | `riste19/wvp-consulting` (or the firm's repository after a transfer) |
+| `GITHUB_BRANCH` | the production branch |
+
+Commits made from the panel are attributed to the account that owns the token.
+
+Sign-in is protected by a PBKDF2 password hash, a signed `HttpOnly`,
+`Secure`, `SameSite=Strict` session cookie that expires after 8 hours, a
+same-origin check on every write, and a short lockout after five failed
+attempts. For a stronger fence, add a Cloudflare WAF rate-limit rule on
+`/api/admin/login` and put `/admin*` behind Cloudflare Access (free for small
+teams), which adds an emailed one-time code in front of the password.
+
+To test locally, point `GITHUB_BRANCH` at a throwaway branch — every save is a
+real commit.
 
 ---
 
