@@ -66,3 +66,24 @@ CONTACT_DRY_RUN=1
 # Swap in 2x00000000000000000000AB / 2x0000000000000000000000000000000AA to
 # test the refusal path instead.
 TURNSTILE_SECRET_KEY=
+
+
+# --- Admin panel (/admin) ----------------------------------------------------
+#
+# All six are required; until they are set, /admin says it is not set up.
+# In the dashboard, make every one except GITHUB_REPO and GITHUB_BRANCH a Secret.
+#
+# The sign-in. Run `node scripts/admin-credentials.mjs` and paste its two lines.
+ADMIN_USERNAME=
+ADMIN_PASSWORD_HASH=
+ADMIN_SESSION_SECRET=
+#
+# Saving a post commits to this repository, and Cloudflare rebuilds from it.
+# GitHub -> Settings -> Developer settings -> Fine-grained tokens -> Generate:
+#   Repository access: only this repository
+#   Permissions: Contents -> Read and write (nothing else)
+# Locally, point GITHUB_BRANCH at a throwaway branch, never the production one:
+# every save is a real commit.
+GITHUB_TOKEN=
+GITHUB_REPO=owner/wvp-consulting
+GITHUB_BRANCH=master

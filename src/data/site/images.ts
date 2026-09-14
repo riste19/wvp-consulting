@@ -5,14 +5,9 @@
  * site and converted to WebP at the size each slot displays. To replace one,
  * overwrite the file (keeping its proportions) or point the entry at a new one.
  *
- * Posts written through the admin panel carry their own image path; the
- * `article` list only covers the sample posts in `articles.ts`.
+ * Blog posts are not listed here: each post in `posts.json` carries its own
+ * image path, and the admin panel uploads new ones to /images/blog/uploads.
  */
-
-const ARTICLE_IMAGES = Array.from(
-  { length: 11 },
-  (_, index) => `/images/blog/post-${String(index + 1).padStart(2, "0")}.webp`,
-);
 
 export const images = {
   logo: "/images/brand/logo.webp",
@@ -35,7 +30,6 @@ export const images = {
   contactMap: "/images/page/kontakt-building.webp",
   /** By position in `services.ts`. */
   service: (index: number) => `/images/services/${SERVICE_FILES[index]}.webp`,
-  article: (index: number) => ARTICLE_IMAGES[index],
 } as const;
 
 const SERVICE_FILES = [
