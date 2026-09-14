@@ -262,7 +262,7 @@ Commits made from the panel are attributed to the account that owns the token.
 
 Sign-in is protected by a PBKDF2 password hash, a signed `HttpOnly`,
 `Secure`, `SameSite=Strict` session cookie that expires after 8 hours, a
-same-origin check on every write, and a short lockout after five failed
+same-origin check on every write, and a 30-minute lockout after three failed
 attempts. For a stronger fence, add a Cloudflare WAF rate-limit rule on
 `/api/admin/login` and put `/admin*` behind Cloudflare Access (free for small
 teams), which adds an emailed one-time code in front of the password.

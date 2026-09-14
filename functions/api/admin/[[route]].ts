@@ -59,8 +59,8 @@ const SESSION_SECONDS = 8 * 60 * 60;
 
 /** Kept low on purpose: PBKDF2 runs inside the Workers CPU budget. */
 const MIN_ITERATIONS = 10_000;
-const MAX_FAILED_LOGINS = 5;
-const LOCKOUT_MS = 15 * 60 * 1000;
+const MAX_FAILED_LOGINS = 3;
+const LOCKOUT_MS = 30 * 60 * 1000;
 
 const MAX_BODY_BYTES = 4 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 1.5 * 1024 * 1024;
@@ -83,7 +83,7 @@ const MESSAGES = {
   notFound: "Непозната адреса.",
   unauthorized: "Сесијата истече. Најавете се повторно.",
   badLogin: "Погрешно корисничко име или лозинка.",
-  locked: "Премногу неуспешни обиди. Обидете се повторно за 15 минути.",
+  locked: "Премногу неуспешни обиди. Обидете се повторно за 30 минути.",
   conflict:
     "Објавите се сменети во меѓувреме. Освежете ја страницата и направете ја промената повторно.",
   github: "Промената не беше зачувана. Обидете се повторно за неколку минути.",
