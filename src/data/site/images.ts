@@ -27,7 +27,6 @@ export const images = {
     kontakt: "/images/page/kontakt-hero.webp",
     blog: "/images/page/blog-hero.webp",
   },
-  contactMap: "/images/page/kontakt-building.webp",
   /** By position in `services.ts`. */
   service: (index: number) => `/images/services/${SERVICE_FILES[index]}.webp`,
 } as const;
@@ -52,5 +51,4 @@ export const imageSizes = {
   pageHero: { width: 1920, height: 720 },
   service: { width: 800, height: 800 },
   article: { width: 1040, height: 416 },
-  contactMap: { width: 800, height: 550 },
 } as const;

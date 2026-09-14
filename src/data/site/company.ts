@@ -16,11 +16,16 @@ export const company = {
   phoneSerbia: "+381 654 019 999",
   email: "info@wvpconsulting.com",
   address: {
-    street: "бул. Партизански одреди",
+    street: "бул. Кочо Рацин 3",
     city: "Скопје",
     country: "Република Северна Македонија",
   },
   workingHours: "Пон–Пет 08:00–17:00",
+  /**
+   * What the contact-page map pins. Coordinates ("41.99, 21.43") are the most
+   * exact; an address works too.
+   */
+  mapQuery: "Булевар Кочо Рацин 3, Скопје",
   social: {
     linkedin:
       "https://www.linkedin.com/company/wvp-plus-konsalting/?originalSubdomain=mk",
@@ -55,7 +60,7 @@ export const companyText: Record<Locale, CompanyText> = {
     description:
       "Konsulencë biznesi dhe financiare, qasje në financa, grante dhe bashkëfinancim për kompanitë në Maqedoninë e Veriut dhe në rajon.",
     address: {
-      street: "bul. Partizanski Odredi",
+      street: "bul. Koço Racin 3",
       city: "Shkup",
       country: "Republika e Maqedonisë së Veriut",
     },
@@ -67,7 +72,7 @@ export const companyText: Record<Locale, CompanyText> = {
     description:
       "Business and financial consulting, access to finance, grants and co-financing for companies in North Macedonia and the region.",
     address: {
-      street: "Partizanski Odredi Blvd.",
+      street: "3 Kočo Racin Blvd.",
       city: "Skopje",
       country: "Republic of North Macedonia",
     },
@@ -79,7 +84,7 @@ export const companyText: Record<Locale, CompanyText> = {
     description:
       "Biznis i finansijski konsalting, pristup finansijama, grantovi i sufinansiranje za kompanije u Severnoj Makedoniji i regionu.",
     address: {
-      street: "bul. Partizanski odredi",
+      street: "bul. Kočo Racin 3",
       city: "Skoplje",
       country: "Republika Severna Makedonija",
     },
@@ -91,7 +96,7 @@ export const companyText: Record<Locale, CompanyText> = {
     description:
       "Poslovno i finansijsko savjetovanje, pristup finansijama, grantovi i sufinansiranje za kompanije u Sjevernoj Makedoniji i regionu.",
     address: {
-      street: "bul. Partizanski odredi",
+      street: "bul. Kočo Racin 3",
       city: "Skoplje",
       country: "Republika Sjeverna Makedonija",
     },
@@ -103,7 +108,7 @@ export const companyText: Record<Locale, CompanyText> = {
     description:
       "Poslovno i finansijsko savjetovanje, pristup finansijama, grantovi i sufinansiranje za kompanije u Sjevernoj Makedoniji i regionu.",
     address: {
-      street: "bul. Partizanski odredi",
+      street: "bul. Kočo Racin 3",
       city: "Skoplje",
       country: "Republika Sjeverna Makedonija",
     },
@@ -115,7 +120,7 @@ export const companyText: Record<Locale, CompanyText> = {
     description:
       "Poslovno i financijsko savjetovanje, pristup financijama, grantovi i sufinanciranje za tvrtke u Sjevernoj Makedoniji i regiji.",
     address: {
-      street: "bul. Partizanski odredi",
+      street: "bul. Kočo Racin 3",
       city: "Skopje",
       country: "Republika Sjeverna Makedonija",
     },

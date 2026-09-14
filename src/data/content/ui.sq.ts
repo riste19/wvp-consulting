@@ -100,7 +100,7 @@ export const ui: typeof Mk.ui = {
       "Kontaktoni ekipin e WVP Plus Consulting — telefon, e-postë, takim në zyrë ose konsultim online.",
     heroImageAlt: "Konsulentë në punë në zyrën e kompanisë",
     openMapLabel: "Hapni vendndodhjen në {city} në Google Maps",
-    mapImageAlt: "Ndërtesa ku ndodhet zyra në {city}",
+    mapTitle: "Harta me vendndodhjen e zyrës sonë në {city}",
   },
 
   contactForm: {

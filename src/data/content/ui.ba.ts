@@ -99,7 +99,7 @@ export const ui: typeof Mk.ui = {
       "Stupite u kontakt s timom WVP Plus Consulting — telefonom, emailom, na sastanku u kancelariji ili putem online konsultacije.",
     heroImageAlt: "Konsultanti na poslu u kancelariji kompanije",
     openMapLabel: "Otvorite lokaciju ({city}) na Google mapama",
-    mapImageAlt: "Poslovna zgrada u kojoj se nalazi kancelarija ({city})",
+    mapTitle: "Mapa s lokacijom naše kancelarije ({city})",
   },
 
   contactForm: {

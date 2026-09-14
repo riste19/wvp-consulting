@@ -99,7 +99,7 @@ export const ui: typeof Mk.ui = {
       "Get in touch with the WVP Plus Consulting team — by phone, by email, at a meeting in our office or in an online consultation.",
     heroImageAlt: "Consultants at work in the company's office",
     openMapLabel: "Open the {city} location in Google Maps",
-    mapImageAlt: "The building that houses the office in {city}",
+    mapTitle: "Map showing our office in {city}",
   },
 
   contactForm: {
