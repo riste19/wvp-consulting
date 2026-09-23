@@ -1,6 +1,6 @@
 /**
  * The admin API behind /admin, where one editor writes, edits and deletes blog
- * posts.
+ * posts and chooses which country sites each one appears on.
  *
  * There is no database. The posts live in `src/data/content/posts.json` in the
  * site's GitHub repository, and every save is a single commit to the
@@ -39,6 +39,13 @@ type Block =
   | { type: "p" | "h2"; text: string }
   | { type: "ul"; items: string[] };
 
+/**
+ * The country sites, in the order `src/i18n/locales.ts` lists them. Kept as a
+ * copy because Pages Functions are bundled separately from the site.
+ */
+const LOCALES = ["mk", "sq", "en", "rs", "ba", "me", "hr"] as const;
+type PostLocale = (typeof LOCALES)[number];
+
 type Post = {
   slug: string;
   title: string;
@@ -47,6 +54,8 @@ type Post = {
   date: string;
   image: string;
   body: Block[];
+  /** Where the post is published. Written last, matching the existing file. */
+  locales: PostLocale[];
 };
 
 type Upload = { key: string; ext: string; bytes: Uint8Array };
@@ -405,6 +414,22 @@ function parseUploads(value: unknown): Upload[] | null {
   return uploads;
 }
 
+/**
+ * The chosen country sites, in the canonical order so a reordered selection is
+ * not mistaken for an edit. A post saved before the chooser existed has no
+ * list and belongs everywhere, which is what it already did.
+ */
+function parseLocales(value: unknown): PostLocale[] | null {
+  if (value === undefined) return [...LOCALES];
+  if (!Array.isArray(value)) return null;
+
+  const chosen = new Set(value.filter((item): item is string => typeof item === "string"));
+  if (chosen.size !== value.length) return null;
+
+  const picked = LOCALES.filter((locale) => chosen.has(locale));
+  return picked.length === chosen.size && picked.length > 0 ? picked : null;
+}
+
 function parsePosts(
   value: unknown,
   uploadPaths: Map<string, string>,
@@ -444,7 +469,10 @@ function parsePosts(
     const body = parseBody(post.body);
     if (!body) return named("содржината е празна или предолга.");
 
-    posts.push({ slug, title, excerpt, category, date, image, body });
+    const postLocales = parseLocales(post.locales);
+    if (!postLocales) return named("изберете барем една држава за објавата.");
+
+    posts.push({ slug, title, excerpt, category, date, image, body, locales: postLocales });
   }
 
   return { posts };

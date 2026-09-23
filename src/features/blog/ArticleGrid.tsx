@@ -16,6 +16,7 @@ type ArticleGridProps = {
     all: string;
     filter: string;
     empty: string;
+    emptyAll: string;
     readMore: string;
   };
 };
@@ -83,7 +84,7 @@ export function ArticleGrid({
 
       {visible.length === 0 ? (
         <p className="py-16 text-center text-lg text-muted-foreground">
-          {labels.empty}
+          {articles.length === 0 ? labels.emptyAll : labels.empty}
         </p>
       ) : null}
     </>

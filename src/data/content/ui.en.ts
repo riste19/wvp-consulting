@@ -168,6 +168,7 @@ export const ui: typeof Mk.ui = {
     filterAll: "All",
     filterLabel: "Filter by category",
     emptyCategory: "There are no posts in this category.",
+    emptyList: "There are no posts yet.",
     languageNote: "Posts are available in Macedonian only.",
   },
 

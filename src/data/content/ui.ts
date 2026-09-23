@@ -176,6 +176,7 @@ export const ui = {
     filterAll: "Сите",
     filterLabel: "Филтрирај по категорија",
     emptyCategory: "Нема објави во оваа категорија.",
+    emptyList: "Сè уште нема објави.",
     /** Shown above posts that are not written in this language. Empty: none needed. */
     languageNote: "",
   },

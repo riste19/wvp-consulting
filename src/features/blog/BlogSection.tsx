@@ -1,12 +1,13 @@
 import { Reveal } from "@/components/motion";
 import { ButtonLink, Container, SectionHeading } from "@/components/ui";
-import { getContent, latestArticles } from "@/data/content";
+import { getContent, latestArticlesFor } from "@/data/content";
 import type { Locale } from "@/i18n/locales";
 
 import { BlogCard } from "./BlogCard";
 
 export function BlogSection({ locale }: { locale: Locale }) {
   const { blog } = getContent(locale).ui;
+  const latest = latestArticlesFor(locale);
 
   return (
     <section id="blog" className="bg-background py-16 sm:py-20">
@@ -18,7 +19,7 @@ export function BlogSection({ locale }: { locale: Locale }) {
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5 lg:gap-2">
-          {latestArticles.map((article, index) => (
+          {latest.map((article, index) => (
             <Reveal key={article.slug} delay={index * 0.05} className="h-full">
               <BlogCard
                 article={article}

@@ -1,3 +1,5 @@
+import { isLocale, locales, type Locale } from "@/i18n/locales";
+
 import posts from "./posts.json";
 
 export type ArticleBlock =
@@ -14,6 +16,12 @@ export type Article = {
   date: string;
   image: string;
   body: ArticleBlock[];
+  /**
+   * The country sites this post appears on, chosen in the admin panel. A post
+   * written before the chooser existed has no list, and that means every
+   * language — which is what those posts already did.
+   */
+  locales?: Locale[];
 };
 
 const isText = (value: unknown): value is string =>
@@ -57,6 +65,14 @@ function checkArticles(value: unknown): Article[] {
     if (!Array.isArray(post.body) || post.body.length === 0 || !post.body.every(isBlock)) {
       throw new Error(`${where}: invalid body`);
     }
+    if (
+      post.locales !== undefined &&
+      (!Array.isArray(post.locales) ||
+        post.locales.length === 0 ||
+        !post.locales.every((locale) => typeof locale === "string" && isLocale(locale)))
+    ) {
+      throw new Error(`${where}: invalid locales`);
+    }
   });
 
   return value as Article[];
@@ -69,15 +85,40 @@ export const sortedArticles = [...articles].sort(
   (a, b) => Date.parse(b.date) - Date.parse(a.date),
 );
 
-/** The homepage shows the five most recent posts. */
-export const latestArticles = sortedArticles.slice(0, 5);
+/**
+ * Whether a post was published to this country site. A post with no list
+ * predates the chooser and belongs to all of them.
+ */
+export const isPublishedIn = (article: Article, locale: Locale) =>
+  article.locales === undefined || article.locales.includes(locale);
 
-export const articleCategories = Array.from(
-  new Set(articles.map((article) => article.category)),
-);
+/** Newest first, and only what this country site is meant to show. */
+export const articlesFor = (locale: Locale) =>
+  sortedArticles.filter((article) => isPublishedIn(article, locale));
+
+/** The homepage shows the five most recent posts of its own country site. */
+export const latestArticlesFor = (locale: Locale) => articlesFor(locale).slice(0, 5);
+
+/** Only the categories that have a post here, so no filter comes up empty. */
+export const categoriesFor = (locale: Locale) =>
+  Array.from(new Set(articlesFor(locale).map((article) => article.category)));
 
 export const getArticle = (slug: string) =>
   articles.find((article) => article.slug === slug);
+
+/** The same post on this country site, or nothing if it was not published here. */
+export const getArticleIn = (locale: Locale, slug: string) => {
+  const article = getArticle(slug);
+  return article && isPublishedIn(article, locale) ? article : undefined;
+};
+
+/**
+ * The address that represents a post to search engines. Macedonian where the
+ * post was published there, and otherwise the first country site that has it —
+ * a post can now be published to Serbia alone, and /mk would be a 404.
+ */
+export const canonicalLocaleOf = (article: Article): Locale =>
+  locales.find((locale) => isPublishedIn(article, locale)) ?? locales[0];
 
 const MONTHS_MK = [
   "јануари",

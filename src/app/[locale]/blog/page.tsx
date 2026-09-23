@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { Reveal } from "@/components/motion";
 import { Container } from "@/components/ui";
-import { articleCategories, getContent, sortedArticles } from "@/data/content";
+import { articlesFor, categoriesFor, getContent } from "@/data/content";
 import { ArticleGrid } from "@/features/blog";
 import { localeAlternates } from "@/i18n/locales";
 import { resolveLocale } from "@/i18n/resolveLocale";
@@ -42,13 +42,14 @@ export default async function BlogPage({ params }: PageProps<"/[locale]/blog">) 
         </Reveal>
 
         <ArticleGrid
-          articles={sortedArticles}
-          categories={articleCategories}
+          articles={articlesFor(locale)}
+          categories={categoriesFor(locale)}
           locale={locale}
           labels={{
             all: blog.filterAll,
             filter: blog.filterLabel,
             empty: blog.emptyCategory,
+            emptyAll: blog.emptyList,
             readMore: blog.readMore,
           }}
         />

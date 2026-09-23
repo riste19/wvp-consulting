@@ -5,11 +5,14 @@ import { useState, type FormEvent } from "react";
 
 import type { Article } from "@/data/content/articles";
 import { imageSizes } from "@/data/site/images";
+import { locales, type Locale } from "@/i18n/locales";
 
 import {
   blocksToText,
   fileToCoverImage,
+  LOCALE_LABELS,
   slugify,
+  sortLocales,
   textToBlocks,
   type CoverImage,
 } from "./postEditing";
@@ -44,10 +47,18 @@ export function PostEditor({
   const [date, setDate] = useState(initial.date);
   const [excerpt, setExcerpt] = useState(initial.excerpt);
   const [bodyText, setBodyText] = useState(() => blocksToText(initial.body));
+  const [chosen, setChosen] = useState<Locale[]>(initial.locales ?? [...locales]);
   const [image, setImage] = useState<CoverImage | null>(null);
   const [problem, setProblem] = useState("");
 
   const preview = image?.previewUrl ?? (initial.image ? previewFor(initial.image) : "");
+
+  const toggle = (code: Locale) =>
+    setChosen((current) =>
+      current.includes(code)
+        ? current.filter((item) => item !== code)
+        : sortLocales([...current, code]),
+    );
 
   const changeTitle = (value: string) => {
     setTitle(value);
@@ -79,6 +90,7 @@ export function PostEditor({
       (!category.trim() && "Внесете категорија.") ||
       (!date && "Изберете датум.") ||
       (!excerpt.trim() && "Внесете краток опис.") ||
+      (chosen.length === 0 && "Изберете барем една држава каде се објавува.") ||
       (!image && !initial.image && "Додадете слика.") ||
       (body.length === 0 && "Внесете содржина.") ||
       "";
@@ -95,6 +107,7 @@ export function PostEditor({
         date,
         image: image ? `upload:${image.key}` : initial.image,
         body,
+        locales: sortLocales(chosen),
       },
       image,
     );
@@ -177,6 +190,30 @@ export function PostEditor({
             className={FIELD_CLASS}
           />
         </div>
+
+        <fieldset className="md:col-span-2">
+          <legend className={LABEL_CLASS}>Каде се објавува</legend>
+          <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {locales.map((code) => (
+              <label
+                key={code}
+                className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-foreground hover:bg-neutral-50"
+              >
+                <input
+                  type="checkbox"
+                  checked={chosen.includes(code)}
+                  onChange={() => toggle(code)}
+                  className="h-4 w-4 accent-primary"
+                />
+                {LOCALE_LABELS[code]}
+              </label>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Објавата ја гледаат само избраните сајтови. Текстот останува ист
+            насекаде — не се преведува.
+          </p>
+        </fieldset>
 
         <div className="md:col-span-2">
           <label htmlFor="post-excerpt" className={LABEL_CLASS}>

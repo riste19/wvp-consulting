@@ -168,6 +168,7 @@ export const ui: typeof Mk.ui = {
     filterAll: "Sve",
     filterLabel: "Filtriraj po kategoriji",
     emptyCategory: "U ovoj kategoriji nema objava.",
+    emptyList: "Još nema objava.",
     languageNote: "Objave su dostupne samo na makedonskom jeziku.",
   },
 

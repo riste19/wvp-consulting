@@ -7,20 +7,27 @@ import { notFound } from "next/navigation";
 import { Reveal } from "@/components/motion";
 import { Container } from "@/components/ui";
 import {
-  articles,
+  articlesFor,
+  canonicalLocaleOf,
   categoryTone,
   formatArticleDate,
-  getArticle,
+  getArticleIn,
   getContent,
-  sortedArticles,
 } from "@/data/content";
 import { company, imageSizes } from "@/data/site";
 import { BlogCard } from "@/features/blog";
+import { isLocale, defaultLocale } from "@/i18n/locales";
 import { resolveLocale } from "@/i18n/resolveLocale";
 import { articleJsonLd, cn } from "@/lib";
 
-export function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.slug }));
+/**
+ * Run once per language, with the locale the parent segment generated, so a
+ * post is only built into the country sites it was published to. A country
+ * with no posts simply gets no pages here.
+ */
+export function generateStaticParams({ params }: { params: { locale: string } }) {
+  const locale = isLocale(params.locale) ? params.locale : defaultLocale;
+  return articlesFor(locale).map((article) => ({ slug: article.slug }));
 }
 
 export async function generateMetadata({
@@ -28,16 +35,16 @@ export async function generateMetadata({
 }: PageProps<"/[locale]/blog/[slug]">): Promise<Metadata> {
   const locale = await resolveLocale(params);
   const { slug } = await params;
-  const article = getArticle(slug);
+  const article = getArticleIn(locale, slug);
 
   if (!article) return { title: getContent(locale).ui.blog.notFound };
 
   return {
     title: article.title,
     description: article.excerpt,
-    // Articles are Macedonian in every language, so the Macedonian address
-    // is canonical and the others are not indexed as duplicates of it.
-    alternates: { canonical: `/mk/blog/${article.slug}` },
+    // Articles are Macedonian on every country site, so one address is
+    // canonical and the others are not indexed as duplicates of it.
+    alternates: { canonical: `/${canonicalLocaleOf(article)}/blog/${article.slug}` },
     openGraph: {
       type: "article",
       title: article.title,
@@ -53,12 +60,12 @@ export default async function ArticlePage({
 }: PageProps<"/[locale]/blog/[slug]">) {
   const locale = await resolveLocale(params);
   const { slug } = await params;
-  const article = getArticle(slug);
+  const article = getArticleIn(locale, slug);
 
   if (!article) notFound();
 
   const { blog } = getContent(locale).ui;
-  const related = sortedArticles
+  const related = articlesFor(locale)
     .filter((item) => item.slug !== article.slug)
     .slice(0, 3);
 

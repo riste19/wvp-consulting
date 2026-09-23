@@ -171,6 +171,7 @@ export const ui: typeof Mk.ui = {
     filterAll: "Të gjitha",
     filterLabel: "Filtro sipas kategorisë",
     emptyCategory: "Nuk ka postime në këtë kategori.",
+    emptyList: "Ende nuk ka postime.",
     languageNote: "Postimet janë në dispozicion vetëm në gjuhën maqedonase.",
   },
 

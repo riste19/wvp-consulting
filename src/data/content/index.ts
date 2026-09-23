@@ -155,11 +155,15 @@ export type {
 } from "./about";
 export { categoryTone } from "./categories";
 export {
-  articleCategories,
   articles,
+  articlesFor,
+  canonicalLocaleOf,
+  categoriesFor,
   formatArticleDate,
   getArticle,
-  latestArticles,
+  getArticleIn,
+  isPublishedIn,
+  latestArticlesFor,
   sortedArticles,
   type Article,
   type ArticleBlock,

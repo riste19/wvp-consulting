@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { articles } from "@/data/content";
+import { articles, canonicalLocaleOf } from "@/data/content";
 import { company } from "@/data/site";
 import { languageUrls, locales } from "@/i18n/locales";
 
@@ -48,8 +48,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.3,
     })),
+    // A post is only listed at the country site it is canonical on; it may
+    // not have been published to Macedonia at all.
     ...articles.map((article) => ({
-      url: url(`/mk/blog/${article.slug}`),
+      url: url(`/${canonicalLocaleOf(article)}/blog/${article.slug}`),
       lastModified: new Date(article.date),
       changeFrequency: "yearly" as const,
       priority: 0.5,

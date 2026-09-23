@@ -1,5 +1,25 @@
 import type { Article, ArticleBlock } from "@/data/content/articles";
 import { imageSizes } from "@/data/site/images";
+import { locales, type Locale } from "@/i18n/locales";
+
+/**
+ * The country sites as the editor picks them. The first three are the same
+ * Macedonian site in its three languages; the rest are the group’s country
+ * sites. The panel is Macedonian, so these names are too.
+ */
+export const LOCALE_LABELS: Record<Locale, string> = {
+  mk: "Македонија (македонски)",
+  sq: "Македонија (албански)",
+  en: "Меѓународно (англиски)",
+  rs: "Србија",
+  ba: "Босна и Херцеговина",
+  me: "Црна Гора",
+  hr: "Хрватска",
+};
+
+/** Always in the canonical order, however the boxes were ticked. */
+export const sortLocales = (chosen: Locale[]): Locale[] =>
+  locales.filter((locale) => chosen.includes(locale));
 
 /** A picked image, already cropped to the post format and encoded for upload. */
 export type CoverImage = {
@@ -40,6 +60,8 @@ export const emptyPost = (): Article => ({
   date: today(),
   image: "",
   body: [],
+  // A new post goes everywhere until the editor narrows it down.
+  locales: [...locales],
 });
 
 /**

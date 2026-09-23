@@ -6,10 +6,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Article } from "@/data/content/articles";
 import { formatArticleDate } from "@/data/content/articles";
 
+import { locales } from "@/i18n/locales";
+
 import { adminApi } from "./adminApi";
 import { LoginForm } from "./LoginForm";
 import { PostEditor } from "./PostEditor";
-import { emptyPost, type CoverImage } from "./postEditing";
+import { emptyPost, LOCALE_LABELS, type CoverImage } from "./postEditing";
+
+/** Which country sites a post is on, for the row under its title. */
+function where(post: Article): string {
+  const chosen = post.locales ?? [...locales];
+  if (chosen.length === locales.length) return "Сите држави";
+  return chosen.map((code) => LOCALE_LABELS[code]).join(", ");
+}
 
 type Phase = "checking" | "signedOut" | "signedIn";
 
@@ -251,6 +260,9 @@ export function AdminApp() {
                       <p className="text-sm text-muted-foreground">
                         {post.category} · {formatArticleDate(post.date)}
                       </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {where(post)}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <button
@@ -269,7 +281,7 @@ export function AdminApp() {
                         type="button"
                         disabled={busy}
                         onClick={() => void deletePost(post)}
-                        className="h-9 rounded-md border border-border px-4 text-sm font-medium text-primary hover:bg-red-50 disabled:opacity-60"
+                        className="h-9 rounded-md border border-border px-4 text-sm font-medium text-primary hover:bg-primary/5 disabled:opacity-60"
                       >
                         Избриши
                       </button>
