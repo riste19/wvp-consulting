@@ -2,14 +2,22 @@
 
 /* --------------------------------------------------------------------------
    Design tokens
-   Values measured from the rendered reference site (wvpconsulting.com/mk).
+   Neutrals measured from the rendered reference site (wvpconsulting.com/mk).
+   The reds come from the logotype instead: #e0021c is the ink it is drawn in,
+   and the darker steps are the brand ramp around it, so nothing on the page
+   sits next to the logo in a slightly different red.
    -------------------------------------------------------------------------- */
 :root {
   --background: #f0f0f0;
   --foreground: #1a1a1a;
 
-  --primary: #b91c2e;
+  --primary: #e0021c;
   --primary-foreground: #ffffff;
+  /* Hover, then pressed/focus — one and two steps down the ramp. */
+  --primary-hover: #bd121a;
+  --primary-active: #9c1817;
+  /* One step up, for the lighter end of a gradient. */
+  --primary-soft: #eb4739;
 
   --secondary: #c4c4c4;
   --secondary-foreground: #1a1a1a;
@@ -41,7 +49,7 @@
   --duration-fast: 150ms;
   --duration-base: 300ms;
   --duration-slow: 500ms;
-  --beam-color: #bf0d0d;
+  --beam-color: var(--primary);
   --beam-duration: 30s;
 }
 
@@ -50,6 +58,9 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-soft: var(--primary-soft);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);

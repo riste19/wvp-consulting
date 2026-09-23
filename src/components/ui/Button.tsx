@@ -11,12 +11,12 @@ const BASE =
 const VARIANTS: Record<ButtonVariant, string> = {
   /** Solid crimson call to action — hero, blog listing, form submit. */
   primary:
-    "h-10 px-8 py-3 text-sm font-semibold bg-primary focus-visible:ring-primary text-primary-foreground hover:bg-[#a5192a] hover:shadow-lg hover:shadow-primary/50",
+    "h-10 px-8 py-3 text-sm font-semibold bg-primary focus-visible:ring-primary text-primary-foreground hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/50",
   /** Light button that sits on top of a photograph. */
   onImage:
     "h-10 px-8 py-3 text-sm font-semibold border-2 focus-visible:ring-primary border-white bg-background text-primary backdrop-blur-sm hover:bg-white hover:text-black",
   /** Larger rounded action used in the team and careers blocks. */
-  pill: "rounded-lg px-8 py-3 text-base font-medium bg-[#b91c1c] focus-visible:ring-primary text-white shadow-lg hover:bg-[#991b1b] hover:scale-[1.02]",
+  pill: "rounded-lg px-8 py-3 text-base font-medium bg-primary focus-visible:ring-primary text-white shadow-lg hover:bg-primary-hover hover:scale-[1.02]",
   /**
    * Light pill for the red bands, where `pill` would be red-on-red. The focus
    * ring goes white for the same reason.

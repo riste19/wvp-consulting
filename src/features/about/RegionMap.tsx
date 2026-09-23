@@ -101,7 +101,7 @@ export function RegionMap({ offices, copy }: RegionMapProps) {
                     choose(office);
                   }
                 }}
-                className="cursor-pointer fill-[#dc2626] stroke-neutral-800 outline-none transition-[fill] duration-200 hover:fill-[#b91c1c] focus-visible:fill-[#991b1b] focus-visible:stroke-[3]"
+                className="cursor-pointer fill-primary stroke-neutral-800 outline-none transition-[fill] duration-200 hover:fill-primary-hover focus-visible:fill-primary-active focus-visible:stroke-[3]"
               />
             );
           })}

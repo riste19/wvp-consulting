@@ -128,7 +128,7 @@ export function Header({ nav, mobileNav, labels }: HeaderProps) {
                       className={cn(
                         "flex items-center gap-1 transition-colors hover:text-primary",
                         active
-                          ? "font-bold text-[#dc2626]"
+                          ? "font-bold text-primary"
                           : solid
                             ? "text-foreground"
                             : "text-gray-400",
@@ -164,7 +164,7 @@ export function Header({ nav, mobileNav, labels }: HeaderProps) {
                   className={cn(
                     "transition-colors hover:text-primary",
                     active
-                      ? "font-bold text-[#dc2626]"
+                      ? "font-bold text-primary"
                       : solid
                         ? "text-foreground"
                         : "text-gray-400",

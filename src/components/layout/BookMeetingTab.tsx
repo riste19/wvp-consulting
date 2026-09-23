@@ -14,7 +14,7 @@ export function BookMeetingTab({ href, lines }: BookMeetingTabProps) {
   return (
     <Link
       href={href}
-      className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 rounded-lg bg-primary px-5 py-3 text-center text-xs font-bold uppercase leading-tight tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-[#a5192a] md:block"
+      className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 rounded-lg bg-primary px-5 py-3 text-center text-xs font-bold uppercase leading-tight tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-primary-hover md:block"
     >
       {lines[0]}
       <br />

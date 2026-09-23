@@ -79,7 +79,7 @@ export default async function ContactPage({
                       <Icon
                         aria-hidden
                         strokeWidth={1.5}
-                        className="mt-0.5 h-6 w-6 shrink-0 text-[#b91c1c]"
+                        className="mt-0.5 h-6 w-6 shrink-0 text-primary"
                       />
                       <h3 className="text-lg font-semibold text-gray-900">
                         {method.title}

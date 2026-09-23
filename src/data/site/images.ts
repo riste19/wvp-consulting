@@ -43,8 +43,8 @@ const SERVICE_FILES = [
 
 /** Intrinsic sizes, so `next/image` can reserve space. */
 export const imageSizes = {
-  logo: { width: 384, height: 82 },
-  logoWhite: { width: 900, height: 192 },
+  logo: { width: 384, height: 77 },
+  logoWhite: { width: 1310, height: 264 },
   hero: { width: 1920, height: 1080 },
   team: { width: 1136, height: 1686 },
   footerBackground: { width: 800, height: 550 },

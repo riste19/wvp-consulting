@@ -13,8 +13,8 @@ type LogoProps = {
 };
 
 /**
- * The firm's logotype. It is the Macedonian lockup (ВФП ПЛУС КОНСАЛТИНГ) in
- * every language, as on the previous site.
+ * The firm's logotype. It is the same lockup (WVP ПЛУС КОНСАЛТИНГ) in every
+ * language, the Latin monogram over the Macedonian wordmark.
  */
 export function Logo({ variant = "header", tone = "color", alt = "" }: LogoProps) {
   const isFooter = variant === "footer";

@@ -6,7 +6,7 @@ import { cn } from "@/lib";
 type ArrowLinkProps = {
   href: string;
   children: string;
-  /** `brand` is the darker red used on service cards. */
+  /** `brand` darkens on hover instead of fading — used on service cards. */
   tone?: "primary" | "brand";
   /**
    * Hides the link from assistive tech and the tab order — for cards where the
@@ -38,7 +38,7 @@ export function ArrowLink({
       className={cn(
         "inline-flex items-center gap-1 text-sm font-semibold underline-offset-4 transition-colors",
         tone === "brand"
-          ? "text-[#b91c1c] hover:text-primary hover:underline"
+          ? "text-primary hover:text-primary-hover hover:underline"
           : "text-primary hover:text-primary/80",
         className,
       )}

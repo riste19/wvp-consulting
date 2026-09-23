@@ -20,7 +20,7 @@ export function ServiceCard({
   const { home } = getContent(locale).ui;
 
   return (
-    <article className="group relative h-full min-h-[300px] w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all duration-500 hover:shadow-xl hover:shadow-red-200/50">
+    <article className="group relative h-full min-h-[300px] w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all duration-500 hover:shadow-xl hover:shadow-primary/20">
       <BorderBeam delay={beamDelay} />
 
       <div className="relative z-10 flex h-full flex-col p-6 sm:p-8">
@@ -28,7 +28,7 @@ export function ServiceCard({
           <Icon
             aria-hidden
             strokeWidth={1.2}
-            className="h-12 w-12 text-[#b91c1c] transition-transform duration-300 group-hover:scale-110"
+            className="h-12 w-12 text-primary transition-transform duration-300 group-hover:scale-110"
           />
         </div>
 
