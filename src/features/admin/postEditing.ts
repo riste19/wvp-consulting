@@ -1,20 +1,31 @@
 import type { Article, ArticleBlock } from "@/data/content/articles";
 import { imageSizes } from "@/data/site/images";
-import { locales, type Locale } from "@/i18n/locales";
+import { defaultLocale, locales, type Locale } from "@/i18n/locales";
 
 /**
  * The country sites as the editor picks them. The first three are the same
- * Macedonian site in its three languages; the rest are the group’s country
- * sites. The panel is Macedonian, so these names are too.
+ * North Macedonian site in its three languages; the rest are the group's
+ * country sites.
  */
 export const LOCALE_LABELS: Record<Locale, string> = {
-  mk: "Македонија (македонски)",
-  sq: "Македонија (албански)",
-  en: "Меѓународно (англиски)",
-  rs: "Србија",
-  ba: "Босна и Херцеговина",
-  me: "Црна Гора",
-  hr: "Хрватска",
+  mk: "North Macedonia (Macedonian)",
+  sq: "North Macedonia (Albanian)",
+  en: "International (English)",
+  rs: "Serbia",
+  ba: "Bosnia and Herzegovina",
+  me: "Montenegro",
+  hr: "Croatia",
+};
+
+/** The languages a post can be written in. */
+export const LANGUAGE_LABELS: Record<Locale, string> = {
+  mk: "Macedonian",
+  sq: "Albanian",
+  en: "English",
+  rs: "Serbian",
+  ba: "Bosnian",
+  me: "Montenegrin",
+  hr: "Croatian",
 };
 
 /** Always in the canonical order, however the boxes were ticked. */
@@ -62,6 +73,7 @@ export const emptyPost = (): Article => ({
   body: [],
   // A new post goes everywhere until the editor narrows it down.
   locales: [...locales],
+  language: defaultLocale,
 });
 
 /**

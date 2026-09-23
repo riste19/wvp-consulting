@@ -56,6 +56,8 @@ type Post = {
   body: Block[];
   /** Where the post is published. Written last, matching the existing file. */
   locales: PostLocale[];
+  /** The language the post is written in, which need not be the reader’s. */
+  language: PostLocale;
 };
 
 type Upload = { key: string; ext: string; bytes: Uint8Array };
@@ -85,18 +87,18 @@ const IMAGE_TYPES: Record<string, string> = {
   "image/png": "png",
 };
 
-/** The editor works in Macedonian. */
+/** The panel works in English, like the group's other admin tools. */
 const MESSAGES = {
-  notConfigured: "Админ панелот сè уште не е поставен.",
-  badRequest: "Неисправно барање.",
-  notFound: "Непозната адреса.",
-  unauthorized: "Сесијата истече. Најавете се повторно.",
-  badLogin: "Погрешно корисничко име или лозинка.",
-  locked: "Премногу неуспешни обиди. Обидете се повторно за 30 минути.",
+  notConfigured: "The admin panel is not set up yet.",
+  badRequest: "Bad request.",
+  notFound: "Unknown address.",
+  unauthorized: "Your session has expired. Please sign in again.",
+  badLogin: "Wrong username or password.",
+  locked: "Too many failed attempts. Try again in 30 minutes.",
   conflict:
-    "Објавите се сменети во меѓувреме. Освежете ја страницата и направете ја промената повторно.",
-  github: "Промената не беше зачувана. Обидете се повторно за неколку минути.",
-  image: "Сликата не е прифатена. Користете JPG, PNG или WebP до 1,5 MB.",
+    "The posts changed in the meantime. Refresh the page and make the change again.",
+  github: "The change was not saved. Try again in a few minutes.",
+  image: "That image was not accepted. Use JPG, PNG or WebP up to 1.5 MB.",
 };
 
 const encoder = new TextEncoder();
@@ -442,43 +444,51 @@ function parsePosts(
   for (const [index, raw] of value.entries()) {
     const post = (raw ?? {}) as Record<string, unknown>;
     const title = cleanText(post.title, 200);
-    if (!title) return { error: `Објава ${index + 1}: внесете наслов (до 200 знаци).` };
+    if (!title) return { error: `Post ${index + 1}: enter a title (up to 200 characters).` };
 
     const named = (message: string) => ({ error: `„${title}“: ${message}` });
 
     const slug = str(post.slug);
     if (slug.length > 100 || !SLUG.test(slug)) {
-      return named("адресата може да содржи само мали латинични букви, бројки и цртички.");
+      return named("the address may contain only lowercase Latin letters, numbers and hyphens.");
     }
-    if (slugs.has(slug)) return named(`друга објава веќе ја користи адресата „${slug}“.`);
+    if (slugs.has(slug)) return named(`another post already uses the address “${slug}”.`);
     slugs.add(slug);
 
     const excerpt = cleanText(post.excerpt, 400);
-    if (!excerpt) return named("внесете краток опис (до 400 знаци).");
+    if (!excerpt) return named("enter a summary (up to 400 characters).");
 
     const category = cleanText(post.category, 60);
-    if (!category) return named("внесете категорија (до 60 знаци).");
+    if (!category) return named("enter a category (up to 60 characters).");
 
     const date = str(post.date);
-    if (!DATE.test(date) || Number.isNaN(Date.parse(date))) return named("изберете датум.");
+    if (!DATE.test(date) || Number.isNaN(Date.parse(date))) return named("choose a date.");
 
     const reference = UPLOAD_REF.exec(str(post.image));
     const image = reference ? uploadPaths.get(reference[1]) ?? "" : str(post.image);
-    if (!IMAGE_PATH.test(image)) return named("додадете слика.");
+    if (!IMAGE_PATH.test(image)) return named("add an image.");
 
     const body = parseBody(post.body);
-    if (!body) return named("содржината е празна или предолга.");
+    if (!body) return named("the content is empty or too long.");
 
     const postLocales = parseLocales(post.locales);
-    if (!postLocales) return named("изберете барем една држава за објавата.");
+    if (!postLocales) return named("choose at least one country for the post.");
 
-    posts.push({ slug, title, excerpt, category, date, image, body, locales: postLocales });
+    // Absent means Macedonian: every post was, before editors abroad had a sign-in.
+    const language = post.language === undefined ? LOCALES[0] : str(post.language);
+    if (!LOCALES.includes(language as PostLocale)) return named("choose the language of the text.");
+
+    posts.push({
+      slug, title, excerpt, category, date, image, body,
+      locales: postLocales,
+      language: language as PostLocale,
+    });
   }
 
   return { posts };
 }
 
-/** A one-line commit message saying what changed, in the editor's language. */
+/** A one-line commit message saying what changed. */
 function describeChange(before: Post[], after: Post[]): string {
   const previous = new Map(before.map((post) => [post.slug, JSON.stringify(post)]));
   const remaining = new Set(after.map((post) => post.slug));
@@ -486,18 +496,18 @@ function describeChange(before: Post[], after: Post[]): string {
   const parts = [
     ...after
       .filter((post) => !previous.has(post.slug))
-      .map((post) => `нова објава „${post.title}“`),
+      .map((post) => `new post “${post.title}”`),
     ...after
       .filter((post) => previous.has(post.slug) && previous.get(post.slug) !== JSON.stringify(post))
-      .map((post) => `изменета „${post.title}“`),
+      .map((post) => `edited “${post.title}”`),
     ...before
       .filter((post) => !remaining.has(post.slug))
-      .map((post) => `избришана „${post.title}“`),
+      .map((post) => `deleted “${post.title}”`),
   ];
 
   if (parts.length === 0) return "";
   const summary = parts.join(", ").replace(/[\r\n]+/g, " ");
-  return `Блог: ${summary.length > 180 ? `${summary.slice(0, 177)}…` : summary}\n\nЗачувано преку админ панелот.`;
+  return `Blog: ${summary.length > 180 ? `${summary.slice(0, 177)}…` : summary}\n\nSaved from the admin panel.`;
 }
 
 /* ------------------------------------------------------------------ routes */

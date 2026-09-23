@@ -6,25 +6,28 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Article } from "@/data/content/articles";
 import { formatArticleDate } from "@/data/content/articles";
 
-import { locales } from "@/i18n/locales";
+import { defaultLocale, locales } from "@/i18n/locales";
 
 import { adminApi } from "./adminApi";
 import { LoginForm } from "./LoginForm";
 import { PostEditor } from "./PostEditor";
-import { emptyPost, LOCALE_LABELS, type CoverImage } from "./postEditing";
+import { emptyPost, LANGUAGE_LABELS, LOCALE_LABELS, type CoverImage } from "./postEditing";
 
-/** Which country sites a post is on, for the row under its title. */
+/** Where a post goes and what it is written in, for the row under its title. */
 function where(post: Article): string {
   const chosen = post.locales ?? [...locales];
-  if (chosen.length === locales.length) return "Сите држави";
-  return chosen.map((code) => LOCALE_LABELS[code]).join(", ");
+  const countries =
+    chosen.length === locales.length
+      ? "All countries"
+      : chosen.map((code) => LOCALE_LABELS[code]).join(", ");
+  return `${countries} · ${LANGUAGE_LABELS[post.language ?? defaultLocale]}`;
 }
 
 type Phase = "checking" | "signedOut" | "signedIn";
 
 type Editing = { original: string | null; post: Article };
 
-const PUBLISH_NOTE = "Зачувано. Сајтот ќе се ажурира за околу 1–2 минути.";
+const PUBLISH_NOTE = "Saved. The site will update in about 1–2 minutes.";
 
 /**
  * Sign-in, the list of posts, and the editor. Every save sends the whole list
@@ -136,7 +139,7 @@ export function AdminApp() {
   };
 
   const deletePost = async (post: Article) => {
-    if (!window.confirm(`Да се избрише објавата „${post.title}“?`)) return;
+    if (!window.confirm(`Delete the post “${post.title}”?`)) return;
     await save(
       posts.filter((item) => item.slug !== post.slug),
       [],
@@ -144,7 +147,7 @@ export function AdminApp() {
   };
 
   if (phase === "checking") {
-    return <main className="flex flex-1 items-center justify-center p-6 text-muted-foreground">Се вчитува…</main>;
+    return <main className="flex flex-1 items-center justify-center p-6 text-muted-foreground">Loading…</main>;
   }
 
   if (phase === "signedOut") {
@@ -166,11 +169,11 @@ export function AdminApp() {
       <div className="mx-auto max-w-5xl">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Објави</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Posts</h1>
             <p className="text-sm text-muted-foreground">
-              Најавени сте како {username} ·{" "}
+              Signed in as {username} ·{" "}
               <a href="/mk/blog" target="_blank" rel="noopener" className="underline hover:text-primary">
-                Отвори го блогот
+                Open the blog
               </a>
             </p>
           </div>
@@ -186,7 +189,7 @@ export function AdminApp() {
                 disabled={loading || !sha}
                 className="h-10 rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
               >
-                Нова објава
+                New post
               </button>
             ) : null}
             <button
@@ -197,7 +200,7 @@ export function AdminApp() {
               }}
               className="h-10 rounded-md border border-border bg-white px-5 text-sm font-medium text-foreground transition-colors hover:bg-neutral-100"
             >
-              Одјави се
+              Sign out
             </button>
           </div>
         </header>
@@ -225,7 +228,7 @@ export function AdminApp() {
               }}
             />
           ) : loading ? (
-            <p className="py-10 text-center text-muted-foreground">Се вчитуваат објавите…</p>
+            <p className="py-10 text-center text-muted-foreground">Loading posts…</p>
           ) : loadError ? (
             <div className="rounded-xl border border-border bg-white p-6 text-center">
               <p className="text-primary">{loadError}</p>
@@ -234,7 +237,7 @@ export function AdminApp() {
                 onClick={() => void load()}
                 className="mt-4 h-10 rounded-md border border-border px-5 text-sm font-medium hover:bg-neutral-100"
               >
-                Обиди се повторно
+                Try again
               </button>
             </div>
           ) : (
@@ -258,7 +261,7 @@ export function AdminApp() {
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-semibold text-gray-900">{post.title}</p>
                       <p className="text-sm text-muted-foreground">
-                        {post.category} · {formatArticleDate(post.date)}
+                        {post.category} · {formatArticleDate(post.date, post.language ?? defaultLocale)}
                       </p>
                       <p className="truncate text-xs text-muted-foreground">
                         {where(post)}
@@ -275,7 +278,7 @@ export function AdminApp() {
                         }}
                         className="h-9 rounded-md border border-border px-4 text-sm font-medium hover:bg-neutral-100 disabled:opacity-60"
                       >
-                        Уреди
+                        Edit
                       </button>
                       <button
                         type="button"
@@ -283,7 +286,7 @@ export function AdminApp() {
                         onClick={() => void deletePost(post)}
                         className="h-9 rounded-md border border-border px-4 text-sm font-medium text-primary hover:bg-primary/5 disabled:opacity-60"
                       >
-                        Избриши
+                        Delete
                       </button>
                     </div>
                   </li>

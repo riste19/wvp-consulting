@@ -5,11 +5,12 @@ import { useState, type FormEvent } from "react";
 
 import type { Article } from "@/data/content/articles";
 import { imageSizes } from "@/data/site/images";
-import { locales, type Locale } from "@/i18n/locales";
+import { defaultLocale, locales, type Locale } from "@/i18n/locales";
 
 import {
   blocksToText,
   fileToCoverImage,
+  LANGUAGE_LABELS,
   LOCALE_LABELS,
   slugify,
   sortLocales,
@@ -48,6 +49,7 @@ export function PostEditor({
   const [excerpt, setExcerpt] = useState(initial.excerpt);
   const [bodyText, setBodyText] = useState(() => blocksToText(initial.body));
   const [chosen, setChosen] = useState<Locale[]>(initial.locales ?? [...locales]);
+  const [language, setLanguage] = useState<Locale>(initial.language ?? defaultLocale);
   const [image, setImage] = useState<CoverImage | null>(null);
   const [problem, setProblem] = useState("");
 
@@ -68,14 +70,14 @@ export function PostEditor({
   const pickImage = async (file: File | undefined) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setProblem("Изберете слика (JPG, PNG или WebP).");
+      setProblem("Choose an image (JPG, PNG or WebP).");
       return;
     }
     try {
       setImage(await fileToCoverImage(file));
       setProblem("");
     } catch {
-      setProblem("Сликата не може да се отвори. Пробајте со друга.");
+      setProblem("That image could not be opened. Try another one.");
     }
   };
 
@@ -84,15 +86,15 @@ export function PostEditor({
     const body = textToBlocks(bodyText);
 
     const missing =
-      (!title.trim() && "Внесете наслов.") ||
+      (!title.trim() && "Enter a title.") ||
       (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) &&
-        "Адресата може да содржи само мали латинични букви, бројки и цртички.") ||
-      (!category.trim() && "Внесете категорија.") ||
-      (!date && "Изберете датум.") ||
-      (!excerpt.trim() && "Внесете краток опис.") ||
-      (chosen.length === 0 && "Изберете барем една држава каде се објавува.") ||
-      (!image && !initial.image && "Додадете слика.") ||
-      (body.length === 0 && "Внесете содржина.") ||
+        "The address may contain only lowercase Latin letters, numbers and hyphens.") ||
+      (!category.trim() && "Enter a category.") ||
+      (!date && "Choose a date.") ||
+      (!excerpt.trim() && "Enter a summary.") ||
+      (chosen.length === 0 && "Choose at least one country to publish to.") ||
+      (!image && !initial.image && "Add an image.") ||
+      (body.length === 0 && "Enter the content.") ||
       "";
 
     setProblem(missing);
@@ -108,6 +110,7 @@ export function PostEditor({
         image: image ? `upload:${image.key}` : initial.image,
         body,
         locales: sortLocales(chosen),
+        language,
       },
       image,
     );
@@ -118,13 +121,13 @@ export function PostEditor({
   return (
     <form onSubmit={submit} className="rounded-xl border border-border bg-white p-6 shadow-sm sm:p-8">
       <h2 className="text-xl font-bold text-gray-900">
-        {isNew ? "Нова објава" : "Уреди објава"}
+        {isNew ? "New post" : "Edit post"}
       </h2>
 
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
         <div className="md:col-span-2">
           <label htmlFor="post-title" className={LABEL_CLASS}>
-            Наслов
+            Title
           </label>
           <input
             id="post-title"
@@ -137,7 +140,7 @@ export function PostEditor({
 
         <div className="md:col-span-2">
           <label htmlFor="post-slug" className={LABEL_CLASS}>
-            Адреса на објавата
+            Post address
           </label>
           <div className="flex items-center gap-2">
             <span className="shrink-0 text-sm text-muted-foreground">/mk/blog/</span>
@@ -154,14 +157,14 @@ export function PostEditor({
           </div>
           {!isNew ? (
             <p className="mt-1 text-xs text-muted-foreground">
-              Ако ја смените адресата, старите линкови кон објавата нема да работат.
+              If you change the address, existing links to the post will stop working.
             </p>
           ) : null}
         </div>
 
         <div>
           <label htmlFor="post-category" className={LABEL_CLASS}>
-            Категорија
+            Category
           </label>
           <input
             id="post-category"
@@ -180,7 +183,7 @@ export function PostEditor({
 
         <div>
           <label htmlFor="post-date" className={LABEL_CLASS}>
-            Датум
+            Date
           </label>
           <input
             id="post-date"
@@ -192,7 +195,7 @@ export function PostEditor({
         </div>
 
         <fieldset className="md:col-span-2">
-          <legend className={LABEL_CLASS}>Каде се објавува</legend>
+          <legend className={LABEL_CLASS}>Where it is published</legend>
           <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
             {locales.map((code) => (
               <label
@@ -210,14 +213,36 @@ export function PostEditor({
             ))}
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Објавата ја гледаат само избраните сајтови. Текстот останува ист
-            насекаде — не се преведува.
+            Only the selected sites show the post. The text stays the same on
+            all of them — it is not translated.
           </p>
         </fieldset>
 
         <div className="md:col-span-2">
+          <label htmlFor="post-language" className={LABEL_CLASS}>
+            Language of the text
+          </label>
+          <select
+            id="post-language"
+            value={language}
+            onChange={(event) => setLanguage(event.target.value as Locale)}
+            className={FIELD_CLASS}
+          >
+            {locales.map((code) => (
+              <option key={code} value={code}>
+                {LANGUAGE_LABELS[code]}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Which language you are writing the post in. It sets how the date is
+            written and how search engines read the post.
+          </p>
+        </div>
+
+        <div className="md:col-span-2">
           <label htmlFor="post-excerpt" className={LABEL_CLASS}>
-            Краток опис
+            Summary
           </label>
           <textarea
             id="post-excerpt"
@@ -228,13 +253,13 @@ export function PostEditor({
             className={FIELD_CLASS}
           />
           <p className="mt-1 text-xs text-muted-foreground">
-            Се прикажува на картичката во листата на објави.
+            Shown on the card in the post list.
           </p>
         </div>
 
         <div className="md:col-span-2">
           <label htmlFor="post-image" className={LABEL_CLASS}>
-            Слика
+            Image
           </label>
           {preview ? (
             <Image
@@ -254,13 +279,13 @@ export function PostEditor({
             className="block w-full text-sm text-muted-foreground file:mr-4 file:rounded-md file:border-0 file:bg-muted file:px-4 file:py-2 file:text-sm file:font-medium file:text-foreground hover:file:bg-secondary"
           />
           <p className="mt-1 text-xs text-muted-foreground">
-            Сликата автоматски се сече на широк формат, како на другите објави.
+            The image is cropped to the wide format automatically, like the other posts.
           </p>
         </div>
 
         <div className="md:col-span-2">
           <label htmlFor="post-body" className={LABEL_CLASS}>
-            Содржина
+            Content
           </label>
           <textarea
             id="post-body"
@@ -270,8 +295,8 @@ export function PostEditor({
             className={`${FIELD_CLASS} font-mono text-sm leading-relaxed`}
           />
           <p className="mt-1 text-xs text-muted-foreground">
-            Празен ред започнува нов пасус. Ред што почнува со „## “ е поднаслов.
-            Редови што почнуваат со „- “ се листа.
+            A blank line starts a new paragraph. A line beginning “## ” is a
+            subheading. Lines beginning “- ” make a list.
           </p>
         </div>
       </div>
@@ -288,7 +313,7 @@ export function PostEditor({
           disabled={busy}
           className="h-11 rounded-md bg-primary px-6 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
         >
-          {busy ? "Зачувувам…" : "Објави"}
+          {busy ? "Saving…" : "Publish"}
         </button>
         <button
           type="button"
@@ -296,7 +321,7 @@ export function PostEditor({
           disabled={busy}
           className="h-11 rounded-md border border-border bg-white px-6 text-base font-medium text-foreground transition-colors hover:bg-neutral-100 disabled:opacity-60"
         >
-          Откажи
+          Cancel
         </button>
       </div>
     </form>

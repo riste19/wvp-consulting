@@ -7,7 +7,7 @@ type Result<T> =
   | { ok: false; status: number; error: string };
 
 const OFFLINE =
-  "Нема врска со серверот. Проверете ја интернет врската и обидете се повторно.";
+  "No connection to the server. Check your internet connection and try again.";
 
 async function request<T>(path: string, method = "GET", body?: unknown): Promise<Result<T>> {
   try {

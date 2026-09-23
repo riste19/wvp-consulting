@@ -31,15 +31,15 @@ export function LoginForm({ onSignedIn }: { onSignedIn: (username: string) => vo
       onSubmit={submit}
       className="mx-auto w-full max-w-sm rounded-xl border border-border bg-white p-8 shadow-sm"
     >
-      <h1 className="text-2xl font-bold text-gray-900">Најава</h1>
+      <h1 className="text-2xl font-bold text-gray-900">Sign in</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Уредување на објавите на WVP Plus Consulting
+        Manage the WVP Plus Consulting blog
       </p>
 
       <div className="mt-6 space-y-4">
         <div>
           <label htmlFor="admin-username" className={LABEL_CLASS}>
-            Корисничко име
+            Username
           </label>
           <input
             id="admin-username"
@@ -53,7 +53,7 @@ export function LoginForm({ onSignedIn }: { onSignedIn: (username: string) => vo
         </div>
         <div>
           <label htmlFor="admin-password" className={LABEL_CLASS}>
-            Лозинка
+            Password
           </label>
           <input
             id="admin-password"
@@ -79,7 +79,7 @@ export function LoginForm({ onSignedIn }: { onSignedIn: (username: string) => vo
         disabled={busy}
         className="mt-6 h-11 w-full rounded-md bg-primary text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
       >
-        {busy ? "Се најавувам…" : "Најави се"}
+        {busy ? "Signing in…" : "Sign in"}
       </button>
     </form>
   );
