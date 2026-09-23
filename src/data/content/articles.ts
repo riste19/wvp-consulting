@@ -1,4 +1,4 @@
-import { isLocale, locales, type Locale } from "@/i18n/locales";
+import { defaultLocale, isLocale, languageTag, locales, type Locale } from "@/i18n/locales";
 
 import posts from "./posts.json";
 
@@ -22,6 +22,13 @@ export type Article = {
    * language — which is what those posts already did.
    */
   locales?: Locale[];
+  /**
+   * The language the post is actually written in, which is not the language of
+   * the page it appears on: each country's editor writes in their own. Absent
+   * means Macedonian, which every post was until editors outside Macedonia got
+   * their own sign-in.
+   */
+  language?: Locale;
 };
 
 const isText = (value: unknown): value is string =>
@@ -73,6 +80,12 @@ function checkArticles(value: unknown): Article[] {
     ) {
       throw new Error(`${where}: invalid locales`);
     }
+    if (
+      post.language !== undefined &&
+      (typeof post.language !== "string" || !isLocale(post.language))
+    ) {
+      throw new Error(`${where}: invalid language`);
+    }
   });
 
   return value as Article[];
@@ -120,6 +133,9 @@ export const getArticleIn = (locale: Locale, slug: string) => {
 export const canonicalLocaleOf = (article: Article): Locale =>
   locales.find((locale) => isPublishedIn(article, locale)) ?? locales[0];
 
+/** What a post is written in. Everything written before the field existed is Macedonian. */
+export const languageOf = (article: Article): Locale => article.language ?? defaultLocale;
+
 const MONTHS_MK = [
   "јануари",
   "февруари",
@@ -135,7 +151,20 @@ const MONTHS_MK = [
   "декември",
 ];
 
-export function formatArticleDate(isoDate: string): string {
+/**
+ * The date in the language the post is written in. Macedonian is spelled out
+ * here rather than left to `Intl`, which renders it "23 септември 2026 г." —
+ * correct, but not how the rest of the site has always written it.
+ */
+export function formatArticleDate(isoDate: string, language: Locale = defaultLocale): string {
   const date = new Date(`${isoDate}T00:00:00Z`);
-  return `${date.getUTCDate()} ${MONTHS_MK[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+  if (language === defaultLocale) {
+    return `${date.getUTCDate()} ${MONTHS_MK[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+  }
+  return new Intl.DateTimeFormat(languageTag[language], {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
 }

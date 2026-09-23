@@ -13,10 +13,11 @@ import {
   formatArticleDate,
   getArticleIn,
   getContent,
+  languageOf,
 } from "@/data/content";
 import { company, imageSizes } from "@/data/site";
 import { BlogCard } from "@/features/blog";
-import { isLocale, defaultLocale } from "@/i18n/locales";
+import { defaultLocale, isLocale, languageTag } from "@/i18n/locales";
 import { resolveLocale } from "@/i18n/resolveLocale";
 import { articleJsonLd, cn } from "@/lib";
 
@@ -65,6 +66,7 @@ export default async function ArticlePage({
   if (!article) notFound();
 
   const { blog } = getContent(locale).ui;
+  const language = languageOf(article);
   const related = articlesFor(locale)
     .filter((item) => item.slug !== article.slug)
     .slice(0, 3);
@@ -74,7 +76,7 @@ export default async function ArticlePage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleJsonLd(article, company.siteUrl)),
+          __html: JSON.stringify(articleJsonLd(article, company.siteUrl, canonicalLocaleOf(article))),
         }}
       />
 
@@ -92,13 +94,13 @@ export default async function ArticlePage({
               {blog.backToPosts}
             </Link>
 
-            {blog.languageNote ? (
+            {blog.languageNote && language === defaultLocale ? (
               <p className="mt-6 rounded-lg bg-muted px-4 py-3 text-sm text-muted-foreground">
                 {blog.languageNote}
               </p>
             ) : null}
 
-            <div lang="mk">
+            <div lang={languageTag[language]}>
               <p
                 className={cn(
                   "mt-8 text-base font-medium",
@@ -117,7 +119,7 @@ export default async function ArticlePage({
               <p className="mt-4 flex items-center gap-2 text-base text-muted-foreground">
                 <CalendarDays aria-hidden className="h-4 w-4" />
                 <time dateTime={article.date}>
-                  {formatArticleDate(article.date)}
+                  {formatArticleDate(article.date, language)}
                 </time>
               </p>
 

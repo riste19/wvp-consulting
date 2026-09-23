@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 
 import { Reveal } from "@/components/motion";
 import { Container } from "@/components/ui";
-import { articlesFor, categoriesFor, getContent } from "@/data/content";
+import { articlesFor, categoriesFor, getContent, languageOf } from "@/data/content";
 import { ArticleGrid } from "@/features/blog";
-import { localeAlternates } from "@/i18n/locales";
+import { defaultLocale, localeAlternates } from "@/i18n/locales";
 import { resolveLocale } from "@/i18n/resolveLocale";
 
 export async function generateMetadata({
@@ -23,6 +23,11 @@ export async function generateMetadata({
 export default async function BlogPage({ params }: PageProps<"/[locale]/blog">) {
   const locale = await resolveLocale(params);
   const { blog } = getContent(locale).ui;
+  const posts = articlesFor(locale);
+  // The note says the posts are Macedonian, so it is only true while they are.
+  // A country whose own editor writes in their language must not still see it.
+  const allMacedonian =
+    posts.length > 0 && posts.every((post) => languageOf(post) === defaultLocale);
 
   return (
     <section className="bg-background pb-16 pt-32 sm:pb-20 sm:pt-40">
@@ -34,7 +39,7 @@ export default async function BlogPage({ params }: PageProps<"/[locale]/blog">) 
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground sm:text-xl">
             {blog.subtitle}
           </p>
-          {blog.languageNote ? (
+          {blog.languageNote && allMacedonian ? (
             <p className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground">
               {blog.languageNote}
             </p>
@@ -42,7 +47,7 @@ export default async function BlogPage({ params }: PageProps<"/[locale]/blog">) 
         </Reveal>
 
         <ArticleGrid
-          articles={articlesFor(locale)}
+          articles={posts}
           categories={categoriesFor(locale)}
           locale={locale}
           labels={{

@@ -163,6 +163,7 @@ export {
   getArticle,
   getArticleIn,
   isPublishedIn,
+  languageOf,
   latestArticlesFor,
   sortedArticles,
   type Article,
