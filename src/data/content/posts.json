@@ -1,51 +1,5 @@
 [
   {
-    "slug": "probaaleksandar",
-    "title": "probaAleksandar",
-    "excerpt": "basdasdas",
-    "category": "Konsalting",
-    "date": "2026-09-23",
-    "image": "/images/blog/uploads/2026-09-23-a5c38469ae3ab5e4.webp",
-    "body": [
-      {
-        "type": "p",
-        "text": "probaAaleksandar"
-      }
-    ],
-    "locales": [
-      "mk",
-      "sq",
-      "en",
-      "rs",
-      "ba",
-      "me",
-      "hr"
-    ]
-  },
-  {
-    "slug": "probariste",
-    "title": "probaRiste",
-    "excerpt": "probaRiste",
-    "category": "probaRiste",
-    "date": "2026-09-23",
-    "image": "/images/blog/uploads/2026-09-23-3b7022361dc20008.webp",
-    "body": [
-      {
-        "type": "p",
-        "text": "asdsad"
-      }
-    ],
-    "locales": [
-      "mk",
-      "sq",
-      "en",
-      "rs",
-      "ba",
-      "me",
-      "hr"
-    ]
-  },
-  {
     "slug": "razvivate-filmski-proekti-na-evropsko-nivo",
     "title": "Развивате филмски проекти на европско ниво",
     "excerpt": "7 милиони евра чекаат продукциски компании подготвени да развијат филмски проекти на европско ниво.",
