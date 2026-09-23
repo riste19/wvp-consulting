@@ -1,23 +1,5 @@
 [
   {
-    "slug": "asdasdas",
-    "title": "asdasdas",
-    "excerpt": "asdsadsa",
-    "category": "asdasd",
-    "date": "2026-09-23",
-    "image": "/images/blog/uploads/2026-09-23-8c00aa58ec868e92.webp",
-    "body": [
-      {
-        "type": "p",
-        "text": "asdasdsadasdasd"
-      }
-    ],
-    "locales": [
-      "me"
-    ],
-    "language": "mk"
-  },
-  {
     "slug": "razvivate-filmski-proekti-na-evropsko-nivo",
     "title": "Развивате филмски проекти на европско ниво",
     "excerpt": "7 милиони евра чекаат продукциски компании подготвени да развијат филмски проекти на европско ниво.",
