@@ -11,15 +11,21 @@ import { defaultLocale, locales } from "@/i18n/locales";
 import { adminApi } from "./adminApi";
 import { LoginForm } from "./LoginForm";
 import { PostEditor } from "./PostEditor";
-import { emptyPost, LANGUAGE_LABELS, LOCALE_LABELS, type CoverImage } from "./postEditing";
+import {
+  COUNTRIES,
+  countriesOf,
+  emptyPost,
+  LANGUAGE_LABELS,
+  type CoverImage,
+} from "./postEditing";
 
 /** Where a post goes and what it is written in, for the row under its title. */
 function where(post: Article): string {
-  const chosen = post.locales ?? [...locales];
+  const reached = countriesOf(post.locales ?? [...locales]);
   const countries =
-    chosen.length === locales.length
+    reached.length === COUNTRIES.length
       ? "All countries"
-      : chosen.map((code) => LOCALE_LABELS[code]).join(", ");
+      : reached.map((country) => country.label).join(", ");
   return `${countries} · ${LANGUAGE_LABELS[post.language ?? defaultLocale]}`;
 }
 

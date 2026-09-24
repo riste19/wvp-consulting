@@ -9,12 +9,15 @@ import { defaultLocale, locales, type Locale } from "@/i18n/locales";
 
 import {
   blocksToText,
+  COUNTRIES,
   fileToCoverImage,
+  isCountryChosen,
   LANGUAGE_LABELS,
-  LOCALE_LABELS,
   slugify,
   sortLocales,
   textToBlocks,
+  toggleCountry,
+  type Country,
   type CoverImage,
 } from "./postEditing";
 import { FIELD_CLASS, LABEL_CLASS } from "./styles";
@@ -55,12 +58,8 @@ export function PostEditor({
 
   const preview = image?.previewUrl ?? (initial.image ? previewFor(initial.image) : "");
 
-  const toggle = (code: Locale) =>
-    setChosen((current) =>
-      current.includes(code)
-        ? current.filter((item) => item !== code)
-        : sortLocales([...current, code]),
-    );
+  const toggle = (country: Country) =>
+    setChosen((current) => toggleCountry(current, country));
 
   const changeTitle = (value: string) => {
     setTitle(value);
@@ -197,30 +196,31 @@ export function PostEditor({
         <fieldset className="md:col-span-2">
           <legend className={LABEL_CLASS}>Where it is published</legend>
           <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {locales.map((code) => (
+            {COUNTRIES.map((country) => (
               <label
-                key={code}
+                key={country.id}
                 className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-foreground hover:bg-neutral-50"
               >
                 <input
                   type="checkbox"
-                  checked={chosen.includes(code)}
-                  onChange={() => toggle(code)}
+                  checked={isCountryChosen(chosen, country)}
+                  onChange={() => toggle(country)}
                   className="h-4 w-4 accent-primary"
                 />
-                {LOCALE_LABELS[code]}
+                {country.label}
               </label>
             ))}
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Only the selected sites show the post. The text stays the same on
-            all of them — it is not translated.
+            Only the selected countries show the post. North Macedonia covers
+            all three of its language versions. The text stays the same
+            everywhere — it is not translated.
           </p>
         </fieldset>
 
         <div className="md:col-span-2">
           <label htmlFor="post-language" className={LABEL_CLASS}>
-            Language of the text
+            Written in
           </label>
           <select
             id="post-language"
@@ -235,8 +235,9 @@ export function PostEditor({
             ))}
           </select>
           <p className="mt-1 text-xs text-muted-foreground">
-            Which language you are writing the post in. It sets how the date is
-            written and how search engines read the post.
+            The language the text is written in. It does not translate anything
+            — it only sets how the date is written and how search engines read
+            the post.
           </p>
         </div>
 

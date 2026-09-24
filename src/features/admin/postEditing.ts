@@ -3,19 +3,26 @@ import { imageSizes } from "@/data/site/images";
 import { defaultLocale, locales, type Locale } from "@/i18n/locales";
 
 /**
- * The country sites as the editor picks them. The first three are the same
- * North Macedonian site in its three languages; the rest are the group's
- * country sites.
+ * The countries the firm works in, which is what the editor actually chooses.
+ * North Macedonia is served from three folders — /mk, /sq and /en are one site
+ * in three languages — so ticking it publishes to all three. The others are a
+ * single country site each. A language is not a place, which is why English is
+ * not a box of its own.
  */
-export const LOCALE_LABELS: Record<Locale, string> = {
-  mk: "North Macedonia (Macedonian)",
-  sq: "North Macedonia (Albanian)",
-  en: "International (English)",
-  rs: "Serbia",
-  ba: "Bosnia and Herzegovina",
-  me: "Montenegro",
-  hr: "Croatia",
+export type Country = {
+  id: string;
+  label: string;
+  /** The locale folders this country's site is served from. */
+  locales: Locale[];
 };
+
+export const COUNTRIES: Country[] = [
+  { id: "mk", label: "North Macedonia", locales: ["mk", "sq", "en"] },
+  { id: "rs", label: "Serbia", locales: ["rs"] },
+  { id: "ba", label: "Bosnia and Herzegovina", locales: ["ba"] },
+  { id: "me", label: "Montenegro", locales: ["me"] },
+  { id: "hr", label: "Croatia", locales: ["hr"] },
+];
 
 /** The languages a post can be written in. */
 export const LANGUAGE_LABELS: Record<Locale, string> = {
@@ -31,6 +38,27 @@ export const LANGUAGE_LABELS: Record<Locale, string> = {
 /** Always in the canonical order, however the boxes were ticked. */
 export const sortLocales = (chosen: Locale[]): Locale[] =>
   locales.filter((locale) => chosen.includes(locale));
+
+/**
+ * A country is ticked when the post reaches any of its language versions.
+ * Nothing in the panel can produce a half-ticked country, but a post saved
+ * before this chooser existed can name /mk alone, and that still means the
+ * Macedonian site.
+ */
+export const isCountryChosen = (chosen: Locale[], country: Country) =>
+  country.locales.some((locale) => chosen.includes(locale));
+
+/** Ticking a country adds every language version of it, and unticking removes them all. */
+export function toggleCountry(chosen: Locale[], country: Country): Locale[] {
+  const rest = chosen.filter((locale) => !country.locales.includes(locale));
+  return isCountryChosen(chosen, country)
+    ? rest
+    : sortLocales([...rest, ...country.locales]);
+}
+
+/** The countries a post reaches, for the line under its title in the list. */
+export const countriesOf = (chosen: Locale[]) =>
+  COUNTRIES.filter((country) => isCountryChosen(chosen, country));
 
 /** A picked image, already cropped to the post format and encoded for upload. */
 export type CoverImage = {
