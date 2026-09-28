@@ -6,8 +6,7 @@
  * browser bundle.
  *
  * Every page lives under its locale with the same slug in each: /mk/uslugi and
- * /sq/uslugi. Macedonian is the default, and the only language the blog and
- * the legal pages are written in.
+ * /sq/uslugi. Macedonian is the default.
  *
  * The last four are the group's country sites — Serbia, Bosnia and
  * Herzegovina, Montenegro and Croatia — reached from the regional map. Their

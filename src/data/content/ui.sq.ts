@@ -176,6 +176,6 @@ export const ui: typeof Mk.ui = {
   },
 
   legal: {
-    languageNote: "Ky dokument është në dispozicion vetëm në gjuhën maqedonase.",
+    lastUpdated: "Përditësuar së fundi",
   },
 };
