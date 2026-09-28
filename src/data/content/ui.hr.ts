@@ -174,6 +174,6 @@ export const ui: typeof Mk.ui = {
   },
 
   legal: {
-    languageNote: "Ovaj dokument dostupan je samo na makedonskom jeziku.",
+    lastUpdated: "Posljednje ažuriranje",
   },
 };

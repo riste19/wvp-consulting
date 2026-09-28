@@ -1,3 +1,9 @@
+/**
+ * The privacy policy and terms of use. Each language has a twin beside this
+ * file (`legal.sq.ts`, `legal.rs.ts`, …): a change here is a change to all
+ * seven, and moves `updated` in each.
+ */
+
 export type LegalSection = {
   heading: string;
   paragraphs: string[];

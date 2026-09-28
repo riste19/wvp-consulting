@@ -173,6 +173,6 @@ export const ui: typeof Mk.ui = {
   },
 
   legal: {
-    languageNote: "This document is available in Macedonian only.",
+    lastUpdated: "Last updated",
   },
 };

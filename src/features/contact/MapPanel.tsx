@@ -1,17 +1,19 @@
 import { MapPin } from "lucide-react";
 
 import { getContent } from "@/data/content";
-import { company, companyText } from "@/data/site";
+import { companyText } from "@/data/site";
 import type { Locale } from "@/i18n/locales";
 
-const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(company.mapQuery)}`;
+const mapsUrl = (query: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
 /** Google's keyless embed. Needs `https://www.google.com` in the CSP frame-src. */
-const EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(company.mapQuery)}&z=17&output=embed`;
+const embedUrl = (query: string) =>
+  `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=17&output=embed`;
 
 /**
- * Location panel: a live Google map pinned on the office, with the address
- * underneath.
+ * Location panel: a live Google map pinned on the office of the country whose
+ * site this is, with the address underneath.
  */
 export function MapPanel({ locale }: { locale: Locale }) {
   const { contact } = getContent(locale).ui;
@@ -22,7 +24,7 @@ export function MapPanel({ locale }: { locale: Locale }) {
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
       <iframe
-        src={EMBED_URL}
+        src={embedUrl(text.mapQuery)}
         title={withCity(contact.mapTitle)}
         referrerPolicy="no-referrer-when-downgrade"
         allowFullScreen
@@ -41,7 +43,7 @@ export function MapPanel({ locale }: { locale: Locale }) {
             {text.address.city}, {text.address.country}
           </address>
           <a
-            href={MAPS_URL}
+            href={mapsUrl(text.mapQuery)}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-2 inline-block text-sm font-medium text-primary hover:underline"

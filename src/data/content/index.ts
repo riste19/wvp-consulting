@@ -12,7 +12,8 @@
  * reused. Everything else in the twins was translated for this rebuild and
  * should be read by a native speaker before launch.
  *
- * The blog and the legal documents are Macedonian only, in every language.
+ * Blog posts are the exception: each is written in one language, chosen in
+ * the admin panel, and appears as written wherever it is published.
  *
  * Modules inside `src/data` must import each other by direct path rather than
  * through this barrel — going via the barrel would make the two data folders
@@ -41,6 +42,13 @@ import * as heroHr from "./hero.hr";
 import * as heroMe from "./hero.me";
 import * as heroRs from "./hero.rs";
 import * as heroSq from "./hero.sq";
+import * as legalMk from "./legal";
+import * as legalBa from "./legal.ba";
+import * as legalEn from "./legal.en";
+import * as legalHr from "./legal.hr";
+import * as legalMe from "./legal.me";
+import * as legalRs from "./legal.rs";
+import * as legalSq from "./legal.sq";
 import * as programmesMk from "./programmes";
 import * as programmesBa from "./programmes.ba";
 import * as programmesEn from "./programmes.en";
@@ -74,6 +82,7 @@ const mk = {
   ...aboutMk,
   ...contactMk,
   ...heroMk,
+  ...legalMk,
   ...programmesMk,
   ...servicesMk,
   ...statsMk,
@@ -86,6 +95,7 @@ const sq: Content = {
   ...aboutSq,
   ...contactSq,
   ...heroSq,
+  ...legalSq,
   ...programmesSq,
   ...servicesSq,
   ...statsSq,
@@ -96,6 +106,7 @@ const en: Content = {
   ...aboutEn,
   ...contactEn,
   ...heroEn,
+  ...legalEn,
   ...programmesEn,
   ...servicesEn,
   ...statsEn,
@@ -106,6 +117,7 @@ const rs: Content = {
   ...aboutRs,
   ...contactRs,
   ...heroRs,
+  ...legalRs,
   ...programmesRs,
   ...servicesRs,
   ...statsRs,
@@ -116,6 +128,7 @@ const ba: Content = {
   ...aboutBa,
   ...contactBa,
   ...heroBa,
+  ...legalBa,
   ...programmesBa,
   ...servicesBa,
   ...statsBa,
@@ -126,6 +139,7 @@ const me: Content = {
   ...aboutMe,
   ...contactMe,
   ...heroMe,
+  ...legalMe,
   ...programmesMe,
   ...servicesMe,
   ...statsMe,
@@ -136,6 +150,7 @@ const hr: Content = {
   ...aboutHr,
   ...contactHr,
   ...heroHr,
+  ...legalHr,
   ...programmesHr,
   ...servicesHr,
   ...statsHr,
@@ -171,12 +186,7 @@ export {
 } from "./articles";
 export type { ContactMethod } from "./contact";
 export type { HeroSlide } from "./hero";
-export {
-  privacyPolicy,
-  termsOfUse,
-  type LegalDocument,
-  type LegalSection,
-} from "./legal";
+export type { LegalDocument, LegalSection } from "./legal";
 export type { Programme } from "./programmes";
 export { serviceHref, type Service } from "./services";
 export type { Stat } from "./stats";

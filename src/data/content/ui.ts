@@ -182,8 +182,8 @@ export const ui = {
   },
 
   legal: {
-    /** Shown above legal pages that are not written in this language. Empty: none needed. */
-    languageNote: "",
+    /** Before the date at the top of the privacy policy and terms of use. */
+    lastUpdated: "Последно ажурирање",
   },
 };
 

@@ -22,29 +22,35 @@ export const company = {
   },
   workingHours: "Пон–Пет 08:00–17:00",
   /**
-   * What the contact-page map pins. Coordinates ("41.99, 21.43") are the most
-   * exact; an address works too.
+   * What the contact-page map pins for the Skopje office. Coordinates
+   * ("41.99, 21.43") are the most exact; an address works too.
    */
   mapQuery: "Булевар Кочо Рацин 3, Скопје",
   social: {
-    linkedin:
-      "https://www.linkedin.com/company/wvp-plus-konsalting/?originalSubdomain=mk",
+    linkedin: "https://www.linkedin.com/company/wvp-plus-konsalting/",
   },
   /** Used for canonical URLs and Open Graph. */
   siteUrl: "https://wvpconsulting.mk",
 } as const;
 
 export type CompanyText = {
+  /** The company named above the address on the contact page. */
   legalName: string;
   tagline: string;
   description: string;
   address: { street: string; city: string; country: string };
   workingHours: string;
+  /** What the contact-page map pins; see `company.mapQuery`. */
+  mapQuery: string;
 };
 
 /**
  * The parts of `company` that are written in a language. `company` itself
  * stays Macedonian: it also feeds the structured data on the home page.
+ *
+ * Each country site's contact page shows that country's own office. Montenegro
+ * and Croatia still show Skopje: put their office's name, address and map pin
+ * here once we have them.
  */
 export const companyText: Record<Locale, CompanyText> = {
   mk: {
@@ -53,6 +59,7 @@ export const companyText: Record<Locale, CompanyText> = {
     description: company.description,
     address: company.address,
     workingHours: company.workingHours,
+    mapQuery: company.mapQuery,
   },
   sq: {
     legalName: "WVP Plus Consulting DOO Shkup",
@@ -65,6 +72,7 @@ export const companyText: Record<Locale, CompanyText> = {
       country: "Republika e Maqedonisë së Veriut",
     },
     workingHours: "Hën–Pre 08:00–17:00",
+    mapQuery: company.mapQuery,
   },
   en: {
     legalName: "WVP Plus Consulting LLC Skopje",
@@ -77,30 +85,33 @@ export const companyText: Record<Locale, CompanyText> = {
       country: "Republic of North Macedonia",
     },
     workingHours: "Mon–Fri 08:00–17:00",
+    mapQuery: company.mapQuery,
   },
   rs: {
-    legalName: "WVP Plus Konsalting DOO Skoplje",
+    legalName: "WVP Plus Consulting DOO Beograd",
     tagline: "Za naše klijente uvek biramo najbolje!",
     description:
       "Biznis i finansijski konsalting, pristup finansijama, grantovi i sufinansiranje za kompanije u Severnoj Makedoniji i regionu.",
     address: {
-      street: "bul. Kočo Racin 3",
-      city: "Skoplje",
-      country: "Republika Severna Makedonija",
+      street: "Čarlija Čaplina 24",
+      city: "Beograd",
+      country: "Republika Srbija",
     },
     workingHours: "Pon–Pet 08:00–17:00",
+    mapQuery: "Čarlija Čaplina 24, Beograd",
   },
   ba: {
-    legalName: "WVP Plus Konsalting DOO Skoplje",
+    legalName: "WVP Plus Consulting d.o.o. Brčko",
     tagline: "Za naše klijente uvijek biramo najbolje!",
     description:
       "Poslovno i finansijsko savjetovanje, pristup finansijama, grantovi i sufinansiranje za kompanije u Sjevernoj Makedoniji i regionu.",
     address: {
-      street: "bul. Kočo Racin 3",
-      city: "Skoplje",
-      country: "Republika Sjeverna Makedonija",
+      street: "Bulevar mira 8A",
+      city: "Brčko",
+      country: "Bosna i Hercegovina",
     },
     workingHours: "Pon–Pet 08:00–17:00",
+    mapQuery: "Bulevar mira 8A, 76000 Brčko",
   },
   me: {
     legalName: "WVP Plus Konsalting DOO Skoplje",
@@ -113,6 +124,7 @@ export const companyText: Record<Locale, CompanyText> = {
       country: "Republika Sjeverna Makedonija",
     },
     workingHours: "Pon–Pet 08:00–17:00",
+    mapQuery: company.mapQuery,
   },
   hr: {
     legalName: "WVP Plus Konsalting DOO Skopje",
@@ -125,7 +137,22 @@ export const companyText: Record<Locale, CompanyText> = {
       country: "Republika Sjeverna Makedonija",
     },
     workingHours: "Pon–Pet 08:00–17:00",
+    mapQuery: company.mapQuery,
   },
+};
+
+/**
+ * The LinkedIn page the footer icon opens: each country's own. North
+ * Macedonia's three language versions share the firm's page.
+ */
+export const linkedinByLocale: Record<Locale, string> = {
+  mk: company.social.linkedin,
+  sq: company.social.linkedin,
+  en: company.social.linkedin,
+  rs: "https://www.linkedin.com/company/wvp-plus-konsalting-srb/",
+  ba: "https://www.linkedin.com/company/wvp-plus-konsalting-bosna/",
+  me: "https://www.linkedin.com/company/wvp-plus-konsalting-crna-gora/",
+  hr: "https://www.linkedin.com/company/wvp-plus-konsalting-hrvatska/",
 };
 
 /**

@@ -14,11 +14,8 @@ const TRANSLATED_ROUTES = [
   "/kontakt",
 ];
 
-/**
- * Written in Macedonian only. Their other-language URLs exist but declare the
- * Macedonian page canonical, so only that one is listed.
- */
-const MACEDONIAN_ONLY_ROUTES = [
+/** Also in every language, but rarely changed and of little search value. */
+const LEGAL_ROUTES = [
   "/politika-za-privatnost",
   "/uslovi-za-koristenje",
 ];
@@ -42,12 +39,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
         alternates: { languages: languageUrls(route, company.siteUrl) },
       })),
     ),
-    ...MACEDONIAN_ONLY_ROUTES.map((route) => ({
-      url: url(`/mk${route}`),
-      lastModified: now,
-      changeFrequency: "yearly" as const,
-      priority: 0.3,
-    })),
+    ...LEGAL_ROUTES.flatMap((route) =>
+      locales.map((locale) => ({
+        url: url(`/${locale}${route}`),
+        lastModified: now,
+        changeFrequency: "yearly" as const,
+        priority: 0.3,
+        alternates: { languages: languageUrls(route, company.siteUrl) },
+      })),
+    ),
     // A post is only listed at the country site it is canonical on; it may
     // not have been published to Macedonia at all.
     ...articles.map((article) => ({
