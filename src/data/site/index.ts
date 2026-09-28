@@ -10,6 +10,7 @@ export {
   company,
   companyText,
   currentYear,
+  linkedinByLocale,
   type CompanyText,
 } from "./company";
 export { getFooterColumns, getLegalLinks, type FooterColumn } from "./footer";

@@ -11,6 +11,7 @@ import {
   getLegalLinks,
   images,
   imageSizes,
+  linkedinByLocale,
 } from "@/data/site";
 import type { Locale } from "@/i18n/locales";
 
@@ -45,7 +46,7 @@ export function Footer({ locale }: { locale: Locale }) {
             </p>
             <div className="flex space-x-4">
               <a
-                href={company.social.linkedin}
+                href={linkedinByLocale[locale]}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white transition-colors hover:text-primary"
